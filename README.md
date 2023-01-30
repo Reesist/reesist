@@ -18,15 +18,21 @@ Reesist is a Raptoreum (RTM) fork (thank you RTM), the history traced back is: B
 
 Raptoreums combination of Proof of Work (POW) and Smartnodes which offer an option for passive income and offering the network increased protection and decentralization is optimal to being able to Reesist.
 
+We will Reesist!
+
 **GPU over CPU**
 --------------
 
 Reesist will change the POW algorithm from Ghostrider to Ravencoins KAWPOW, both of these POW algorithms are ASIC and FPGA resistant. GPU these days are an excellent choice for securing the network and staying decentralized. Most laptops and desktops come with a capable GPU that can contribute to the network and be rewarded. They are more environmentally friendly than ASICs and available in far greater numbers.
 
+We will Reesist!
+
 **Smartnodes > Resistors**
 ------------------------
 
 Due to the importance and services provided by Smartnodes their naming will be changed to "Resistors".
+
+We will Reesist!
 
 **Join Me and Wait For Mainnet**
 ------------------------------
@@ -35,6 +41,8 @@ I will not use centralized anti-privacy based chats such as Discord or Telegram.
 **Invite Link:** https://matrix.to/#/!gfnnPKjPdiWcXaLZmb:envs.net?via=envs.net
 
 You can also contact me at: therottenraven@proton.me
+
+We will Reesist!
 
 **Mainnet Launch**
 ----------------
@@ -45,10 +53,14 @@ Mainnet is approximately one month away. It will be a fair launch, there will be
 
 **Developer Fee:** A small developer fee is taken out of each block reward, this is used to pay for development and marketing.
 
+We will Reesist!
+
 **Exchanges**
 -----------
 
 Centralized exchanges should not be pursued for listings, these are a long-term threat to any Crypto project. Decentralized exchanges such as Atomic Dex are a better and safer choice!
+
+We will Reesist!
 
 License
 -------
