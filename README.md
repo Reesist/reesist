@@ -1,38 +1,47 @@
-Raptoreum Core Latest v1.13.17.01
+Reesist Core Latest (in development)
 ===========================
 
 |CI|master|develop|
 |-|-|-|
 
-The name Raptoreum is derived from the Victorian term for a bird of prey and ium/eum place for a pertaining to in this case birds of prey. The name comes from the team’s extensive experience in the security field with top level skills covering all aspects of it. This is a unique strength in the crypto community and will leverage well into a successful project.
+**About Reesist**
 
-Introduction
-Raptoreum began as the fairly simple idea, introducing smart contracts which would allow on chain, trustless transfers (goodbye centralized marketplaces) on the Ravencoin codebase, however with the automation of assets and RTM (Raptoreum).
-The project has quickly evolved, adding innovative features that not only further expand the asset layer, but also introduce features that could help other Blockchain projects. Ravencoin unfortunately suffered several serious breaches of its asset layer so that code base has been abandoned by us. We are currently working with and building on Raptoreum code expending its capabilities significantly.
+2022-2023 has shown us the lengths that ceratin entities will go through to control what they fear and or do not understand. Reesist will be a community driven and run project. There will be no owner, no VC backing, no controlling investors, no doxxed developers unless they choose to. There is nobody that can shut it down once the Genesis block is completed. We will Reesist!
 
-Raptoreum is now a code fork of Dash and inherits current and optionally future features such as chain locks, oracles etc. We are further expanding capabilities by adding the following features:
-A)	The deployment of a unique asset layer.
-B)	The option to lock X amount of coins or assets into a special transaction. Coins are unlocked at a block number of choice or timestamp.
-C)	Trustless on chain transfers of assets and native coins VIA Smart Contracts.
-D)	Integrating, developing and deploying a VM protocol that would allow for smart contracts in 4 major programming languages as opposed to the situation with Ethereum being limited to solidity.
+Reesist is a Raptoreum (RTM) fork (thank you RTM), the history traced back is: Bitcoin > Dash (Darkcoin) > Raptoreum > Reesist.
 
-These additional features open up the power and ease of use of Raptoreum’s features to a greater variety of industries under the Distributed Application umbrella. DAPP's are a critical part of driving widespread adoption as recently seen with DEFI and Raptoreum hopes to help provide further alternatives and possibilities for DAPP developers particularly in the field of opening up new programming languages for DAPP and contract development.
+**Why?**
 
-It is one of our goals to not only innovate ideas for Raptoreum but to contribute back to the general crypto community with open-source features that anybody can use to help their Blockchain projects succeed.
+Raptoreums combination of Proof of Work (POW) and Smartnodes which offer an option for passive income and offering the network increased protection and decentralization is optimal to being able to Reesist.
+
+**GPU over CPU**
+
+Reesist will change the POW algorithm from Ghostrider to Ravencoins KAWPOW.
+
+**Smartnodes > Resistors**
+
+Due to the importance and services provided by Smartnodes their naming will be changed to "Resistors"
+
+**Join Me and Wait For Mainnet**
+
+I will not use centralized anti-privacy based chats such as Discord or Telegram. I invite you to join me on Matrix based chat, Element is a sleek and easy way to join and participate on a decentralized fulle e2E encrypted chat (Matrix). Element has free open-source apps for browser, Desktop, Mac and mobile.
+Invite Link: https://matrix.to/#/!gfnnPKjPdiWcXaLZmb:envs.net?via=envs.net
+
+You can also contact me at: therottenraven@proton.me
 
 
 License
 -------
 
-Raptoreum Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+Reesist Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is meant to be stable. Development is done in separate branches.
-[Tags](https://github.com/raptoreum/raptoreum/tags) are created to indicate new official,
-stable release versions of Raptoreum Core.
+[Tags](https://github.com/Reesist/reesist/tags) are created to indicate new official,
+stable release versions of Reesist Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
