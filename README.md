@@ -5,30 +5,50 @@ Reesist Core Latest (in development)
 |-|-|-|
 
 **About Reesist**
+---------------
 
-2022-2023 has shown us the lengths that certain entities will go through to control what they fear and or do not understand. Reesist will be a community driven and run project. There will be no owner, no VC backing, no controlling investors, no doxxed developers unless they choose to. There is nobody that can shut it down once the Genesis block is completed. We will Reesist!
+2022-2023 has shown us the lengths that certain entities will go through to control what they fear and or do not understand. Reesist will be a community driven and run project. There will be no owner, no VC backing, no controlling investors, no doxxed developers unless they choose to. There is nobody that can shut it down once the Genesis block is completed. 
+
+We will Reesist!
 
 Reesist is a Raptoreum (RTM) fork (thank you RTM), the history traced back is: Bitcoin > Dash (Darkcoin) > Raptoreum > Reesist.
 
 **Why?**
+-----
 
 Raptoreums combination of Proof of Work (POW) and Smartnodes which offer an option for passive income and offering the network increased protection and decentralization is optimal to being able to Reesist.
 
 **GPU over CPU**
+--------------
 
-Reesist will change the POW algorithm from Ghostrider to Ravencoins KAWPOW.
+Reesist will change the POW algorithm from Ghostrider to Ravencoins KAWPOW, both of these POW algorithms are ASIC and FPGA resistant. GPU these days are an excellent choice for securing the network and staying decentralized. Most laptops and desktops come with a capable GPU that can contribute to the network and be rewarded. They are more environmentally friendly than ASICs and available in far greater numbers.
 
 **Smartnodes > Resistors**
+------------------------
 
-Due to the importance and services provided by Smartnodes their naming will be changed to "Resistors"
+Due to the importance and services provided by Smartnodes their naming will be changed to "Resistors".
 
 **Join Me and Wait For Mainnet**
+------------------------------
 
 I will not use centralized anti-privacy based chats such as Discord or Telegram. I invite you to join me on Matrix based chat, Element is a sleek and easy way to join and participate on a decentralized fulle e2E encrypted chat (Matrix). Element has free open-source apps for browser, Desktop, Mac and mobile.
-Invite Link: https://matrix.to/#/!gfnnPKjPdiWcXaLZmb:envs.net?via=envs.net
+**Invite Link:** https://matrix.to/#/!gfnnPKjPdiWcXaLZmb:envs.net?via=envs.net
 
 You can also contact me at: therottenraven@proton.me
 
+**Mainnet Launch**
+----------------
+
+Mainnet is approximately one month away. It will be a fair launch, there will be no ICO. There will be a small premine and ongoing developer fee.
+
+**Premine:** Amount is still being discussed, but it will not be large. Premine is needed to ensure enough Resistors can be put up early on to activate Quorums and gain the additional network protections (chainlocks) such as 51% protection.
+
+**Developer Fee:** A small developer fee is taken out of each block reward, this is used to pay for development and marketing.
+
+**Exchanges**
+-----------
+
+Centralized exchanges should not be pursued for listings, these are a long-term threat to any Crypto project. Decentralized exchanges such as Atomic Dex are a better and safer choice!
 
 License
 -------
