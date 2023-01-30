@@ -6,7 +6,7 @@ Reesist Core Latest (in development)
 
 **About Reesist**
 
-2022-2023 has shown us the lengths that ceratin entities will go through to control what they fear and or do not understand. Reesist will be a community driven and run project. There will be no owner, no VC backing, no controlling investors, no doxxed developers unless they choose to. There is nobody that can shut it down once the Genesis block is completed. We will Reesist!
+2022-2023 has shown us the lengths that certain entities will go through to control what they fear and or do not understand. Reesist will be a community driven and run project. There will be no owner, no VC backing, no controlling investors, no doxxed developers unless they choose to. There is nobody that can shut it down once the Genesis block is completed. We will Reesist!
 
 Reesist is a Raptoreum (RTM) fork (thank you RTM), the history traced back is: Bitcoin > Dash (Darkcoin) > Raptoreum > Reesist.
 
