@@ -38,7 +38,7 @@ We will Reesist!
 ------------------------------
 
 I will not use centralized chats such as Discord or Telegram. I invite you to join me on Matrix based chat, Element is a sleek and easy way to join and participate on a decentralized fulle e2E encrypted chat (Matrix). Element has free open-source apps for browser, Desktop, Mac and mobile.
-**Invite Link:** [https://matrix.to/#/!gfnnPKjPdiWcXaLZmb:envs.net?via=envs.net](https://matrix.to/#/#reesist:envs.net)
+**Invite Link:** https://matrix.to/#/#reesist:envs.net
 **Twitter:** https://twitter.com/Reesist_RES
 
 You can also contact me at: therottenraven@proton.me
