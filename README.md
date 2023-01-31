@@ -21,6 +21,7 @@ Raptoreums combination of Proof of Work (POW) and Smartnodes which offer an opti
 We will Reesist!
 
 **Supply and Rewards**
+-------------------
 
 Supply and block rewards will be reduced, exact numbers are not yet known.
 
