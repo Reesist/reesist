@@ -34,10 +34,10 @@ Improved profitability for GPU miners by putting mined coins into Resistor nodes
 
 We will Reesist!
 
-**Smartnodes > Resistors**
+**Smartnodes > Reesistorodes**
 ------------------------
 
-Due to the importance and services provided by Smartnodes their naming will be changed to "Resistors".
+Due to the importance and services provided by Smartnodes their naming will be changed to "Reesistorodes".
 
 We will Reesist!
 
