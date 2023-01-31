@@ -72,6 +72,8 @@ Centralized exchanges should not be pursued for listings, these are a long-term 
 We will Reesist!
 
 **Roadmap**
+---------
+
 Website Launch - Februrary 15th 2023.
 Mainnet Launch - February 26th 2023 (a tip of the hat to RTM).
 Fully working Quorums and chainlocks - Mid to end of March 2023.
