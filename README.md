@@ -7,7 +7,7 @@ Reesist Core Latest (in development)
 **About Reesist**
 ---------------
 
-2022-2023 has shown us the lengths that certain entities will go through to control what they fear and or do not understand. Reesist will be a community driven and run project. There will be no owner, no VC backing, no controlling investors, no doxxed developers unless they choose to. There is nobody that can shut it down once the Genesis block is completed. 
+2022-2023 has shown us the lengths that certain entities will go through to control what they fear and or do not understand. Reesist will be a community driven and run project. There will be no owner, no VC backing, no controlling investors, no doxxed developers unless they choose to. There is nobody that can shut it down once the Genesis block is complete. Reesist is created to offer a cutting edge and secure Cryptocurrency, NFT, and Smart Contract platform that cannot be influenced, hampered, or shutdown, by anybody or any entity. 
 
 We will Reesist!
 
@@ -16,7 +16,7 @@ Reesist is a Raptoreum (RTM) fork (thank you RTM), the history traced back is: B
 **Why?**
 -----
 
-Raptoreums combination of Proof of Work (POW) and Smartnodes which offer an option for passive income and offering the network increased protection and decentralization is optimal to being able to Reesist.
+Raptoreums combination of Proof of Work (POW) and Smartnodes which offer an option for passive income and offering the network increased protection and decentralization is optimal to being able to Reesist. Reesist will continue to inherit Raptoreums advanced features such as NFTs and Smart Contracts and hopefully further expand adding more features such as additional privacy options.
 
 We will Reesist!
 
@@ -24,6 +24,8 @@ We will Reesist!
 --------------
 
 Reesist will change the POW algorithm from Ghostrider to Ravencoins KAWPOW, both of these POW algorithms are ASIC and FPGA resistant. GPU these days are an excellent choice for securing the network and staying decentralized. Most laptops and desktops come with a capable GPU that can contribute to the network and be rewarded. They are more environmentally friendly than ASICs and available in far greater numbers.
+
+Improved profitability for GPU miners by putting mined coins into Resistor nodes and earning passively.
 
 We will Reesist!
 
@@ -63,6 +65,14 @@ We will Reesist!
 Centralized exchanges should not be pursued for listings, these are a long-term threat to any Crypto project. Decentralized exchanges such as Atomic Dex are a better and safer choice!
 
 We will Reesist!
+
+**Roadmap**
+Website Launch - Februrary 15th 2023.
+Mainnet Launch - February 26th 2023 (a tip of the hat to RTM).
+Fully working Quorums and chainlocks - Mid to end of March 2023.
+Pursuing DEX only Exchanges - Begins first week April 2023.
+Last Quarter 2023 - Cross Chain Transfers
+
 
 License
 -------
