@@ -11,7 +11,7 @@ Reesist Core Latest (in development)
 
 We will Reesist!
 
-Reesist is a Raptoreum (RTM) fork (thank you RTM), the history traced back is: Bitcoin > Dash (Darkcoin) > Raptoreum > Reesist.
+Reesist is a Raptoreum (RTM) fork (thank you to all of these projects), the history traced back is: Bitcoin > Dash (Darkcoin) > Raptoreum > Reesist.
 
 **Why?**
 -----
