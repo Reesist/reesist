@@ -37,7 +37,7 @@ We will Reesist!
 **Smartnodes > Reesistorodes**
 ------------------------
 
-Due to the importance and services provided by Smartnodes their naming will be changed to "Reesistorodes".
+Due to the importance and services provided by Smartnodes their naming will be changed to "Reesistornodes".
 
 We will Reesist!
 
