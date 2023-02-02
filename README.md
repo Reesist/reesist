@@ -59,6 +59,8 @@ We will Reesist!
 
 ***There are two chats currently available for Reesist:***
 
+**Note:** Discord and Matrix are bridged so nobody misses anything.
+
 Matrix, for those that value their privacy:
 https://matrix.to/#/#reesist:envs.net
 
