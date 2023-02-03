@@ -87,7 +87,11 @@ We will Reesist!
 
 Website Launch - Februrary 15th 2023.
 
+<<<<<<< HEAD
 Mainnet Launch - February 26th 2023 (a tip of the hat to REE).
+=======
+Mainnet Launch - February 26th 2023 (a tip of the hat to RTM).
+>>>>>>> 74b019759... Update README.md
 
 Fully working Quorums and chainlocks - Mid to end of March 2023.
 
