@@ -95,9 +95,13 @@ We will Reesist!
 ---------
 
 Website Launch - Februrary 15th 2023.
+
 Mainnet Launch - February 26th 2023 (a tip of the hat to RTM).
+
 Fully working Quorums and chainlocks - Mid to end of March 2023.
+
 Pursuing DEX only Exchanges - Begins first week April 2023.
+
 Last Quarter 2023 - Cross Chain Transfers
 
 
