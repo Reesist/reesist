@@ -7,7 +7,7 @@
 #include <rpc/server.h>
 #include <validation.h>
 
-#include <smartnode/activesmartnode.h>
+#include <reesistornode/activereesistornode.h>
 
 #include <llmq/quorums.h>
 #include <llmq/quorums_blockprocessor.h>
@@ -188,10 +188,10 @@ UniValue quorum_dkgstatus(const JSONRPCRequest& request)
     for (const auto& type : llmq::CLLMQUtils::GetEnabledQuorumTypes(chainActive.Tip())) {
         const auto& params = llmq::GetLLMQParams(type);
 
-        if (fSmartnodeMode) {
+        if (fReesistornodeMode) {
             const CBlockIndex* pindexQuorum = chainActive[tipHeight - (tipHeight % params.dkgInterval)];
-            auto allConnections = llmq::CLLMQUtils::GetQuorumConnections(params.type, pindexQuorum, activeSmartnodeInfo.proTxHash, false);
-            auto outboundConnections = llmq::CLLMQUtils::GetQuorumConnections(params.type, pindexQuorum, activeSmartnodeInfo.proTxHash, true);
+            auto allConnections = llmq::CLLMQUtils::GetQuorumConnections(params.type, pindexQuorum, activeReesistornodeInfo.proTxHash, false);
+            auto outboundConnections = llmq::CLLMQUtils::GetQuorumConnections(params.type, pindexQuorum, activeReesistornodeInfo.proTxHash, true);
             std::map<uint256, CAddress> foundConnections;
             g_connman->ForEachNode([&](const CNode* pnode) {
                 if (!pnode->verifiedProRegTxHash.IsNull() && allConnections.count(pnode->verifiedProRegTxHash)) {
@@ -232,9 +232,9 @@ void quorum_memberof_help()
 {
     throw std::runtime_error(
             "quorum memberof \"proTxHash\" (quorumCount)\n"
-            "Checks which quorums the given smartnode is a member of.\n"
+            "Checks which quorums the given reesistornode is a member of.\n"
             "\nArguments:\n"
-            "1. \"proTxHash\"                (string, required) ProTxHash of the smartnode.\n"
+            "1. \"proTxHash\"                (string, required) ProTxHash of the reesistornode.\n"
             "2. scanQuorumsCount           (number, optional) Number of quorums to scan for. If not specified,\n"
             "                              the active quorum count for each specific quorum type is used."
     );
@@ -264,7 +264,7 @@ UniValue quorum_memberof(const JSONRPCRequest& request)
     auto mnList = deterministicMNManager->GetListForBlock(pindexTip);
     auto dmn = mnList.GetMN(protxHash);
     if (!dmn) {
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "smartnode not found");
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "reesistornode not found");
     }
 
     UniValue result(UniValue::VARR);
@@ -613,14 +613,14 @@ UniValue quorum_getdata(const JSONRPCRequest& request)
             "  info              - Return information about a quorum\n"
             "  dkgsimerror       - Simulates DKG errors and malicious behavior\n"
             "  dkgstatus         - Return the status of the current DKG process\n"
-            "  memberof          - Checks which quorums the given smartnode is a member of\n"
+            "  memberof          - Checks which quorums the given reesistornode is a member of\n"
             "  sign              - Threshold-sign a message\n"
             "  verify            - Test if a quorum signature is valid for a request id and a message hash\n"
             "  hasrecsig         - Test if a valid recovered signature is present\n"
             "  getrecsig         - Get a recovered signature\n"
             "  isconflicting     - Test if a conflict exists\n"
             "  selectquorum      - Return the quorum that would/should sign a request\n"
-            "  getdata           - Request quorum data from other smartnodes in the quorum\n"
+            "  getdata           - Request quorum data from other reesistornodes in the quorum\n"
     );
 }
 

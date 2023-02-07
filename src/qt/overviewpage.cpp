@@ -320,7 +320,7 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 
 void OverviewPage::updateCoinJoinProgress()
 {
-    if (!walletModel || !clientModel || clientModel->node().shutdownRequested() || !clientModel->smartnodeSync().isBlockchainSynced()) return;
+    if (!walletModel || !clientModel || clientModel->node().shutdownRequested() || !clientModel->reesistornodeSync().isBlockchainSynced()) return;
 
     QString strAmountAndRounds;
     QString strCoinJoinAmount = BitcoinUnits::formatHtmlWithUnit(nDisplayUnit, clientModel->coinJoinOptions().getAmount() * COIN, false, BitcoinUnits::separatorAlways);
@@ -436,10 +436,10 @@ void OverviewPage::coinJoinStatus(bool fForce)
 {
     if (!walletModel || !clientModel) return;
 
-    if (!fForce && (clientModel->node().shutdownRequested() || !clientModel->smartnodeSync().isBlockchainSynced())) return;
+    if (!fForce && (clientModel->node().shutdownRequested() || !clientModel->reesistornodeSync().isBlockchainSynced())) return;
 
-    // Disable any PS UI for smartnode or when autobackup is disabled or failed for whatever reason
-    if (fSmartnodeMode || nWalletBackups <= 0) {
+    // Disable any PS UI for reesistornode or when autobackup is disabled or failed for whatever reason
+    if (fReesistornodeMode || nWalletBackups <= 0) {
         DisableCoinJoinCompletely();
         if (nWalletBackups <= 0) {
             ui->labelCoinJoinEnabled->setToolTip(tr("Automatic backups are disabled, no mixing available!"));

@@ -127,8 +127,8 @@ private:
     /// Data field - can be used for anything
     std::vector<unsigned char> vchData;
 
-    /// Smartnode info for signed objects
-    COutPoint smartnodeOutpoint;
+    /// Reesistornode info for signed objects
+    COutPoint reesistornodeOutpoint;
     std::vector<unsigned char> vchSig;
 
     /// is valid by blockchain
@@ -193,9 +193,9 @@ public:
         return nCollateralHash;
     }
 
-    const COutPoint& GetSmartnodeOutpoint() const
+    const COutPoint& GetReesistornodeOutpoint() const
     {
-        return smartnodeOutpoint;
+        return reesistornodeOutpoint;
     }
 
     bool IsSetCachedFunding() const
@@ -240,7 +240,7 @@ public:
 
     // Signature related functions
 
-    void SetSmartnodeOutpoint(const COutPoint& outpoint);
+    void SetReesistornodeOutpoint(const COutPoint& outpoint);
     bool Sign(const CBLSSecretKey& key);
     bool CheckSignature(const CBLSPublicKey& pubKey) const;
 
@@ -306,7 +306,7 @@ public:
         READWRITE(nCollateralHash);
         READWRITE(vchData);
         READWRITE(nObjectType);
-        READWRITE(smartnodeOutpoint);
+        READWRITE(reesistornodeOutpoint);
         if (!(s.GetType() & SER_GETHASH)) {
             READWRITE(vchSig);
         }
@@ -335,7 +335,7 @@ public:
         CConnman& connman);
 
     /// Called when MN's which have voted on this object have been removed
-    void ClearSmartnodeVotes();
+    void ClearReesistornodeVotes();
 
     // Revalidate all votes from this MN and delete them if validation fails.
     // This is the case for DIP3 MNs that changed voting or operator keys and

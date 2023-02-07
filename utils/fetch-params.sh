@@ -6,9 +6,9 @@ set -eu
 uname_S=$(uname -s 2>/dev/null || echo not)
 
 if [ "$uname_S" = "Darwin" ]; then
-    PARAMS_DIR="$HOME/Library/Application Support/RaptoreumParams"
+    PARAMS_DIR="$HOME/Library/Application Support/ReesistParams"
 else
-    PARAMS_DIR="$HOME/.raptoreum-params"
+    PARAMS_DIR="$HOME/.reesist-params"
 fi
 
 # Commented out because these are unused; see below.
@@ -17,7 +17,7 @@ fi
 SAPLING_SPEND_NAME='sapling-spend.params'
 SAPLING_OUTPUT_NAME='sapling-output.params'
 SAPLING_SPROUT_GROTH16_NAME='sprout-groth16.params'
-DOWNLOAD_URL="https://github.com/Raptor3um/raptoreum/releases/tag/1.2.15.3"
+DOWNLOAD_URL="https://github.com/Raptor3um/reesist/releases/tag/1.2.15.3"
 #IPFS_HASH="/ipfs/QmXRHVGLQBiKwvNq7c2vPxAKz1zRVmMYbmt7G5TQss7tY7"
 
 SHA256CMD="$(command -v sha256sum || echo shasum)"
@@ -85,7 +85,7 @@ EOF
 fetch_failure() {
     cat >&2 <<EOF
 
-Failed to fetch the Raptoreum parameters!
+Failed to fetch the Reesist parameters!
 Try installing one of the following programs and make sure you're online:
 
 # * ipfs
@@ -178,7 +178,7 @@ main() {
     cat <<EOF
 RTM - fetch-params.sh
 
-This script will fetch the Raptoreum SNARK parameters and verify their
+This script will fetch the Reesist SNARK parameters and verify their
 integrity with sha256sum.
 
 If they already exist locally, it will exit now and do nothing else.
@@ -190,7 +190,7 @@ EOF
         mkdir -p "$PARAMS_DIR"
         README_PATH="$PARAMS_DIR/README"
         cat >> "$README_PATH" <<EOF
-This directory stores common Raptoreum SNARK parameters. Note that it is
+This directory stores common Reesist SNARK parameters. Note that it is
 distinct from the daemon's -datadir argument because the parameters are
 large and may be shared across multiple distinct -datadir's such as when
 setting up test networks.

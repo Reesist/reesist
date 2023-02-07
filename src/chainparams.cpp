@@ -83,7 +83,7 @@ static CBlock CreateDevNetGenesisBlock(const uint256 &prevBlockHash, const std::
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "The Times 22/Jan/2018 Raptoreum is name of the game for new generation of firms";
+    const char* pszTimestamp = "The Times 22/Jan/2018 Reesist is name of the game for new generation of firms";
     const CScript genesisOutputScript = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -113,9 +113,9 @@ void CChainParams::UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64
 //    consensus.DIP0003EnforcementHeight = nEnforcementHeight;
 //}
 
-void CChainParams::UpdateBudgetParameters(int nSmartnodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock)
+void CChainParams::UpdateBudgetParameters(int nReesistornodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock)
 {
-    consensus.nSmartnodePaymentsStartBlock = nSmartnodePaymentsStartBlock;
+    consensus.nReesistornodePaymentsStartBlock = nReesistornodePaymentsStartBlock;
     consensus.nBudgetPaymentsStartBlock = nBudgetPaymentsStartBlock;
     consensus.nSuperblockStartBlock = nSuperblockStartBlock;
 }
@@ -494,9 +494,9 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 210240; // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nSmartnodePaymentsStartBlock = 5761; //
-        consensus.nSmartnodePaymentsIncreaseBlock = 158000; // actual historical value
-        consensus.nSmartnodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
+        consensus.nReesistornodePaymentsStartBlock = 5761; //
+        consensus.nReesistornodePaymentsIncreaseBlock = 158000; // actual historical value
+        consensus.nReesistornodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 24;
         consensus.nBudgetPaymentsStartBlock = INT_MAX; // actual historical value
@@ -507,7 +507,7 @@ public:
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
-        consensus.nSmartnodeMinimumConfirmations = 15;
+        consensus.nReesistornodeMinimumConfirmations = 15;
         consensus.BIPCSVEnabled = true;
         consensus.BIP147Enabled = true;
         consensus.BIP34Enabled = true;
@@ -518,15 +518,15 @@ public:
         consensus.DIP0008Enabled = true;
         // consensus.DIP0003EnforcementHeight = 1047200;
         consensus.powLimit = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Raptoreum: 1 day
-        consensus.nPowTargetSpacing = 2 * 60; // Raptoreum: 2 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // Reesist: 1 day
+        consensus.nPowTargetSpacing = 2 * 60; // Reesist: 2 minutes
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nPowDGWHeight = 60;
         consensus.DGWBlocksAvg = 60;
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
-        consensus.smartnodePaymentFixedBlock = 6800;
+        consensus.reesistornodePaymentFixedBlock = 6800;
         consensus.nFutureForkBlock = 420420;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
@@ -563,28 +563,28 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0xb79e5df07278b9567ada8fc655ffbfa9d3f586dc38da3dd93053686f41caeea0"));
         assert(genesis.hashMerkleRoot == uint256S("0x87a48bc22468acdd72ee540aab7c086a5bbcddc12b51c6ac925717a74c269453"));
 
-        vSeeds.emplace_back("seed00.raptoreum.com");
-        vSeeds.emplace_back("seed01.raptoreum.com");
-        vSeeds.emplace_back("seed02.raptoreum.com");
-        vSeeds.emplace_back("seed03.raptoreum.com");
-        vSeeds.emplace_back("seed04.raptoreum.com");
-        vSeeds.emplace_back("seed05.raptoreum.com");
-        vSeeds.emplace_back("seed06.raptoreum.com");
-        vSeeds.emplace_back("ger1.raptoreum.com");
-        vSeeds.emplace_back("ny1.raptoreum.com");
+        vSeeds.emplace_back("seed00.reesist.com");
+        vSeeds.emplace_back("seed01.reesist.com");
+        vSeeds.emplace_back("seed02.reesist.com");
+        vSeeds.emplace_back("seed03.reesist.com");
+        vSeeds.emplace_back("seed04.reesist.com");
+        vSeeds.emplace_back("seed05.reesist.com");
+        vSeeds.emplace_back("seed06.reesist.com");
+        vSeeds.emplace_back("ger1.reesist.com");
+        vSeeds.emplace_back("ny1.reesist.com");
 
 
-        // Raptoreum addresses start with 'r'
+        // Reesist addresses start with 'r'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,60);
-        // Raptoreum script addresses start with '7'
+        // Reesist script addresses start with '7'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,16);
-        // Raptoreum private keys start with '7' or 'X'
+        // Reesist private keys start with '7' or 'X'
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
-        // Raptoreum BIP32 pubkeys start with 'xpub' (Bitcoin defaults)
+        // Reesist BIP32 pubkeys start with 'xpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
-        // Raptoreum BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
+        // Reesist BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
-        // Raptoreum BIP44 coin type is '5'
+        // Reesist BIP44 coin type is '5'
         std::string strExtCoinType = gArgs.GetArg("-extcoinindex", "");
         nExtCoinType = strExtCoinType.empty() ? 200 : std::stoi(strExtCoinType);
 //        if(gArgs.GetChainName() == CBaseChainParams::MAIN) {
@@ -593,7 +593,7 @@ public:
 //        }
         std::vector<FounderRewardStructure> rewardStructures = {  {INT_MAX, 5} };// 5% founder/dev fee forever
         consensus.nFounderPayment = FounderPayment(rewardStructures, 250);
-        consensus.nCollaterals = SmartnodeCollaterals(
+        consensus.nCollaterals = ReesistornodeCollaterals(
           { {88720, 600000 * COIN},
             {132720, 800000 * COIN},
             {176720, 1000000 * COIN},
@@ -633,7 +633,7 @@ public:
 
         vSporkAddresses = {"RWGvGpd3yJdnfh9ziyHNDEoHMJBvnZ23zK"};
         nMinSporkKeys = 1;
-        fBIP9CheckSmartnodesUpgraded = true;
+        fBIP9CheckReesistornodesUpgraded = true;
 
         checkpointData = {
           {  {5145, uint256S("0x64c9cc82f05f4326e49fd4b21a48494b02b12a707de67a47c7e8e1102b0f1d9b")},
@@ -661,9 +661,9 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210240;
-        consensus.nSmartnodePaymentsStartBlock = 1000; // not true, but it's ok as long as it's less then nSmartnodePaymentsIncreaseBlock
-        consensus.nSmartnodePaymentsIncreaseBlock = 4030;
-        consensus.nSmartnodePaymentsIncreasePeriod = 10;
+        consensus.nReesistornodePaymentsStartBlock = 1000; // not true, but it's ok as long as it's less then nReesistornodePaymentsIncreaseBlock
+        consensus.nReesistornodePaymentsIncreaseBlock = 4030;
+        consensus.nReesistornodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = INT_MAX;
@@ -674,7 +674,7 @@ public:
         consensus.nSuperblockCycle = 24; // Superblocks can be issued hourly on testnet
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
-        consensus.nSmartnodeMinimumConfirmations = 1;
+        consensus.nReesistornodeMinimumConfirmations = 1;
         consensus.BIP34Enabled = true;
         consensus.BIP65Enabled = true; // 0000039cf01242c7f921dcb4806a5994bc003b48c1973ae0c89b67809c2bb2ab
         consensus.BIP66Enabled = true; // 0000002acdd29a14583540cb72e1c5cc83783560e38fa7081495d474fe1671f7
@@ -685,13 +685,13 @@ public:
         consensus.DIP0008Enabled = true;
         // consensus.DIP0003EnforcementHeight = 7300;
         consensus.powLimit = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Raptoreum: 1 day
-        consensus.nPowTargetSpacing = 60; // Raptoreum: 1 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // Reesist: 1 day
+        consensus.nPowTargetSpacing = 60; // Reesist: 1 minutes
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowDGWHeight = 60;
         consensus.DGWBlocksAvg = 60;
-        consensus.smartnodePaymentFixedBlock = 1;
+        consensus.reesistornodePaymentFixedBlock = 1;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
         consensus.nFutureForkBlock = 1000;
@@ -733,21 +733,21 @@ public:
         vSeeds.emplace_back("47.151.7.226");
         //vSeeds.emplace_back("62.171.153.224", true);
         //vSeeds.emplace_back("98.38.235.195", true);
-        //vSeeds.emplace_back("ger1.raptoreum.com", true);
-        //vSeeds.emplace_back("ny1.raptoreum.com", true);
+        //vSeeds.emplace_back("ger1.reesist.com", true);
+        //vSeeds.emplace_back("ny1.reesist.com", true);
 
-        // Testnet Raptoreum addresses start with 'r'
+        // Testnet Reesist addresses start with 'r'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,123);
-        // Testnet Raptoreum script addresses start with '8' or '9'
+        // Testnet Reesist script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Testnet Raptoreum BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Testnet Reesist BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Testnet Raptoreum BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Testnet Reesist BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // Testnet Raptoreum BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet Reesist BIP44 coin type is '1' (All coin's testnet default)
         std::string strExtCoinType = gArgs.GetArg("-extcoinindex", "");
         nExtCoinType = strExtCoinType.empty() ? 10227 : std::stoi(strExtCoinType);
 
@@ -761,7 +761,7 @@ public:
         consensus.llmqTypeInstantSend = Consensus::LLMQ_50_60;
         consensus.llmqTypePlatform = Consensus::LLMQ_100_67;
 
-        consensus.nCollaterals = SmartnodeCollaterals(
+        consensus.nCollaterals = ReesistornodeCollaterals(
           {  {30000, 20000 * COIN}, {60000, 40000 * COIN}, {INT_MAX, 60000 * COIN}  },
           {  {INT_MAX, 20}  });
 
@@ -787,7 +787,7 @@ public:
 
         vSporkAddresses = {"rsqc2caFRG6myRdzKipP4PpVW9LnFaG7CH"};
         nMinSporkKeys = 1;
-        fBIP9CheckSmartnodesUpgraded = true;
+        fBIP9CheckReesistornodesUpgraded = true;
 
         checkpointData = {
             {
@@ -813,9 +813,9 @@ public:
     CDevNetParams() {
         strNetworkID = "devnet";
         consensus.nSubsidyHalvingInterval = 210240;
-        consensus.nSmartnodePaymentsStartBlock = 4010; // not true, but it's ok as long as it's less then nSmartnodePaymentsIncreaseBlock
-        consensus.nSmartnodePaymentsIncreaseBlock = 4030;
-        consensus.nSmartnodePaymentsIncreasePeriod = 10;
+        consensus.nReesistornodePaymentsStartBlock = 4010; // not true, but it's ok as long as it's less then nReesistornodePaymentsIncreaseBlock
+        consensus.nReesistornodePaymentsIncreaseBlock = 4030;
+        consensus.nReesistornodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 4100;
@@ -826,7 +826,7 @@ public:
         consensus.nSuperblockCycle = 24; // Superblocks can be issued hourly on devnet
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
-        consensus.nSmartnodeMinimumConfirmations = 1;
+        consensus.nReesistornodeMinimumConfirmations = 1;
         consensus.BIP147Enabled = true;
         consensus.BIPCSVEnabled = true;
         consensus.BIP34Enabled = true; // BIP34 activated immediately on devnet
@@ -837,8 +837,8 @@ public:
         consensus.DIP0008Enabled = true;// DIP0008 activated immediately on devnet
        // consensus.DIP0003EnforcementHeight = 2; // DIP0003 activated immediately on devnet
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Raptoreum: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Raptoreum: 2.5 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // Reesist: 1 day
+        consensus.nPowTargetSpacing = 2.5 * 60; // Reesist: 2.5 minutes
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowDGWHeight = 60;
@@ -886,20 +886,20 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        //vSeeds.push_back(CDNSSeedData("raptoreumevo.org",  "devnet-seed.raptoreumevo.org"));
+        //vSeeds.push_back(CDNSSeedData("reesistevo.org",  "devnet-seed.reesistevo.org"));
 
-        // Testnet Raptoreum addresses start with 'y'
+        // Testnet Reesist addresses start with 'y'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-        // Testnet Raptoreum script addresses start with '8' or '9'
+        // Testnet Reesist script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Testnet Raptoreum BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Testnet Reesist BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Testnet Raptoreum BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Testnet Reesist BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // Testnet Raptoreum BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet Reesist BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
         // long living quorum params
@@ -928,7 +928,7 @@ public:
         vSporkAddresses = {"yjPtiKh2uwk3bDutTEA2q9mCtXyiZRWn55"};
         nMinSporkKeys = 1;
         // devnets are started with no blocks and no MN, so we can't check for upgraded MN (as there are none)
-        fBIP9CheckSmartnodesUpgraded = false;
+        fBIP9CheckReesistornodesUpgraded = false;
 
         checkpointData = (CCheckpointData) {
             {
@@ -953,9 +953,9 @@ public:
     CRegTestParams() {
         strNetworkID = "regtest";
         consensus.nSubsidyHalvingInterval = 150;
-        consensus.nSmartnodePaymentsStartBlock = 240;
-        consensus.nSmartnodePaymentsIncreaseBlock = 350;
-        consensus.nSmartnodePaymentsIncreasePeriod = 10;
+        consensus.nReesistornodePaymentsStartBlock = 240;
+        consensus.nReesistornodePaymentsIncreaseBlock = 350;
+        consensus.nReesistornodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = INT_MAX;
@@ -966,7 +966,7 @@ public:
         consensus.nSuperblockCycle = 10;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 100;
-        consensus.nSmartnodeMinimumConfirmations = 1;
+        consensus.nReesistornodeMinimumConfirmations = 1;
         consensus.BIPCSVEnabled = true;
         consensus.BIP147Enabled = true;
         consensus.BIP34Enabled = true; // BIP34 has not activated on regtest (far in the future so block v1 are not rejected in tests)
@@ -976,8 +976,8 @@ public:
         consensus.DIP0003Enabled = true;
        // consensus.DIP0003EnforcementHeight = 500;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Raptoreum: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Raptoreum: 2.5 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // Reesist: 1 day
+        consensus.nPowTargetSpacing = 2.5 * 60; // Reesist: 2.5 minutes
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nPowDGWHeight = 60;
@@ -1036,8 +1036,8 @@ public:
         // privKey: cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
         vSporkAddresses = {"RWGvGpd3yJdnfh9ziyHNDEoHMJBvnZ23zK"};
         nMinSporkKeys = 1;
-        // regtest usually has no smartnodes in most tests, so don't check for upgraged MNs
-        fBIP9CheckSmartnodesUpgraded = false;
+        // regtest usually has no reesistornodes in most tests, so don't check for upgraged MNs
+        fBIP9CheckReesistornodesUpgraded = false;
         std::vector<FounderRewardStructure> rewardStructures = {  {INT_MAX, 5} };// 5% founder/dev fee forever
 
         consensus.nFounderPayment = FounderPayment(rewardStructures, 200);
@@ -1054,18 +1054,18 @@ public:
             0
         };
 
-        // Regtest Raptoreum addresses start with 'y'
+        // Regtest Reesist addresses start with 'y'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-        // Regtest Raptoreum script addresses start with '8' or '9'
+        // Regtest Reesist script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Regtest private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Regtest Raptoreum BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Regtest Reesist BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Regtest Raptoreum BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Regtest Reesist BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // Regtest Raptoreum BIP44 coin type is '1' (All coin's testnet default)
+        // Regtest Reesist BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
         // long living quorum params
@@ -1114,9 +1114,9 @@ void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime,
 //    globalChainParams->UpdateDIP3Parameters(nActivationHeight, nEnforcementHeight);
 //}
 
-void UpdateBudgetParameters(int nSmartnodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock)
+void UpdateBudgetParameters(int nReesistornodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock)
 {
-    globalChainParams->UpdateBudgetParameters(nSmartnodePaymentsStartBlock, nBudgetPaymentsStartBlock, nSuperblockStartBlock);
+    globalChainParams->UpdateBudgetParameters(nReesistornodePaymentsStartBlock, nBudgetPaymentsStartBlock, nSuperblockStartBlock);
 }
 
 void UpdateDevnetSubsidyAndDiffParams(int nMinimumDifficultyBlocks, int nHighSubsidyBlocks, int nHighSubsidyFactor)

@@ -6,7 +6,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/raptoreum-config.h>
+#include <config/reesist-config.h>
 #endif
 
 #include <init.h>
@@ -47,15 +47,15 @@
 #include <utilmoneystr.h>
 #include <validationinterface.h>
 
-#include <smartnode/activesmartnode.h>
+#include <reesistornode/activereesistornode.h>
 #include <coinjoin/coinjoin-server.h>
 #include <dsnotificationinterface.h>
 #include <flat-database.h>
 #include <governance/governance.h>
-#include <smartnode/smartnode-meta.h>
-#include <smartnode/smartnode-payments.h>
-#include <smartnode/smartnode-sync.h>
-#include <smartnode/smartnode-utils.h>
+#include <reesistornode/reesistornode-meta.h>
+#include <reesistornode/reesistornode-payments.h>
+#include <reesistornode/reesistornode-sync.h>
+#include <reesistornode/reesistornode-utils.h>
 #include <messagesigner.h>
 #include <netfulfilledman.h>
 #include <spork.h>
@@ -116,8 +116,8 @@ public:
     void Stop() const override {}
     void Close() const override {}
 
-    // Raptoreum Specific WalletInitInterface InitCoinJoinSettings
-    void AutoLockSmartnodeCollaterals() const override {}
+    // Reesist Specific WalletInitInterface InitCoinJoinSettings
+    void AutoLockReesistornodeCollaterals() const override {}
     void InitCoinJoinSettings() const override {}
     void InitKeePass() const override {}
     bool InitAutoBackup() const override {return true;}
@@ -183,7 +183,7 @@ bool ShutdownRequested()
 /**
  * This is a minimally invasive approach to shutdown on LevelDB read errors from the
  * chainstate, while keeping user interface out of the common library, which is shared
- * between raptoreumd, and raptoreum-qt and non-server tools.
+ * between reesistd, and reesist-qt and non-server tools.
 */
 class CCoinsViewErrorCatcher final : public CCoinsViewBacked
 {
@@ -237,7 +237,7 @@ void PrepareShutdown()
     /// for example if the data directory was found to be locked.
     /// Be sure that anything that writes files or flushes caches only does this if the respective
     /// module was initialized.
-    RenameThread("raptoreum-shutoff");
+    RenameThread("reesist-shutoff");
     mempool.AddTransactionsUpdated(1);
     StopHTTPRPC();
     StopREST();
@@ -272,7 +272,7 @@ void PrepareShutdown()
 
     if (!fRPCInWarmup) {
         // STORE DATA CACHES INTO SERIALIZED DAT FILES
-        CFlatDB<CSmartnodeMetaMan> flatdb1("mncache.dat", "magicSmartnodeCache");
+        CFlatDB<CReesistornodeMetaMan> flatdb1("mncache.dat", "magicReesistornodeCache");
         flatdb1.Dump(mmetaman);
         CFlatDB<CNetFulfilledRequestManager> flatdb4("netfulfilled.dat", "magicFulfilledCache");
         flatdb4.Dump(netfulfilledman);
@@ -347,13 +347,13 @@ void PrepareShutdown()
         delete pdsNotificationInterface;
         pdsNotificationInterface = nullptr;
     }
-    if (fSmartnodeMode) {
-        UnregisterValidationInterface(activeSmartnodeManager);
+    if (fReesistornodeMode) {
+        UnregisterValidationInterface(activeReesistornodeManager);
     }
 
     // make sure to clean up BLS keys before global destructors are called (they have allocated from the secure memory pool)
-    activeSmartnodeInfo.blsKeyOperator.reset();
-    activeSmartnodeInfo.blsPubKeyOperator.reset();
+    activeReesistornodeInfo.blsKeyOperator.reset();
+    activeReesistornodeInfo.blsPubKeyOperator.reset();
 
 #ifndef WIN32
     try {
@@ -601,16 +601,16 @@ void SetupServerArgs()
     gArgs.AddArg("-printtoconsole", "Send trace/debug info to console instead of debug.log file", false, OptionsCategory::DEBUG_TEST);
     gArgs.AddArg("-printtodebuglog", strprintf("Send trace/debug info to debug.log file (default: %u)", 1), false, OptionsCategory::DEBUG_TEST);
     gArgs.AddArg("-shrinkdebugfile", "Shrink debug.log file on client startup (default: 1 when no -debug)", false, OptionsCategory::DEBUG_TEST);
-    gArgs.AddArg("-sporkaddr=<raptoreumaddress>", "Override spork address. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.", false, OptionsCategory::DEBUG_TEST);
+    gArgs.AddArg("-sporkaddr=<reesistaddress>", "Override spork address. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.", false, OptionsCategory::DEBUG_TEST);
     gArgs.AddArg("-sporkkey=<privatekey>", "Set the private key to be used for signing spork messages.", false, OptionsCategory::DEBUG_TEST);
     gArgs.AddArg("-uacomment=<cmt>", "Append comment to the user agent string", false, OptionsCategory::DEBUG_TEST);
 
     SetupChainParamsBaseOptions();
 
     gArgs.AddArg("-llmq-data-recovery=<n>", strprintf("Enable automated quorum data recovery (default: %u)", llmq::DEFAULT_ENABLE_QUORUM_DATA_RECOVERY), false, OptionsCategory::SMARTNODE);
-    gArgs.AddArg("-llmq-qvvec-sync=<quorum_name>:<mode>", strprintf("Defines from which LLMQ type the smartnode should sync quorum verification vectors. Can be used multiple times with different LLMQ types. <mode>: %d (sync always from all quorums of the type defined by <quorum_name>), %d (sync from all quorums of the type defined by <quorum_name> if a member of any of the quorums)", (int32_t)llmq::QvvecSyncMode::Always, (int32_t)llmq::QvvecSyncMode::OnlyIfTypeMember), false, OptionsCategory::SMARTNODE);
-    gArgs.AddArg("-smartnodeblsprivkey=<hex>", "Set the smartnode BLS private key and enable the client to act as a smartnode", false, OptionsCategory::SMARTNODE);
-    gArgs.AddArg("-platform-user=<user>", "Set the username for the \"platform user\", a restricted user intended to be used by Raptoreum Platform, to the specified username.", false, OptionsCategory::SMARTNODE);
+    gArgs.AddArg("-llmq-qvvec-sync=<quorum_name>:<mode>", strprintf("Defines from which LLMQ type the reesistornode should sync quorum verification vectors. Can be used multiple times with different LLMQ types. <mode>: %d (sync always from all quorums of the type defined by <quorum_name>), %d (sync from all quorums of the type defined by <quorum_name> if a member of any of the quorums)", (int32_t)llmq::QvvecSyncMode::Always, (int32_t)llmq::QvvecSyncMode::OnlyIfTypeMember), false, OptionsCategory::SMARTNODE);
+    gArgs.AddArg("-reesistornodeblsprivkey=<hex>", "Set the reesistornode BLS private key and enable the client to act as a reesistornode", false, OptionsCategory::SMARTNODE);
+    gArgs.AddArg("-platform-user=<user>", "Set the username for the \"platform user\", a restricted user intended to be used by Reesist Platform, to the specified username.", false, OptionsCategory::SMARTNODE);
 
     gArgs.AddArg("-acceptnonstdtxn", strprintf("Relay and mine \"non-standard\" transactions (%sdefault: %u)", "testnet/regtest only; ", !testnetChainParams->RequireStandard()), true, OptionsCategory::NODE_RELAY);
     gArgs.AddArg("-dustrelayfee=<amt>", strprintf("Fee rate (in %s/kB) used to defined dust, the value of an output such that it will cost more than its value in fees at this fee rate to spend it. (default: %s)", CURRENCY_UNIT, FormatMoney(DUST_RELAY_TX_FEE)), true, OptionsCategory::NODE_RELAY);
@@ -650,8 +650,8 @@ void SetupServerArgs()
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/Raptor3um/raptoreum>";
-    const std::string URL_WEBSITE = "<https://raptoreum.com>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/Raptor3um/reesist>";
+    const std::string URL_WEBSITE = "<https://reesist.com>";
 
     return CopyrightHolders(_("Copyright (C)"), 2014, COPYRIGHT_YEAR) + "\n" +
            "\n" +
@@ -756,7 +756,7 @@ void CleanupBlockRevFiles()
 void ThreadImport(std::vector<fs::path> vImportFiles)
 {
     const CChainParams& chainparams = Params();
-    RenameThread("raptoreum-loadblk");
+    RenameThread("reesist-loadblk");
     ScheduleBatchPriority();
 
     {
@@ -831,7 +831,7 @@ void ThreadImport(std::vector<fs::path> vImportFiles)
     {
         // Get all UTXOs for each MN collateral in one go so that we can fill coin cache early
         // and reduce further locking overhead for cs_main in other parts of code including GUI
-        LogPrintf("Filling coin cache with smartnode UTXOs...\n");
+        LogPrintf("Filling coin cache with reesistornode UTXOs...\n");
         LOCK(cs_main);
         int64_t nStart = GetTimeMillis();
         auto mnList = deterministicMNManager->GetListAtChainTip();
@@ -839,20 +839,20 @@ void ThreadImport(std::vector<fs::path> vImportFiles)
             Coin coin;
             GetUTXOCoin(dmn->collateralOutpoint, coin);
         });
-        LogPrintf("Filling coin cache with smartnode UTXOs: done in %dms\n", GetTimeMillis() - nStart);
+        LogPrintf("Filling coin cache with reesistornode UTXOs: done in %dms\n", GetTimeMillis() - nStart);
     }
 
-    if (fSmartnodeMode) {
-        assert(activeSmartnodeManager);
+    if (fReesistornodeMode) {
+        assert(activeReesistornodeManager);
         const CBlockIndex* pindexTip;
         {
             LOCK(cs_main);
             pindexTip = chainActive.Tip();
         }
-        activeSmartnodeManager->Init(pindexTip);
+        activeReesistornodeManager->Init(pindexTip);
     }
 
-    g_wallet_init_interface.AutoLockSmartnodeCollaterals();
+    g_wallet_init_interface.AutoLockReesistornodeCollaterals();
 
     if (gArgs.GetArg("-persistmempool", DEFAULT_PERSIST_MEMPOOL)) {
         LoadMempool();
@@ -913,7 +913,7 @@ void PeriodicStats()
 }
 
 /** Sanity checks
- *  Ensure that Raptoreum Core is running in a usable environment with all
+ *  Ensure that Reesist Core is running in a usable environment with all
  *  necessary library support.
  */
 bool InitSanityCheck(void)
@@ -1047,8 +1047,8 @@ void InitParameterInteraction()
         LogPrintf("%s: parameter interaction: additional indexes -> setting -checklevel=4\n", __func__);
     }
 
-    if (gArgs.IsArgSet("-smartnodeblsprivkey") && gArgs.SoftSetBoolArg("-disablewallet", true)) {
-        LogPrintf("%s: parameter interaction: -smartnodeblsprivkey set -> setting -disablewallet=1\n", __func__);
+    if (gArgs.IsArgSet("-reesistornodeblsprivkey") && gArgs.SoftSetBoolArg("-disablewallet", true)) {
+        LogPrintf("%s: parameter interaction: -reesistornodeblsprivkey set -> setting -disablewallet=1\n", __func__);
     }
 
     // Warn if network-specific options (-addnode, -connect, etc) are
@@ -1481,11 +1481,11 @@ bool AppInitParameterInteraction()
         std::vector<std::string> vBudgetParams;
         boost::split(vBudgetParams, strBudgetParams, boost::is_any_of(":"));
         if (vBudgetParams.size() != 3) {
-            return InitError("Budget parameters malformed, expecting smartnodePaymentsStartBlock:budgetPaymentsStartBlock:superblockStartBlock");
+            return InitError("Budget parameters malformed, expecting reesistornodePaymentsStartBlock:budgetPaymentsStartBlock:superblockStartBlock");
         }
-        int nSmartnodePaymentsStartBlock, nBudgetPaymentsStartBlock, nSuperblockStartBlock;
-        if (!ParseInt32(vBudgetParams[0], &nSmartnodePaymentsStartBlock)) {
-            return InitError(strprintf("Invalid nSmartnodePaymentsStartBlock (%s)", vBudgetParams[0]));
+        int nReesistornodePaymentsStartBlock, nBudgetPaymentsStartBlock, nSuperblockStartBlock;
+        if (!ParseInt32(vBudgetParams[0], &nReesistornodePaymentsStartBlock)) {
+            return InitError(strprintf("Invalid nReesistornodePaymentsStartBlock (%s)", vBudgetParams[0]));
         }
         if (!ParseInt32(vBudgetParams[1], &nBudgetPaymentsStartBlock)) {
             return InitError(strprintf("Invalid nBudgetPaymentsStartBlock (%s)", vBudgetParams[1]));
@@ -1493,7 +1493,7 @@ bool AppInitParameterInteraction()
         if (!ParseInt32(vBudgetParams[2], &nSuperblockStartBlock)) {
             return InitError(strprintf("Invalid nSuperblockStartBlock (%s)", vBudgetParams[2]));
         }
-        UpdateBudgetParameters(nSmartnodePaymentsStartBlock, nBudgetPaymentsStartBlock, nSuperblockStartBlock);
+        UpdateBudgetParameters(nReesistornodePaymentsStartBlock, nBudgetPaymentsStartBlock, nSuperblockStartBlock);
     }
 
     if (chainparams.NetworkIDString() == CBaseChainParams::DEVNET) {
@@ -1534,28 +1534,28 @@ bool AppInitParameterInteraction()
         InitWarning("-maxorphantx is not supported anymore. Use -maxorphantxsize instead.");
     }
 
-    if (gArgs.IsArgSet("-smartnode")) {
-        InitWarning(_("-smartnode option is deprecated and ignored, specifying -smartnodeblsprivkey is enough to start this node as a smartnode."));
+    if (gArgs.IsArgSet("-reesistornode")) {
+        InitWarning(_("-reesistornode option is deprecated and ignored, specifying -reesistornodeblsprivkey is enough to start this node as a reesistornode."));
     }
 
-    if (gArgs.IsArgSet("-smartnodeblsprivkey")) {
+    if (gArgs.IsArgSet("-reesistornodeblsprivkey")) {
         if (!gArgs.GetBoolArg("-listen", DEFAULT_LISTEN) && Params().RequireRoutableExternalIP()) {
-            return InitError("Smartnode must accept connections from outside, set -listen=1");
+            return InitError("Reesistornode must accept connections from outside, set -listen=1");
         }
         if (!gArgs.GetBoolArg("-txindex", DEFAULT_TXINDEX)) {
-            return InitError("Smartnode must have transaction index enabled, set -txindex=1");
+            return InitError("Reesistornode must have transaction index enabled, set -txindex=1");
         }
         if (!gArgs.GetBoolArg("-peerbloomfilters", DEFAULT_PEERBLOOMFILTERS)) {
-            return InitError("Smartnode must have bloom filters enabled, set -peerbloomfilters=1");
+            return InitError("Reesistornode must have bloom filters enabled, set -peerbloomfilters=1");
         }
         if (gArgs.GetArg("-prune", 0) > 0) {
-            return InitError("Smartnode must have no pruning enabled, set -prune=0");
+            return InitError("Reesistornode must have no pruning enabled, set -prune=0");
         }
         if (gArgs.GetArg("-maxconnections", DEFAULT_MAX_PEER_CONNECTIONS) < DEFAULT_MAX_PEER_CONNECTIONS) {
-            return InitError(strprintf("Smartnode must be able to handle at least %d connections, set -maxconnections=%d", DEFAULT_MAX_PEER_CONNECTIONS, DEFAULT_MAX_PEER_CONNECTIONS));
+            return InitError(strprintf("Reesistornode must be able to handle at least %d connections, set -maxconnections=%d", DEFAULT_MAX_PEER_CONNECTIONS, DEFAULT_MAX_PEER_CONNECTIONS));
         }
         if (gArgs.GetBoolArg("-disablegovernance", false)) {
-            return InitError(_("You can not disable governance validation on a smartnode."));
+            return InitError(_("You can not disable governance validation on a reesistornode."));
         }
     }
 
@@ -1576,7 +1576,7 @@ bool AppInitParameterInteraction()
 
 static bool LockDataDirectory(bool probeOnly)
 {
-    // Make sure only a single Raptoreum Core process is using the data directory.
+    // Make sure only a single Reesist Core process is using the data directory.
     fs::path datadir = GetDataDir();
     if (!DirIsWritable(datadir)) {
         return InitError(strprintf(_("Cannot write to data directory '%s'; check permissions."), datadir.string()));
@@ -1649,9 +1649,9 @@ bool AppInitMain()
     // Warn about relative -datadir path.
     if (gArgs.IsArgSet("-datadir") && !fs::path(gArgs.GetArg("-datadir", "")).is_absolute()) {
         LogPrintf("Warning: relative datadir option '%s' specified, which will be interpreted relative to the " /* Continued */
-                  "current working directory '%s'. This is fragile, because if Raptoreum Core is started in the future "
+                  "current working directory '%s'. This is fragile, because if Reesist Core is started in the future "
                   "from a different location, it will be unable to locate the current data files. There could "
-                  "also be data loss if Raptoreum Core is started while in a temporary directory.\n",
+                  "also be data loss if Reesist Core is started while in a temporary directory.\n",
             gArgs.GetArg("-datadir", ""), fs::current_path().string());
     }
 
@@ -2159,33 +2159,33 @@ bool AppInitMain()
         return false;
     }
 
-    // ********************************************************* Step 10a: Prepare Smartnode related stuff
-    fSmartnodeMode = false;
-    std::string strSmartNodeBLSPrivKey = gArgs.GetArg("-smartnodeblsprivkey", "");
-    if (!strSmartNodeBLSPrivKey.empty()) {
-        auto binKey = ParseHex(strSmartNodeBLSPrivKey);
+    // ********************************************************* Step 10a: Prepare Reesistornode related stuff
+    fReesistornodeMode = false;
+    std::string strReesistorNodeBLSPrivKey = gArgs.GetArg("-reesistornodeblsprivkey", "");
+    if (!strReesistorNodeBLSPrivKey.empty()) {
+        auto binKey = ParseHex(strReesistorNodeBLSPrivKey);
         CBLSSecretKey keyOperator(binKey);
         if (!keyOperator.IsValid()) {
-            return InitError(_("Invalid smartnodeblsprivkey. Please see documentation."));
+            return InitError(_("Invalid reesistornodeblsprivkey. Please see documentation."));
         }
-        fSmartnodeMode = true;
-        activeSmartnodeInfo.blsKeyOperator = std::make_unique<CBLSSecretKey>(keyOperator);
-        activeSmartnodeInfo.blsPubKeyOperator = std::make_unique<CBLSPublicKey>(activeSmartnodeInfo.blsKeyOperator->GetPublicKey());
+        fReesistornodeMode = true;
+        activeReesistornodeInfo.blsKeyOperator = std::make_unique<CBLSSecretKey>(keyOperator);
+        activeReesistornodeInfo.blsPubKeyOperator = std::make_unique<CBLSPublicKey>(activeReesistornodeInfo.blsKeyOperator->GetPublicKey());
         LogPrintf("SMARTNODE:\n");
         LogPrintf("  blsPubKeyOperator: %s\n", keyOperator.GetPublicKey().ToString());
     }
 
-    if(fSmartnodeMode) {
-        // Create and register activeSmartnodeManager, will init later in ThreadImport
-        activeSmartnodeManager = new CActiveSmartnodeManager();
-        RegisterValidationInterface(activeSmartnodeManager);
+    if(fReesistornodeMode) {
+        // Create and register activeReesistornodeManager, will init later in ThreadImport
+        activeReesistornodeManager = new CActiveReesistornodeManager();
+        RegisterValidationInterface(activeReesistornodeManager);
     }
 
-    if (activeSmartnodeInfo.blsKeyOperator == nullptr) {
-        activeSmartnodeInfo.blsKeyOperator = std::make_unique<CBLSSecretKey>();
+    if (activeReesistornodeInfo.blsKeyOperator == nullptr) {
+        activeReesistornodeInfo.blsKeyOperator = std::make_unique<CBLSSecretKey>();
     }
-    if (activeSmartnodeInfo.blsPubKeyOperator == nullptr) {
-        activeSmartnodeInfo.blsPubKeyOperator = std::make_unique<CBLSPublicKey>();
+    if (activeReesistornodeInfo.blsPubKeyOperator == nullptr) {
+        activeReesistornodeInfo.blsPubKeyOperator = std::make_unique<CBLSPublicKey>();
     }
 
     // ********************************************************* Step 10b: setup CoinJoin
@@ -2209,16 +2209,16 @@ bool AppInitMain()
     std::string strDBName;
 
     strDBName = "mncache.dat";
-    uiInterface.InitMessage(_("Loading smartnode cache..."));
-    CFlatDB<CSmartnodeMetaMan> flatdb1(strDBName, "magicSmartnodeCache");
+    uiInterface.InitMessage(_("Loading reesistornode cache..."));
+    CFlatDB<CReesistornodeMetaMan> flatdb1(strDBName, "magicReesistornodeCache");
     if (fLoadCacheFiles) {
         if(!flatdb1.Load(mmetaman)) {
-            return InitError(_("Failed to load smartnode cache from") + "\n" + (pathDB / strDBName).string());
+            return InitError(_("Failed to load reesistornode cache from") + "\n" + (pathDB / strDBName).string());
         }
     } else {
-        CSmartnodeMetaMan mmetamanTmp;
+        CReesistornodeMetaMan mmetamanTmp;
         if(!flatdb1.Dump(mmetamanTmp)) {
-            return InitError(_("Failed to clear smartnode cache at") + "\n" + (pathDB / strDBName).string());
+            return InitError(_("Failed to clear reesistornode cache at") + "\n" + (pathDB / strDBName).string());
         }
     }
 
@@ -2251,17 +2251,17 @@ bool AppInitMain()
         }
     }
 
-    // ********************************************************* Step 10c: schedule Raptoreum-specific tasks
+    // ********************************************************* Step 10c: schedule Reesist-specific tasks
 
     scheduler.scheduleEvery(std::bind(&CNetFulfilledRequestManager::DoMaintenance, std::ref(netfulfilledman)), 60 * 1000);
-    scheduler.scheduleEvery(std::bind(&CSmartnodeSync::DoMaintenance, std::ref(smartnodeSync), std::ref(*g_connman)), 1 * 1000);
-    scheduler.scheduleEvery(std::bind(&CSmartnodeUtils::DoMaintenance, std::ref(*g_connman)), 1 * 1000);
+    scheduler.scheduleEvery(std::bind(&CReesistornodeSync::DoMaintenance, std::ref(reesistornodeSync), std::ref(*g_connman)), 1 * 1000);
+    scheduler.scheduleEvery(std::bind(&CReesistornodeUtils::DoMaintenance, std::ref(*g_connman)), 1 * 1000);
 
     if (!fDisableGovernance) {
         scheduler.scheduleEvery(std::bind(&CGovernanceManager::DoMaintenance, std::ref(governance), std::ref(*g_connman)), 60 * 5 * 1000);
     }
 
-    if (fSmartnodeMode) {
+    if (fReesistornodeMode) {
         scheduler.scheduleEvery(std::bind(&CCoinJoinServer::DoMaintenance, std::ref(coinJoinServer), std::ref(*g_connman)), 1 * 1000);
     }
 

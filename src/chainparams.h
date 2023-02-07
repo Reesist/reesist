@@ -40,7 +40,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Raptoreum system. There are three: the main network on which people trade goods
+ * Reesist system. There are three: the main network on which people trade goods
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -91,7 +91,7 @@ public:
     const ChainTxData& TxData() const { return chainTxData; }
     void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout, int64_t nWindowSize, int64_t nThresholdStart, int64_t nThresholdMin, int64_t nFalloffCoeff);
     void UpdateDIP3Parameters(int nActivationHeight, int nEnforcementHeight);
-    void UpdateBudgetParameters(int nSmartnodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock);
+    void UpdateBudgetParameters(int nReesistornodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock);
     void UpdateSubsidyAndDiffParams(int nMinimumDifficultyBlocks, int nHighSubsidyBlocks, int nHighSubsidyFactor);
     void UpdateLLMQChainLocks(Consensus::LLMQType llmqType);
     void UpdateLLMQInstantSend(Consensus::LLMQType llmqType);
@@ -107,7 +107,7 @@ public:
     };
     const std::vector<std::string>& SporkAddresses() const { return vSporkAddresses; }
     int MinSporkKeys() const { return nMinSporkKeys; }
-    bool BIP9CheckSmartnodesUpgraded() const { return fBIP9CheckSmartnodesUpgraded; }
+    bool BIP9CheckReesistornodesUpgraded() const { return fBIP9CheckReesistornodesUpgraded; }
 protected:
     CChainParams() {}
 
@@ -139,7 +139,7 @@ protected:
     int nFulfilledRequestExpireTime;
     std::vector<std::string> vSporkAddresses;
     int nMinSporkKeys;
-    bool fBIP9CheckSmartnodesUpgraded;
+    bool fBIP9CheckReesistornodesUpgraded;
 
 };
 
@@ -175,7 +175,7 @@ void UpdateDIP3Parameters(int nActivationHeight, int nEnforcementHeight);
 /**
  * Allows modifying the budget regtest parameters.
  */
-void UpdateBudgetParameters(int nSmartnodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock);
+void UpdateBudgetParameters(int nReesistornodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock);
 
 /**
  * Allows modifying the subsidy and difficulty devnet parameters.

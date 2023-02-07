@@ -8,9 +8,9 @@
 #include <consensus/validation.h>
 #include <core_io.h>
 #include <init.h>
-#include <smartnode/smartnode-payments.h>
-#include <smartnode/smartnode-sync.h>
-#include <smartnode/smartnode-meta.h>
+#include <reesistornode/reesistornode-payments.h>
+#include <reesistornode/reesistornode-sync.h>
+#include <reesistornode/reesistornode-meta.h>
 #include <netmessagemaker.h>
 #include <script/sign.h>
 #include <txmempool.h>
@@ -30,9 +30,9 @@ CCoinJoinClientQueueManager coinJoinClientQueueManager;
 
 void CCoinJoinClientQueueManager::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman, bool enable_bip61)
 {
-    if (fSmartnodeMode) return;
+    if (fReesistornodeMode) return;
     if (!CCoinJoinClientOptions::IsEnabled()) return;
-    if (!smartnodeSync.IsBlockchainSynced()) return;
+    if (!reesistornodeSync.IsBlockchainSynced()) return;
 
     if (!CheckDiskSpace()) {
         LogPrint(BCLog::COINJOIN, "CCoinJoinClientQueueManager::ProcessMessage -- Not enough disk space, disabling CoinJoin.\n");
@@ -62,9 +62,9 @@ void CCoinJoinClientQueueManager::ProcessMessage(CNode* pfrom, const std::string
                 if (q == dsq) {
                     return;
                 }
-                if (q.fReady == dsq.fReady && q.smartnodeOutpoint == dsq.smartnodeOutpoint) {
+                if (q.fReady == dsq.fReady && q.reesistornodeOutpoint == dsq.reesistornodeOutpoint) {
                     // no way the same mn can send another dsq with the same readiness this soon
-                    LogPrint(BCLog::COINJOIN, "DSQUEUE -- Peer %s is sending WAY too many dsq messages for a smartnode with collateral %s\n", pfrom->GetLogString(), dsq.smartnodeOutpoint.ToStringShort());
+                    LogPrint(BCLog::COINJOIN, "DSQUEUE -- Peer %s is sending WAY too many dsq messages for a reesistornode with collateral %s\n", pfrom->GetLogString(), dsq.reesistornodeOutpoint.ToStringShort());
                     return;
                 }
             }
@@ -75,7 +75,7 @@ void CCoinJoinClientQueueManager::ProcessMessage(CNode* pfrom, const std::string
         if (dsq.IsTimeOutOfBounds()) return;
 
         auto mnList = deterministicMNManager->GetListAtChainTip();
-        auto dmn = mnList.GetValidMNByCollateral(dsq.smartnodeOutpoint);
+        auto dmn = mnList.GetValidMNByCollateral(dsq.reesistornodeOutpoint);
         if (!dmn) return;
 
         if (!dsq.CheckSignature(dmn->pdmnState->pubKeyOperator.Get())) {
@@ -88,7 +88,7 @@ void CCoinJoinClientQueueManager::ProcessMessage(CNode* pfrom, const std::string
         if (dsq.fReady) {
             for (auto& pair : coinJoinClientManagers) {
                 if (pair.second->TrySubmitDenominate(dmn->pdmnState->addr, connman)) {
-                    LogPrint(BCLog::COINJOIN, "DSQUEUE -- CoinJoin queue (%s) is ready on smartnode %s\n", dsq.ToString(), dmn->pdmnState->addr.ToString());
+                    LogPrint(BCLog::COINJOIN, "DSQUEUE -- CoinJoin queue (%s) is ready on reesistornode %s\n", dsq.ToString(), dmn->pdmnState->addr.ToString());
                     return;
                 }
             }
@@ -98,13 +98,13 @@ void CCoinJoinClientQueueManager::ProcessMessage(CNode* pfrom, const std::string
             LogPrint(BCLog::COINJOIN, "DSQUEUE -- nLastDsq: %d  nDsqThreshold: %d  nDsqCount: %d\n", nLastDsq, nDsqThreshold, mmetaman.GetDsqCount());
             // don't allow a few nodes to dominate the queuing process
             if (nLastDsq != 0 && nDsqThreshold > mmetaman.GetDsqCount()) {
-                LogPrint(BCLog::COINJOIN, "DSQUEUE -- Smartnode %s is sending too many dsq messages\n", dmn->proTxHash.ToString());
+                LogPrint(BCLog::COINJOIN, "DSQUEUE -- Reesistornode %s is sending too many dsq messages\n", dmn->proTxHash.ToString());
                 return;
             }
 
             mmetaman.AllowMixing(dmn->proTxHash);
 
-            LogPrint(BCLog::COINJOIN, "DSQUEUE -- new CoinJoin queue (%s) from smartnode %s\n", dsq.ToString(), dmn->pdmnState->addr.ToString());
+            LogPrint(BCLog::COINJOIN, "DSQUEUE -- new CoinJoin queue (%s) from reesistornode %s\n", dsq.ToString(), dmn->pdmnState->addr.ToString());
 
             for (const auto& pair : coinJoinClientManagers) {
                 if (pair.second->MarkAlreadyJoinedQueueAsTried(dsq)) {
@@ -123,9 +123,9 @@ void CCoinJoinClientQueueManager::ProcessMessage(CNode* pfrom, const std::string
 
 void CCoinJoinClientManager::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman, bool enable_bip61)
 {
-    if (fSmartnodeMode) return;
+    if (fReesistornodeMode) return;
     if (!CCoinJoinClientOptions::IsEnabled()) return;
-    if (!smartnodeSync.IsBlockchainSynced()) return;
+    if (!reesistornodeSync.IsBlockchainSynced()) return;
 
     if (!CheckDiskSpace()) {
         ResetPool();
@@ -146,9 +146,9 @@ void CCoinJoinClientManager::ProcessMessage(CNode* pfrom, const std::string& str
 
 void CCoinJoinClientSession::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman, bool enable_bip61)
 {
-    if (fSmartnodeMode) return;
+    if (fReesistornodeMode) return;
     if (!CCoinJoinClientOptions::IsEnabled()) return;
-    if (!smartnodeSync.IsBlockchainSynced()) return;
+    if (!reesistornodeSync.IsBlockchainSynced()) return;
 
     if (strCommand == NetMsgType::DSSTATUSUPDATE) {
         if (pfrom->nVersion < MIN_COINJOIN_PEER_PROTO_VERSION) {
@@ -161,8 +161,8 @@ void CCoinJoinClientSession::ProcessMessage(CNode* pfrom, const std::string& str
             return;
         }
 
-        if (!mixingSmartnode) return;
-        if (mixingSmartnode->pdmnState->addr != pfrom->addr) {
+        if (!mixingReesistornode) return;
+        if (mixingReesistornode->pdmnState->addr != pfrom->addr) {
             return;
         }
 
@@ -182,8 +182,8 @@ void CCoinJoinClientSession::ProcessMessage(CNode* pfrom, const std::string& str
             return;
         }
 
-        if (!mixingSmartnode) return;
-        if (mixingSmartnode->pdmnState->addr != pfrom->addr) {
+        if (!mixingReesistornode) return;
+        if (mixingReesistornode->pdmnState->addr != pfrom->addr) {
             return;
         }
 
@@ -212,9 +212,9 @@ void CCoinJoinClientSession::ProcessMessage(CNode* pfrom, const std::string& str
             return;
         }
 
-        if (!mixingSmartnode) return;
-        if (mixingSmartnode->pdmnState->addr != pfrom->addr) {
-            LogPrint(BCLog::COINJOIN, "DSCOMPLETE -- message doesn't match current Smartnode: infoMixingSmartnode=%s  addr=%s\n", mixingSmartnode->pdmnState->addr.ToString(), pfrom->addr.ToString());
+        if (!mixingReesistornode) return;
+        if (mixingReesistornode->pdmnState->addr != pfrom->addr) {
+            LogPrint(BCLog::COINJOIN, "DSCOMPLETE -- message doesn't match current Reesistornode: infoMixingReesistornode=%s  addr=%s\n", mixingReesistornode->pdmnState->addr.ToString(), pfrom->addr.ToString());
             return;
         }
 
@@ -266,7 +266,7 @@ void CCoinJoinClientManager::ResetPool()
 {
     LOCK(cs_deqsessions);
     nCachedLastSuccessBlock = 0;
-    vecSmartnodesUsed.clear();
+    vecReesistornodesUsed.clear();
     for (auto& session : deqSessions) {
         session.ResetPool();
     }
@@ -276,7 +276,7 @@ void CCoinJoinClientManager::ResetPool()
 void CCoinJoinClientSession::SetNull()
 {
     // Client side
-    mixingSmartnode = nullptr;
+    mixingReesistornode = nullptr;
     pendingDsaRequest = CPendingDsaRequest();
 
     CCoinJoinBaseSession::SetNull();
@@ -309,7 +309,7 @@ std::string CCoinJoinClientSession::GetStatus(bool fWaitForBlock)
     nStatusMessageProgress += 10;
     std::string strSuffix;
 
-    if (fWaitForBlock || !smartnodeSync.IsBlockchainSynced()) {
+    if (fWaitForBlock || !reesistornodeSync.IsBlockchainSynced()) {
         return strAutoDenomResult;
     }
 
@@ -323,7 +323,7 @@ std::string CCoinJoinClientSession::GetStatus(bool fWaitForBlock)
             strSuffix = "..";
         else
             strSuffix = "...";
-        return strprintf(_("Submitted to smartnode, waiting in queue %s"), strSuffix);
+        return strprintf(_("Submitted to reesistornode, waiting in queue %s"), strSuffix);
     case POOL_STATE_ACCEPTING_ENTRIES:
         return strAutoDenomResult;
     case POOL_STATE_SIGNING:
@@ -366,18 +366,18 @@ std::string CCoinJoinClientManager::GetSessionDenoms()
     return strSessionDenoms.empty() ? "N/A" : strSessionDenoms;
 }
 
-bool CCoinJoinClientSession::GetMixingSmartnodeInfo(CDeterministicMNCPtr& ret) const
+bool CCoinJoinClientSession::GetMixingReesistornodeInfo(CDeterministicMNCPtr& ret) const
 {
-    ret = mixingSmartnode;
+    ret = mixingReesistornode;
     return ret != nullptr;
 }
 
-bool CCoinJoinClientManager::GetMixingSmartnodesInfo(std::vector<CDeterministicMNCPtr>& vecDmnsRet) const
+bool CCoinJoinClientManager::GetMixingReesistornodesInfo(std::vector<CDeterministicMNCPtr>& vecDmnsRet) const
 {
     LOCK(cs_deqsessions);
     for (const auto& session : deqSessions) {
         CDeterministicMNCPtr dmn;
-        if (session.GetMixingSmartnodeInfo(dmn)) {
+        if (session.GetMixingReesistornodeInfo(dmn)) {
             vecDmnsRet.push_back(dmn);
         }
     }
@@ -389,7 +389,7 @@ bool CCoinJoinClientManager::GetMixingSmartnodesInfo(std::vector<CDeterministicM
 //
 bool CCoinJoinClientSession::CheckTimeout()
 {
-    if (fSmartnodeMode) return false;
+    if (fReesistornodeMode) return false;
 
     if (nState == POOL_STATE_IDLE) return false;
 
@@ -425,7 +425,7 @@ bool CCoinJoinClientSession::CheckTimeout()
 //
 void CCoinJoinClientManager::CheckTimeout()
 {
-    if (fSmartnodeMode) return;
+    if (fReesistornodeMode) return;
 
     if (!CCoinJoinClientOptions::IsEnabled() || !IsMixing()) return;
 
@@ -438,13 +438,13 @@ void CCoinJoinClientManager::CheckTimeout()
 }
 
 //
-// Execute a mixing denomination via a Smartnode.
+// Execute a mixing denomination via a Reesistornode.
 // This is only ran from clients
 //
 bool CCoinJoinClientSession::SendDenominate(const std::vector<std::pair<CTxDSIn, CTxOut> >& vecPSInOutPairsIn, CConnman& connman)
 {
-    if (fSmartnodeMode) {
-        LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::SendDenominate -- CoinJoin from a Smartnode is not supported currently.\n");
+    if (fReesistornodeMode) {
+        LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::SendDenominate -- CoinJoin from a Reesistornode is not supported currently.\n");
         return false;
     }
 
@@ -453,9 +453,9 @@ bool CCoinJoinClientSession::SendDenominate(const std::vector<std::pair<CTxDSIn,
         return false;
     }
 
-    // we should already be connected to a Smartnode
+    // we should already be connected to a Reesistornode
     if (!nSessionID) {
-        LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::SendDenominate -- No Smartnode has been selected yet.\n");
+        LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::SendDenominate -- No Reesistornode has been selected yet.\n");
         UnlockCoins();
         keyHolderStorage.ReturnAll();
         SetNull();
@@ -496,10 +496,10 @@ bool CCoinJoinClientSession::SendDenominate(const std::vector<std::pair<CTxDSIn,
     return true;
 }
 
-// Process incoming messages from Smartnode updating the progress of mixing
+// Process incoming messages from Reesistornode updating the progress of mixing
 void CCoinJoinClientSession::ProcessPoolStateUpdate(CCoinJoinStatusUpdate psssup)
 {
-    if (fSmartnodeMode) return;
+    if (fReesistornodeMode) return;
 
     // do not update state when mixing client state is one of these
     if (nState == POOL_STATE_IDLE || nState == POOL_STATE_ERROR) return;
@@ -515,11 +515,11 @@ void CCoinJoinClientSession::ProcessPoolStateUpdate(CCoinJoinStatusUpdate psssup
     }
 
     std::string strMessageTmp = CCoinJoin::GetMessageByID(psssup.nMessageID);
-    strAutoDenomResult = _("Smartnode:") + " " + strMessageTmp;
+    strAutoDenomResult = _("Reesistornode:") + " " + strMessageTmp;
 
     switch (psssup.nStatusUpdate) {
         case STATUS_REJECTED: {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- rejected by Smartnode: %s\n", __func__, strMessageTmp);
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- rejected by Reesistornode: %s\n", __func__, strMessageTmp);
             SetState(POOL_STATE_ERROR);
             UnlockCoins();
             keyHolderStorage.ReturnAll();
@@ -534,7 +534,7 @@ void CCoinJoinClientSession::ProcessPoolStateUpdate(CCoinJoinStatusUpdate psssup
                 nTimeLastSuccessfulStep = GetTime();
                 strMessageTmp += strprintf(" Set nSessionID to %d.", nSessionID);
             }
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- accepted by Smartnode: %s\n", __func__, strMessageTmp);
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- accepted by Reesistornode: %s\n", __func__, strMessageTmp);
             break;
         }
         default: {
@@ -545,7 +545,7 @@ void CCoinJoinClientSession::ProcessPoolStateUpdate(CCoinJoinStatusUpdate psssup
 }
 
 //
-// After we receive the finalized transaction from the Smartnode, we must
+// After we receive the finalized transaction from the Reesistornode, we must
 // check it to make sure it's what we want, then sign it if we agree.
 // If we refuse to sign, it's possible we'll be charged collateral
 //
@@ -553,8 +553,8 @@ bool CCoinJoinClientSession::SignFinalTransaction(const CTransaction& finalTrans
 {
     if (!CCoinJoinClientOptions::IsEnabled()) return false;
 
-    if (fSmartnodeMode || pnode == nullptr) return false;
-    if (!mixingSmartnode) return false;
+    if (fReesistornodeMode || pnode == nullptr) return false;
+    if (!mixingReesistornode) return false;
 
     finalMutableTransaction = finalTransactionNew;
     LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- finalMutableTransaction=%s", __func__, finalMutableTransaction.ToString()); /* Continued */
@@ -566,7 +566,7 @@ bool CCoinJoinClientSession::SignFinalTransaction(const CTransaction& finalTrans
     sort(finalMutableTransaction.vout.begin(), finalMutableTransaction.vout.end(), CompareOutputBIP69());
 
     if (finalMutableTransaction.GetHash() != finalTransactionNew.GetHash()) {
-        LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- ERROR Smartnode %s is not BIP69 compliant!\n", __func__, mixingSmartnode->proTxHash.ToString());
+        LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- ERROR Reesistornode %s is not BIP69 compliant!\n", __func__, mixingReesistornode->proTxHash.ToString());
         UnlockCoins();
         keyHolderStorage.ReturnAll();
         SetNull();
@@ -653,8 +653,8 @@ bool CCoinJoinClientSession::SignFinalTransaction(const CTransaction& finalTrans
         return false;
     }
 
-    // push all of our signatures to the Smartnode
-    LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- pushing sigs to the smartnode, finalMutableTransaction=%s", __func__, finalMutableTransaction.ToString()); /* Continued */
+    // push all of our signatures to the Reesistornode
+    LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::%s -- pushing sigs to the reesistornode, finalMutableTransaction=%s", __func__, finalMutableTransaction.ToString()); /* Continued */
     CNetMsgMaker msgMaker(pnode->GetSendVersion());
     connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSSIGNFINALTX, sigs));
     SetState(POOL_STATE_SIGNING);
@@ -666,7 +666,7 @@ bool CCoinJoinClientSession::SignFinalTransaction(const CTransaction& finalTrans
 // mixing transaction was completed (failed or successful)
 void CCoinJoinClientSession::CompletedTransaction(PoolMessage nMessageID)
 {
-    if (fSmartnodeMode) return;
+    if (fReesistornodeMode) return;
 
     if (nMessageID == MSG_SUCCESS) {
         LogPrint(BCLog::COINJOIN, "CompletedTransaction -- success\n");
@@ -683,13 +683,13 @@ void CCoinJoinClientSession::CompletedTransaction(PoolMessage nMessageID)
 
 void CCoinJoinClientManager::UpdatedSuccessBlock()
 {
-    if (fSmartnodeMode) return;
+    if (fReesistornodeMode) return;
     nCachedLastSuccessBlock = nCachedBlockHeight;
 }
 
 bool CCoinJoinClientManager::WaitForAnotherBlock() const
 {
-    if (!smartnodeSync.IsBlockchainSynced()) return true;
+    if (!reesistornodeSync.IsBlockchainSynced()) return true;
 
     if (CCoinJoinClientOptions::IsMultiSessionEnabled()) return false;
 
@@ -768,10 +768,10 @@ bool CCoinJoinClientManager::CheckAutomaticBackup()
 //
 bool CCoinJoinClientSession::DoAutomaticDenominating(CConnman& connman, bool fDryRun)
 {
-    if (fSmartnodeMode) return false; // no client-side mixing on smartnodes
+    if (fReesistornodeMode) return false; // no client-side mixing on reesistornodes
     if (nState != POOL_STATE_IDLE) return false;
 
-    if (!smartnodeSync.IsBlockchainSynced()) {
+    if (!reesistornodeSync.IsBlockchainSynced()) {
         strAutoDenomResult = _("Can't mix while sync in progress.");
         return false;
     }
@@ -802,8 +802,8 @@ bool CCoinJoinClientSession::DoAutomaticDenominating(CConnman& connman, bool fDr
 
         if (deterministicMNManager->GetListAtChainTip().GetValidMNsCount() == 0 &&
             Params().NetworkIDString() != CBaseChainParams::REGTEST) {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::DoAutomaticDenominating -- No Smartnodes detected\n");
-            strAutoDenomResult = _("No Smartnodes detected.");
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::DoAutomaticDenominating -- No Reesistornodes detected\n");
+            strAutoDenomResult = _("No Reesistornodes detected.");
             return false;
         }
 
@@ -897,7 +897,7 @@ bool CCoinJoinClientSession::DoAutomaticDenominating(CConnman& connman, bool fDr
             return false;
         }
 
-        // Initial phase, find a Smartnode
+        // Initial phase, find a Reesistornode
         // Clean if there is anything left from previous session
         UnlockCoins();
         keyHolderStorage.ReturnAll();
@@ -941,16 +941,16 @@ bool CCoinJoinClientSession::DoAutomaticDenominating(CConnman& connman, bool fDr
     // If we were unable to find/join an existing queue then start a new one.
     if (StartNewQueue(nBalanceNeedsAnonymized, connman)) return true;
 
-    strAutoDenomResult = _("No compatible Smartnode found.");
+    strAutoDenomResult = _("No compatible Reesistornode found.");
     return false;
 }
 
 bool CCoinJoinClientManager::DoAutomaticDenominating(CConnman& connman, bool fDryRun)
 {
-    if (fSmartnodeMode) return false; // no client-side mixing on smartnodes
+    if (fReesistornodeMode) return false; // no client-side mixing on reesistornodes
     if (!CCoinJoinClientOptions::IsEnabled() || !IsMixing()) return false;
 
-    if (!smartnodeSync.IsBlockchainSynced()) {
+    if (!reesistornodeSync.IsBlockchainSynced()) {
         strAutoDenomResult = _("Can't mix while sync in progress.");
         return false;
     }
@@ -962,14 +962,14 @@ bool CCoinJoinClientManager::DoAutomaticDenominating(CConnman& connman, bool fDr
 
     int nMnCountEnabled = deterministicMNManager->GetListAtChainTip().GetValidMNsCount();
 
-    // If we've used 90% of the Smartnode list then drop the oldest first ~30%
+    // If we've used 90% of the Reesistornode list then drop the oldest first ~30%
     int nThreshold_high = nMnCountEnabled * 0.9;
     int nThreshold_low = nThreshold_high * 0.7;
-    LogPrint(BCLog::COINJOIN, "Checking vecSmartnodesUsed: size: %d, threshold: %d\n", (int)vecSmartnodesUsed.size(), nThreshold_high);
+    LogPrint(BCLog::COINJOIN, "Checking vecReesistornodesUsed: size: %d, threshold: %d\n", (int)vecReesistornodesUsed.size(), nThreshold_high);
 
-    if ((int)vecSmartnodesUsed.size() > nThreshold_high) {
-        vecSmartnodesUsed.erase(vecSmartnodesUsed.begin(), vecSmartnodesUsed.begin() + vecSmartnodesUsed.size() - nThreshold_low);
-        LogPrint(BCLog::COINJOIN, "  vecSmartnodesUsed: new size: %d, threshold: %d\n", (int)vecSmartnodesUsed.size(), nThreshold_high);
+    if ((int)vecReesistornodesUsed.size() > nThreshold_high) {
+        vecReesistornodesUsed.erase(vecReesistornodesUsed.begin(), vecReesistornodesUsed.begin() + vecReesistornodesUsed.size() - nThreshold_low);
+        LogPrint(BCLog::COINJOIN, "  vecReesistornodesUsed: new size: %d, threshold: %d\n", (int)vecReesistornodesUsed.size(), nThreshold_high);
     }
 
     LOCK(cs_deqsessions);
@@ -992,42 +992,42 @@ bool CCoinJoinClientManager::DoAutomaticDenominating(CConnman& connman, bool fDr
     return fResult;
 }
 
-void CCoinJoinClientManager::AddUsedSmartnode(const COutPoint& outpointMn)
+void CCoinJoinClientManager::AddUsedReesistornode(const COutPoint& outpointMn)
 {
-    vecSmartnodesUsed.push_back(outpointMn);
+    vecReesistornodesUsed.push_back(outpointMn);
 }
 
-CDeterministicMNCPtr CCoinJoinClientManager::GetRandomNotUsedSmartnode()
+CDeterministicMNCPtr CCoinJoinClientManager::GetRandomNotUsedReesistornode()
 {
     auto mnList = deterministicMNManager->GetListAtChainTip();
 
     int nCountEnabled = mnList.GetValidMNsCount();
-    int nCountNotExcluded = nCountEnabled - vecSmartnodesUsed.size();
+    int nCountNotExcluded = nCountEnabled - vecReesistornodesUsed.size();
 
-    LogPrint(BCLog::COINJOIN, "CCoinJoinClientManager::%s -- %d enabled smartnodes, %d smartnodes to choose from\n", __func__, nCountEnabled, nCountNotExcluded);
+    LogPrint(BCLog::COINJOIN, "CCoinJoinClientManager::%s -- %d enabled reesistornodes, %d reesistornodes to choose from\n", __func__, nCountEnabled, nCountNotExcluded);
     if(nCountNotExcluded < 1) {
         return nullptr;
     }
 
     // fill a vector
-    std::vector<CDeterministicMNCPtr> vpSmartnodesShuffled;
-    vpSmartnodesShuffled.reserve((size_t)nCountEnabled);
+    std::vector<CDeterministicMNCPtr> vpReesistornodesShuffled;
+    vpReesistornodesShuffled.reserve((size_t)nCountEnabled);
     mnList.ForEachMN(true, [&](const CDeterministicMNCPtr& dmn) {
-        vpSmartnodesShuffled.emplace_back(dmn);
+        vpReesistornodesShuffled.emplace_back(dmn);
     });
 
     // shuffle pointers
-    Shuffle(vpSmartnodesShuffled.begin(), vpSmartnodesShuffled.end(), FastRandomContext());
+    Shuffle(vpReesistornodesShuffled.begin(), vpReesistornodesShuffled.end(), FastRandomContext());
 
-    std::set<COutPoint> excludeSet(vecSmartnodesUsed.begin(), vecSmartnodesUsed.end());
+    std::set<COutPoint> excludeSet(vecReesistornodesUsed.begin(), vecReesistornodesUsed.end());
 
     // loop through
-    for (const auto& dmn : vpSmartnodesShuffled) {
+    for (const auto& dmn : vpReesistornodesShuffled) {
         if (excludeSet.count(dmn->collateralOutpoint)) {
             continue;
         }
 
-        LogPrint(BCLog::COINJOIN, "CCoinJoinClientManager::%s -- found, smartnode=%s\n", __func__, dmn->collateralOutpoint.ToStringShort());
+        LogPrint(BCLog::COINJOIN, "CCoinJoinClientManager::%s -- found, reesistornode=%s\n", __func__, dmn->collateralOutpoint.ToStringShort());
         return dmn;
     }
 
@@ -1044,16 +1044,16 @@ bool CCoinJoinClientSession::JoinExistingQueue(CAmount nBalanceNeedsAnonymized, 
     // Look through the queues and see if anything matches
     CCoinJoinQueue dsq;
     while (coinJoinClientQueueManager.GetQueueItemAndTry(dsq)) {
-        auto dmn = mnList.GetValidMNByCollateral(dsq.smartnodeOutpoint);
+        auto dmn = mnList.GetValidMNByCollateral(dsq.reesistornodeOutpoint);
 
         if (!dmn) {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::JoinExistingQueue -- dsq smartnode is not in smartnode list, smartnode=%s\n", dsq.smartnodeOutpoint.ToStringShort());
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::JoinExistingQueue -- dsq reesistornode is not in reesistornode list, reesistornode=%s\n", dsq.reesistornodeOutpoint.ToStringShort());
             continue;
         }
 
         // skip next mn payments winners
         if (dmn->pdmnState->nLastPaidHeight + mnList.GetValidMNsCount() < mnList.GetHeight() + 8) {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::JoinExistingQueue -- skipping winner, smartnode=%s\n", dmn->proTxHash.ToString());
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::JoinExistingQueue -- skipping winner, reesistornode=%s\n", dmn->proTxHash.ToString());
             continue;
         }
 
@@ -1071,17 +1071,17 @@ bool CCoinJoinClientSession::JoinExistingQueue(CAmount nBalanceNeedsAnonymized, 
             continue;
         }
 
-        coinJoinClientManagers.at(mixingWallet.GetName())->AddUsedSmartnode(dsq.smartnodeOutpoint);
+        coinJoinClientManagers.at(mixingWallet.GetName())->AddUsedReesistornode(dsq.reesistornodeOutpoint);
 
-        if (connman.IsSmartnodeOrDisconnectRequested(dmn->pdmnState->addr)) {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::JoinExistingQueue -- skipping smartnode connection, addr=%s\n", dmn->pdmnState->addr.ToString());
+        if (connman.IsReesistornodeOrDisconnectRequested(dmn->pdmnState->addr)) {
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::JoinExistingQueue -- skipping reesistornode connection, addr=%s\n", dmn->pdmnState->addr.ToString());
             continue;
         }
 
         nSessionDenom = dsq.nDenom;
-        mixingSmartnode = dmn;
+        mixingReesistornode = dmn;
         pendingDsaRequest = CPendingDsaRequest(dmn->pdmnState->addr, CCoinJoinAccept(nSessionDenom, txMyCollateral));
-        connman.AddPendingSmartnode(dmn->proTxHash);
+        connman.AddPendingReesistornode(dmn->proTxHash);
         // TODO: add new state POOL_STATE_CONNECTING and bump MIN_COINJOIN_PEER_PROTO_VERSION
         SetState(POOL_STATE_QUEUE);
         nTimeLastSuccessfulStep = GetTime();
@@ -1114,19 +1114,19 @@ bool CCoinJoinClientSession::StartNewQueue(CAmount nBalanceNeedsAnonymized, CCon
 
     // otherwise, try one randomly
     while (nTries < 10) {
-        auto dmn = coinJoinClientManagers.at(mixingWallet.GetName())->GetRandomNotUsedSmartnode();
+        auto dmn = coinJoinClientManagers.at(mixingWallet.GetName())->GetRandomNotUsedReesistornode();
 
         if (!dmn) {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- Can't find random smartnode!\n");
-            strAutoDenomResult = _("Can't find random Smartnode.");
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- Can't find random reesistornode!\n");
+            strAutoDenomResult = _("Can't find random Reesistornode.");
             return false;
         }
 
-        coinJoinClientManagers.at(mixingWallet.GetName())->AddUsedSmartnode(dmn->collateralOutpoint);
+        coinJoinClientManagers.at(mixingWallet.GetName())->AddUsedReesistornode(dmn->collateralOutpoint);
 
         // skip next mn payments winners
         if (dmn->pdmnState->nLastPaidHeight + nMnCount < mnList.GetHeight() + 8) {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- skipping winner, smartnode=%s\n", dmn->proTxHash.ToString());
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- skipping winner, reesistornode=%s\n", dmn->proTxHash.ToString());
             nTries++;
             continue;
         }
@@ -1134,21 +1134,21 @@ bool CCoinJoinClientSession::StartNewQueue(CAmount nBalanceNeedsAnonymized, CCon
         int64_t nLastDsq = mmetaman.GetMetaInfo(dmn->proTxHash)->GetLastDsq();
         int64_t nDsqThreshold = mmetaman.GetDsqThreshold(dmn->proTxHash, nMnCount);
         if (nLastDsq != 0 && nDsqThreshold > mmetaman.GetDsqCount()) {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- Too early to mix on this smartnode!" /* Continued */
-                      " smartnode=%s  addr=%s  nLastDsq=%d  nDsqThreshold=%d  nDsqCount=%d\n",
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- Too early to mix on this reesistornode!" /* Continued */
+                      " reesistornode=%s  addr=%s  nLastDsq=%d  nDsqThreshold=%d  nDsqCount=%d\n",
                 dmn->proTxHash.ToString(), dmn->pdmnState->addr.ToString(), nLastDsq,
                 nDsqThreshold, mmetaman.GetDsqCount());
             nTries++;
             continue;
         }
 
-        if (connman.IsSmartnodeOrDisconnectRequested(dmn->pdmnState->addr)) {
-            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- skipping smartnode connection, addr=%s\n", dmn->pdmnState->addr.ToString());
+        if (connman.IsReesistornodeOrDisconnectRequested(dmn->pdmnState->addr)) {
+            LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- skipping reesistornode connection, addr=%s\n", dmn->pdmnState->addr.ToString());
             nTries++;
             continue;
         }
 
-        LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- attempt %d connection to Smartnode %s\n", nTries, dmn->pdmnState->addr.ToString());
+        LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::StartNewQueue -- attempt %d connection to Reesistornode %s\n", nTries, dmn->pdmnState->addr.ToString());
 
         // try to get a single random denom out of setAmounts
         while (nSessionDenom == 0) {
@@ -1159,8 +1159,8 @@ bool CCoinJoinClientSession::StartNewQueue(CAmount nBalanceNeedsAnonymized, CCon
             }
         }
 
-        mixingSmartnode = dmn;
-        connman.AddPendingSmartnode(dmn->proTxHash);
+        mixingReesistornode = dmn;
+        connman.AddPendingReesistornode(dmn->proTxHash);
         pendingDsaRequest = CPendingDsaRequest(dmn->pdmnState->addr, CCoinJoinAccept(nSessionDenom, txMyCollateral));
         // TODO: add new state POOL_STATE_CONNECTING and bump MIN_COINJOIN_PEER_PROTO_VERSION
         SetState(POOL_STATE_QUEUE);
@@ -1213,7 +1213,7 @@ bool CCoinJoinClientManager::TrySubmitDenominate(const CService& mnAddr, CConnma
     LOCK(cs_deqsessions);
     for (auto& session : deqSessions) {
         CDeterministicMNCPtr mnMixing;
-        if (session.GetMixingSmartnodeInfo(mnMixing) && mnMixing->pdmnState->addr == mnAddr && session.GetState() == POOL_STATE_QUEUE) {
+        if (session.GetMixingReesistornodeInfo(mnMixing) && mnMixing->pdmnState->addr == mnAddr && session.GetState() == POOL_STATE_QUEUE) {
             session.SubmitDenominate(connman);
             return true;
         }
@@ -1226,7 +1226,7 @@ bool CCoinJoinClientManager::MarkAlreadyJoinedQueueAsTried(CCoinJoinQueue& dsq) 
     LOCK(cs_deqsessions);
     for (const auto& session : deqSessions) {
         CDeterministicMNCPtr mnMixing;
-        if (session.GetMixingSmartnodeInfo(mnMixing) && mnMixing->collateralOutpoint == dsq.smartnodeOutpoint) {
+        if (session.GetMixingReesistornodeInfo(mnMixing) && mnMixing->collateralOutpoint == dsq.reesistornodeOutpoint) {
             dsq.fTried = true;
             return true;
         }
@@ -1791,9 +1791,9 @@ bool CCoinJoinClientSession::CreateDenominated(CAmount nBalanceToDenominate, con
 
 void CCoinJoinClientSession::RelayIn(const CCoinJoinEntry& entry, CConnman& connman)
 {
-    if (!mixingSmartnode) return;
+    if (!mixingReesistornode) return;
 
-    connman.ForNode(mixingSmartnode->pdmnState->addr, [&entry, &connman](CNode* pnode) {
+    connman.ForNode(mixingReesistornode->pdmnState->addr, [&entry, &connman](CNode* pnode) {
         LogPrint(BCLog::COINJOIN, "CCoinJoinClientSession::RelayIn -- found smart, relaying message to %s\n", pnode->addr.ToString());
         CNetMsgMaker msgMaker(pnode->GetSendVersion());
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSVIN, entry));
@@ -1816,9 +1816,9 @@ void CCoinJoinClientManager::UpdatedBlockTip(const CBlockIndex* pindex)
 void CCoinJoinClientQueueManager::DoMaintenance()
 {
     if (!CCoinJoinClientOptions::IsEnabled()) return;
-    if (fSmartnodeMode) return; // no client-side mixing on smartnodes
+    if (fReesistornodeMode) return; // no client-side mixing on reesistornodes
 
-    if (!smartnodeSync.IsBlockchainSynced() || ShutdownRequested()) return;
+    if (!reesistornodeSync.IsBlockchainSynced() || ShutdownRequested()) return;
 
     CheckQueue();
 }
@@ -1826,9 +1826,9 @@ void CCoinJoinClientQueueManager::DoMaintenance()
 void CCoinJoinClientManager::DoMaintenance(CConnman& connman)
 {
     if (!CCoinJoinClientOptions::IsEnabled()) return;
-    if (fSmartnodeMode) return; // no client-side mixing on smartnodes
+    if (fReesistornodeMode) return; // no client-side mixing on reesistornodes
 
-    if (!smartnodeSync.IsBlockchainSynced() || ShutdownRequested()) return;
+    if (!reesistornodeSync.IsBlockchainSynced() || ShutdownRequested()) return;
 
     static int nTick = 0;
     static int nDoAutoNextRun = nTick + COINJOIN_AUTO_TIMEOUT_MIN;
@@ -1845,11 +1845,11 @@ void CCoinJoinClientManager::DoMaintenance(CConnman& connman)
 void CCoinJoinClientSession::GetJsonInfo(UniValue& obj) const
 {
     assert(obj.isObject());
-    if (mixingSmartnode != nullptr) {
-        assert(mixingSmartnode->pdmnState);
-        obj.pushKV("protxhash", mixingSmartnode->proTxHash.ToString());
-        obj.pushKV("outpoint",  mixingSmartnode->collateralOutpoint.ToStringShort());
-        obj.pushKV("service",   mixingSmartnode->pdmnState->addr.ToString());
+    if (mixingReesistornode != nullptr) {
+        assert(mixingReesistornode->pdmnState);
+        obj.pushKV("protxhash", mixingReesistornode->proTxHash.ToString());
+        obj.pushKV("outpoint",  mixingReesistornode->collateralOutpoint.ToStringShort());
+        obj.pushKV("service",   mixingReesistornode->pdmnState->addr.ToString());
     }
     obj.pushKV("denomination",  ValueFromAmount(CCoinJoin::DenominationToAmount(nSessionDenom)));
     obj.pushKV("state",         GetStateString());

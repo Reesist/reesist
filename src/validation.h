@@ -9,7 +9,7 @@
 #define BITCOIN_VALIDATION_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/raptoreum-config.h>
+#include <config/reesist-config.h>
 #endif
 
 #include <amount.h>
@@ -297,7 +297,7 @@ bool ActivateBestChain(CValidationState& state, const CChainParams& chainparams,
 
 double ConvertBitsToDouble(unsigned int nBits);
 CAmount GetBlockSubsidy(int nBits, int nHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly = false);
-CAmount GetSmartnodePayment(int nHeight, CAmount blockValue, CAmount specialTxFees);
+CAmount GetReesistornodePayment(int nHeight, CAmount blockValue, CAmount specialTxFees);
 
 /** Guess verification progress (as a fraction between 0.0=genesis and 1.0=current tip). */
 double GuessVerificationProgress(const ChainTxData& data, const CBlockIndex* pindex);
@@ -496,7 +496,7 @@ extern VersionBitsCache versionbitscache;
 /**
  * Determine what nVersion a new block should use.
  */
-int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fCheckSmartnodesUpgraded = false);
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fCheckReesistornodesUpgraded = false);
 
 /**
  * Return true if hash can be found in chainActive at nBlockHeight height.

@@ -1,0 +1,6 @@
+usr/local/bin/reesist-qt usr/bin
+share/pixmaps/reesist32.xpm usr/share/pixmaps
+share/pixmaps/reesist16.xpm usr/share/pixmaps
+share/pixmaps/reesist128.png usr/share/pixmaps
+debian/reesist-qt.desktop usr/share/applications
+debian/reesist-qt.protocol usr/share/kde4/services/

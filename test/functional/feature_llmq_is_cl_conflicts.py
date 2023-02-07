@@ -46,9 +46,9 @@ class TestP2PConn(P2PInterface):
                 self.send_message(self.islocks[inv.hash])
 
 
-class LLMQ_IS_CL_Conflicts(RaptoreumTestFramework):
+class LLMQ_IS_CL_Conflicts(ReesistTestFramework):
     def set_test_params(self):
-        self.set_raptoreum_test_params(6, 5, fast_dip3_enforcement=True)
+        self.set_reesist_test_params(6, 5, fast_dip3_enforcement=True)
         #disable_mocktime()
 
     def run_test(self):
@@ -266,7 +266,7 @@ class LLMQ_IS_CL_Conflicts(RaptoreumTestFramework):
 
         coinbasevalue = bt['coinbasevalue']
         miner_address = node.getnewaddress()
-        mn_payee = bt['smartnode'][0]['payee']
+        mn_payee = bt['reesistornode'][0]['payee']
 
         # calculate fees that the block template included (we'll have to remove it from the coinbase as we won't
         # include the template's transactions
@@ -289,7 +289,7 @@ class LLMQ_IS_CL_Conflicts(RaptoreumTestFramework):
         coinbasevalue -= bt_fees
         coinbasevalue += new_fees
 
-        mn_amount = get_smartnode_payment(height, coinbasevalue)
+        mn_amount = get_reesistornode_payment(height, coinbasevalue)
         miner_amount = coinbasevalue - mn_amount
 
         outputs = {miner_address: str(Decimal(miner_amount) / COIN)}
@@ -299,7 +299,7 @@ class LLMQ_IS_CL_Conflicts(RaptoreumTestFramework):
         coinbase = FromHex(CTransaction(), node.createrawtransaction([], outputs))
         coinbase.vin = create_coinbase(height).vin
 
-        # We can't really use this one as it would result in invalid merkle roots for smartnode lists
+        # We can't really use this one as it would result in invalid merkle roots for reesistornode lists
         if len(bt['coinbase_payload']) != 0:
             cbtx = FromHex(CCbTx(version=1), bt['coinbase_payload'])
             coinbase.nVersion = 3

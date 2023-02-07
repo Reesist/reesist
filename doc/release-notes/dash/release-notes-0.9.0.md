@@ -16,7 +16,7 @@ v0.10.14 on Sept/25/2014.
 
 - Bounds checking in a few places where it was lacking
 - Output list in transactions lacked random seeding
-- smartnode constants for communication are much easier to read now
+- reesistornode constants for communication are much easier to read now
 
 
 0.9.13.12 Release notes
@@ -28,8 +28,8 @@ v0.10.14 on Sept/25/2014.
 0.9.13.11 Release notes
 -----------------------
 
-- Improved handling of enforcement for bad smartnode lists
-- Removed old smartnode override code
+- Improved handling of enforcement for bad reesistornode lists
+- Removed old reesistornode override code
 
 
 0.9.13.10 Release notes
@@ -51,9 +51,9 @@ v0.10.14 on Sept/25/2014.
 
 - Debugged progress bar
 - New terms of use window
-- Darksend UI is disabled for smartnodes now and titlebar says "[smartnode]"
+- Darksend UI is disabled for reesistornodes now and titlebar says "[reesistornode]"
 - Improvement for dealing with splitting large inputs
-- Protocol version bump to kick old smartnodes off
+- Protocol version bump to kick old reesistornodes off
 
 
 0.9.13.7 Release notes
@@ -75,7 +75,7 @@ v0.10.14 on Sept/25/2014.
 - Added tooltips for config screen
 - Changed DS participants to three
 - Bump minimum protocol to RC4
-- Added a spork for enforcing smartnode payments (this will ensure misconfigured
+- Added a spork for enforcing reesistornode payments (this will ensure misconfigured
   pools break when we enable the spork)
 
 
@@ -120,7 +120,7 @@ everything much more efficient.
   "not compatible" error. I debugged one of the slow wallets and found it had
   38,000 keys in the keypool, then after more investigation I found the passive
   Darksend process has been reserve keys for every attempt! To rectify this
-  I've modified the queuing system, so users wait in a smartnode queue without
+  I've modified the queuing system, so users wait in a reesistornode queue without
   actually sending the transactions until the queue is full.
 
 Please move any testing funds to a new wallet to test the new version.
@@ -191,15 +191,15 @@ http://test.explorer.darkcoin.fr/tx/ce0ea2bdf630233955d459489b6f764e0d0bbe9e8a62
   will create double spent transactions that will not confirm. erasetransaction
   is for removing them.
 - SplitUpMoney can only execute every 10 blocks now.
-- removed matching smartnode debugging messages, that's not really an error
+- removed matching reesistornode debugging messages, that's not really an error
 - Client now prioritises sending denominated funds back into Darksend. This will
   improve anonymity and help to respect the "anonymize darkcoin" amount in the
   configuration.
-- fixed a bug where smartnodes send failed transactions
+- fixed a bug where reesistornodes send failed transactions
 - changed max to 100k in configuration
 - added a warning message to startup (delete ~/.darkcoin/.agree_to_tou to see it)
 - found a bug causing inputs to get locked forever.
-- Darksend now checks diskspace before sending anything to a smartnode.
+- Darksend now checks diskspace before sending anything to a reesistornode.
 - incrementing protocol version to knock all old clients off
 
 
@@ -214,7 +214,7 @@ http://test.explorer.darkcoin.fr/tx/ce0ea2bdf630233955d459489b6f764e0d0bbe9e8a62
 -----------------------
 
 - Disabled collateral charging for now. We'll work on this after RC4 is
-  released and update the smartnode network after it's working properly. It's
+  released and update the reesistornode network after it's working properly. It's
   not incredibly important at this stage (while we're closed source), so
   I don't want it holding up the release. Plus it's really
   the only issue we're experiencing
@@ -257,17 +257,17 @@ http://test.explorer.darkcoin.fr/tx/6de2c5204abdea451da930f61bae0f954eef13188a3a
 0.9.12.17 Release notes
 -----------------------
 
-- I've switched up the way the smartnode network works.
-    1.) Users now will join a random smartnode (1 of the entire list, just
+- I've switched up the way the reesistornode network works.
+    1.) Users now will join a random reesistornode (1 of the entire list, just
         completely randomly)
-    2.) Upon joining if it's the first user, the smartnode will propagate
+    2.) Upon joining if it's the first user, the reesistornode will propagate
         a message stating it's taking participants for a merge
     3.) Another user will check that queue, if it's got a recent node, it will
         try that node first, otherwise it will go to 1.)
 
 - Darksend limited to 5000DRK per wallet.dat. Client will warn about this the
   first time it's opened, then disable darksend from then on.
-- Fixed some bugs with connecting to the correct smartnodes
+- Fixed some bugs with connecting to the correct reesistornodes
 - Send was sending way too many coins for all modes, (I sent 100DRK anon and it
   sent 2000DRK, then sent me change for the rest causing a whole reprocess of
   everything in the wallet)
@@ -284,21 +284,21 @@ http://test.explorer.darkcoin.fr/tx/6de2c5204abdea451da930f61bae0f954eef13188a3a
 0.9.12.15 Release notes
 -----------------------
 
-- Added session IDs for smartnode communication. Clients were getting
+- Added session IDs for reesistornode communication. Clients were getting
   confused when they got messages about other sessions (sometimes happened when
-  they all jumped on the same smartnode at once)
-- Added a pre-session state where the client will query a random smartnode
+  they all jumped on the same reesistornode at once)
+- Added a pre-session state where the client will query a random reesistornode
   and ask if they can perform a merge on N darkcoin without giving any other
   information. If that amount is compatible without losing anonymity, the client
   will then add it's entry for merging
-- Added code to randomly use the top 20 smartnodes, this can dynamically be
+- Added code to randomly use the top 20 reesistornodes, this can dynamically be
   increased as more transaction traffic starts to happen (although it's not
   implemented but it could be done later)
 - After successful transactions clients will now automatically attempt another
-  session on a random smartnode, then repeat until they get any kind of error
+  session on a random reesistornode, then repeat until they get any kind of error
   or run out of funds that need to be processed.
 - Fixed a change address reuse issue
-- Fixed an issue with the compatible join algorithm (Smartnodes will only join
+- Fixed an issue with the compatible join algorithm (Reesistornodes will only join
   the same denominations, this wasn't always the case before)
 - Inc protocol to kick old users odd again
 
@@ -306,8 +306,8 @@ http://test.explorer.darkcoin.fr/tx/6de2c5204abdea451da930f61bae0f954eef13188a3a
 0.9.12.14 Release notes
 -----------------------
 
-- Fixed an issue where clients weren't connected to the correct smartnode
-- Fixed smartnode relay issues
+- Fixed an issue where clients weren't connected to the correct reesistornode
+- Fixed reesistornode relay issues
 - Anonymous Balance now calculates correctly
 - Inc protocol to kick old users odd again
 
@@ -315,9 +315,9 @@ http://test.explorer.darkcoin.fr/tx/6de2c5204abdea451da930f61bae0f954eef13188a3a
 0.9.12.13 Release notes
 -----------------------
 
-- This version automatically resets the smartnode state machine after a short
+- This version automatically resets the reesistornode state machine after a short
   period of inactivity.
-- Updated protocol version to kick old smartnodes off
+- Updated protocol version to kick old reesistornodes off
 
 
 0.9.12.12 Release notes
@@ -329,12 +329,12 @@ http://test.explorer.darkcoin.fr/tx/6de2c5204abdea451da930f61bae0f954eef13188a3a
 - Found race condition with new blocks and clearing darksend entries that was
   causing some collateral fees
 - Found a communication mix up where clients would see messages from the wrong
-  smartnode and think it was theirs, also causing collateral fees
+  reesistornode and think it was theirs, also causing collateral fees
 - Added "Anonymized Balance" to overview
 - Added "anonymized_balance" to getinfo
 - Changed dropbox box on Send Dialog to be clearer
 - Added text to the confirmation screen with what funds will be sent
-- incremented protocol version to force smartnode updates
+- incremented protocol version to force reesistornode updates
 
 
 0.9.12.11 Release notes
@@ -377,7 +377,7 @@ anonymity improvements:
   the Darksend process.
 - Client will only submit 1 transaction into the pool fixing possible
   anonymity issues
-- Smartnodes will only merge compatible transactions using the same
+- Reesistornodes will only merge compatible transactions using the same
   denominations. For example (500,500,100) would be able to merge
   with (500,100), (10,1) with (10,1,1), but not (500,1) with (10,1).
   This improves the anonmity by not allowing someone to follow transactions by
@@ -405,7 +405,7 @@ DS+ seems to be pretty stable now :-)
   regenerated as the client will not recognize the old ones)
 - SplitUpMoney does a better job of splitting up really large wallets now
 - Fixed crashing issues
-- Added possible fix for smartnode list syncing
+- Added possible fix for reesistornode list syncing
 
 - RPC calls are changed a bit:
 
@@ -420,7 +420,7 @@ DS+ seems to be pretty stable now :-)
 
 - Fixed a few issues with input selection causing the
   "Insufficent Funds 2" error
-- Smartnodes now reset themselves when they give "entries is full".
+- Reesistornodes now reset themselves when they give "entries is full".
   Not sure what's causing it but a client will just try again
 - Improved the split up function
 - Fixed issues with AutoDenom in wallets larger than a few hundred
@@ -447,12 +447,12 @@ However, there are some known issues:
 
 
 Testing commands, you can start multiple wallets up and all denominate
-on the same smartnode for testing purposes:
-/darkcoin-qt -datadir=/home/user/.darkcoin -listen=0 -darksendrounds=8 -usesmartnode="192.168.56.102:19999"
-/darkcoin-qt -datadir=/home/user/.darkcoin2 -listen=0 -darksendrounds=8 -usesmartnode="192.168.56.102:19999"
+on the same reesistornode for testing purposes:
+/darkcoin-qt -datadir=/home/user/.darkcoin -listen=0 -darksendrounds=8 -usereesistornode="192.168.56.102:19999"
+/darkcoin-qt -datadir=/home/user/.darkcoin2 -listen=0 -darksendrounds=8 -usereesistornode="192.168.56.102:19999"
 
 and even disable darksend auto-denom if wanted:
-/darkcoin-qt -datadir=/home/user/.darkcoin -listen=0 -darksendrounds=8 -usesmartnode="192.168.56.102:19999" -disabledarksend=1
+/darkcoin-qt -datadir=/home/user/.darkcoin -listen=0 -darksendrounds=8 -usereesistornode="192.168.56.102:19999" -disabledarksend=1
 
 
 0.9.12.7 Release notes
@@ -473,7 +473,7 @@ and even disable darksend auto-denom if wanted:
 
 - Fixed AutoDenominate. It seems to work pretty well now.
 - Inputs that are large will be broken up automatically for denomination
-- Smartnodes should change every block now (missed a mod=10 last time)
+- Reesistornodes should change every block now (missed a mod=10 last time)
 - Mixing requires 5 clients to merge now, should improve anonymity.
 - Mixing rounds are limited to 1000DRK, per block
 
@@ -481,7 +481,7 @@ and even disable darksend auto-denom if wanted:
 0.9.12.5 Release notes
 ----------------------
 
-- Smartnodes should change every block now
+- Reesistornodes should change every block now
 - DoAutomaticDenomination should happen every block now
 - DarkSendRounds had a bug that I fixed, should calculate correctly now
 
@@ -497,7 +497,7 @@ This is a pretty large update to the RC client.
 - Redid denominations to 1, 10, 100, and 500. Maybe this is too simple, but it
   seems effective, all change from transactions will de denominated automatically
   again through darksend for the next transactions. We'll see how it works.
-- usesmartnode option, will override active smartnode (only in RC, just for testing)
+- usereesistornode option, will override active reesistornode (only in RC, just for testing)
 
 0.9.12.3 Release notes
 ----------------------
@@ -507,8 +507,8 @@ This is a pretty large update to the RC client.
 0.9.12.2 Release notes
 ----------------------
 
-- Fixed payout issues (smartnode consessus was paying out to vout(0) by default)
-- Improved DarksendInput add entry verification. Smartnodes will now reject
+- Fixed payout issues (reesistornode consessus was paying out to vout(0) by default)
+- Improved DarksendInput add entry verification. Reesistornodes will now reject
   transactions that look like fees are too low, too high, have spent inputs, etc.
 - Incremented protocol version to kick off clients with vout(0) payment bug
 - DoAutomaticDenominations 100DRK limit changed to 500DRK (we should see a bunch
@@ -518,7 +518,7 @@ This is a pretty large update to the RC client.
 0.9.12.1 Release notes
 ----------------------
 
-- Fixed a signing bug with the smartnode voting system causing a bunch of issues
+- Fixed a signing bug with the reesistornode voting system causing a bunch of issues
 - Updated unit tests
 - Incremented protocol version to kick off clients with signing bug
 

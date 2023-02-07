@@ -75,7 +75,7 @@ private:
     std::string strLastMessage;
     std::string strAutoDenomResult;
 
-    CDeterministicMNCPtr mixingSmartnode;
+    CDeterministicMNCPtr mixingReesistornode;
     CMutableTransaction txMyCollateral; // client side collateral
     CPendingDsaRequest pendingDsaRequest;
 
@@ -122,7 +122,7 @@ public:
         vecOutPointLocked(),
         strLastMessage(),
         strAutoDenomResult(),
-        mixingSmartnode(),
+        mixingReesistornode(),
         txMyCollateral(),
         pendingDsaRequest(),
         keyHolderStorage(),
@@ -138,12 +138,12 @@ public:
 
     std::string GetStatus(bool fWaitForBlock);
 
-    bool GetMixingSmartnodeInfo(CDeterministicMNCPtr& ret) const;
+    bool GetMixingReesistornodeInfo(CDeterministicMNCPtr& ret) const;
 
     /// Passively run mixing in the background according to the configuration in settings
     bool DoAutomaticDenominating(CConnman& connman, bool fDryRun = false);
 
-    /// As a client, submit part of a future mixing transaction to a Smartnode to start the process
+    /// As a client, submit part of a future mixing transaction to a Reesistornode to start the process
     bool SubmitDenominate(CConnman& connman);
 
     bool ProcessPendingDsaRequest(CConnman& connman);
@@ -173,7 +173,7 @@ private:
     CCoinJoinClientManager& operator=(CCoinJoinClientManager const&) = delete;
 
     // Keep track of the used Masternodes
-    std::vector<COutPoint> vecSmartnodesUsed;
+    std::vector<COutPoint> vecReesistornodesUsed;
 
     // TODO: or map<denom, CCoinJoinClientSession> ??
     std::deque<CCoinJoinClientSession> deqSessions;
@@ -200,7 +200,7 @@ public:
     bool fCreateAutoBackups; // builtin support for automatic backups
 
     CCoinJoinClientManager(CWallet& wallet) :
-        vecSmartnodesUsed(),
+        vecReesistornodesUsed(),
         deqSessions(),
         nCachedLastSuccessBlock(0),
         nMinBlocksToWait(1),
@@ -222,7 +222,7 @@ public:
     std::string GetStatuses();
     std::string GetSessionDenoms();
 
-    bool GetMixingSmartnodesInfo(std::vector<CDeterministicMNCPtr>& vecDmnsRet) const;
+    bool GetMixingReesistornodesInfo(std::vector<CDeterministicMNCPtr>& vecDmnsRet) const;
 
     /// Passively run mixing in the background according to the configuration in settings
     bool DoAutomaticDenominating(CConnman& connman, bool fDryRun = false);
@@ -234,8 +234,8 @@ public:
 
     void ProcessPendingDsaRequest(CConnman& connman);
 
-    void AddUsedSmartnode(const COutPoint& outpointMn);
-    CDeterministicMNCPtr GetRandomNotUsedSmartnode();
+    void AddUsedReesistornode(const COutPoint& outpointMn);
+    CDeterministicMNCPtr GetRandomNotUsedReesistornode();
 
     void UpdatedSuccessBlock();
 

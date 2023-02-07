@@ -4,7 +4,7 @@
 
 #include <compressor.h>
 #include <util.h>
-#include <test/test_raptoreum.h>
+#include <test/test_reesist.h>
 
 #include <stdint.h>
 

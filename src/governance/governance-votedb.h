@@ -63,8 +63,8 @@ public:
 
     std::vector<CGovernanceVote> GetVotes() const;
 
-    void RemoveVotesFromSmartnode(const COutPoint& outpointSmartnode);
-    std::set<uint256> RemoveInvalidVotes(const COutPoint& outpointSmartnode, bool fProposal);
+    void RemoveVotesFromReesistornode(const COutPoint& outpointReesistornode);
+    std::set<uint256> RemoveInvalidVotes(const COutPoint& outpointReesistornode, bool fProposal);
 
     ADD_SERIALIZE_METHODS;
 
@@ -79,7 +79,7 @@ public:
     }
 
 private:
-    // Drop older votes for the same gobject from the same smartnode
+    // Drop older votes for the same gobject from the same reesistornode
     void RemoveOldVotes(const CGovernanceVote& vote);
 
     void RebuildIndex();

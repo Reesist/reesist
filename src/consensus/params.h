@@ -8,7 +8,7 @@
 
 #include <uint256.h>
 #include <founder_payment.h>
-#include <smartnode/smartnode-collaterals.h>
+#include <reesistornode/reesistornode-collaterals.h>
 #include <map>
 #include <string>
 
@@ -62,7 +62,7 @@ enum LLMQType : uint8_t
 };
 
 // Configures a LLMQ and its DKG
-// See https://github.com/raptoreum/dips/blob/master/dip-0006.md for more details
+// See https://github.com/reesist/dips/blob/master/dip-0006.md for more details
 struct LLMQParams {
     LLMQType type;
 
@@ -80,7 +80,7 @@ struct LLMQParams {
     // The threshold required to recover a final signature. Should be at least 50%+1 of the quorum size. This value
     // also controls the size of the public key verification vector and has a large influence on the performance of
     // recovery. It also influences the amount of minimum messages that need to be exchanged for a single signing session.
-    // This value has the most influence on the security of the quorum. The number of total malicious smartnodes
+    // This value has the most influence on the security of the quorum. The number of total malicious reesistornodes
     // required to negatively influence signing sessions highly correlates to the threshold percentage.
     int threshold;
 
@@ -126,14 +126,14 @@ struct LLMQParams {
 };
 
 /**
- * future fee share for smartnode, miner and dev
+ * future fee share for reesistornode, miner and dev
  */
 struct FutureRewardShare {
-	float smartnode;
+	float reesistornode;
 	float miner;
 	float founder;
-	FutureRewardShare() : smartnode(0), miner(0), founder(0) {}
-	FutureRewardShare(float _smartnode, float _miner, float _founder) : smartnode(_smartnode), miner(_miner), founder(_founder) {}
+	FutureRewardShare() : reesistornode(0), miner(0), founder(0) {}
+	FutureRewardShare(float _reesistornode, float _miner, float _founder) : reesistornode(_reesistornode), miner(_miner), founder(_founder) {}
 };
 
 /**
@@ -143,9 +143,9 @@ struct Params {
     uint256 hashGenesisBlock;
     uint256 hashDevnetGenesisBlock;
     int nSubsidyHalvingInterval;
-    int nSmartnodePaymentsStartBlock;
-    int nSmartnodePaymentsIncreaseBlock;
-    int nSmartnodePaymentsIncreasePeriod; // in blocks
+    int nReesistornodePaymentsStartBlock;
+    int nReesistornodePaymentsIncreaseBlock;
+    int nReesistornodePaymentsIncreasePeriod; // in blocks
     int nInstantSendConfirmationsRequired; // in blocks
     int nInstantSendKeepLock; // in blocks
     int nBudgetPaymentsStartBlock;
@@ -156,7 +156,7 @@ struct Params {
     int nSuperblockCycle; // in blocks
     int nGovernanceMinQuorum; // Min absolute vote count to trigger an action
     int nGovernanceFilterElements;
-    int nSmartnodeMinimumConfirmations;
+    int nReesistornodeMinimumConfirmations;
     bool BIPCSVEnabled;
     bool BIP147Enabled;
     /** Block height and hash at which BIP34 becomes active */
@@ -206,8 +206,8 @@ struct Params {
 
     FounderPayment nFounderPayment;
     FutureRewardShare nFutureRewardShare;
-    SmartnodeCollaterals nCollaterals;
-    int smartnodePaymentFixedBlock;
+    ReesistornodeCollaterals nCollaterals;
+    int reesistornodePaymentFixedBlock;
     int nFutureForkBlock;
 
 };

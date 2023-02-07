@@ -6,7 +6,7 @@
 #include <chainparams.h>
 #include <validation.h>
 
-#include <test/test_raptoreum.h>
+#include <test/test_reesist.h>
 
 #include <boost/test/unit_test.hpp>
 

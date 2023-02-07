@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-SystemD: raptoreumd.service
-Upstart: raptoreumd.conf
-OpenRC:  raptoreumd.openrc
-         raptoreumd.openrcconf
-CentOS:  raptoreumd.init
-OS X:    org.raptoreum.raptoreumd.plist
+SystemD: reesistd.service
+Upstart: reesistd.conf
+OpenRC:  reesistd.openrc
+         reesistd.openrcconf
+CentOS:  reesistd.init
+OS X:    org.reesist.reesistd.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

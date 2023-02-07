@@ -916,7 +916,7 @@ void SendCoinsDialog::coinControlChangeEdited(const QString& text)
         }
         else if (!IsValidDestination(dest)) // Invalid address
         {
-            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid Raptoreum address"));
+            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid Reesist address"));
         }
         else // Valid address
         {

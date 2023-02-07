@@ -275,14 +275,14 @@
         </widget>
        </item>
        <item row="9" column="0">
-        <widget class="QLabel" name="smartnodeCountLabel">
+        <widget class="QLabel" name="reesistornodeCountLabel">
          <property name="text">
-          <string>Number of Smartnodes</string>
+          <string>Number of Reesistornodes</string>
          </property>
         </widget>
        </item>
        <item row="9" column="1">
-        <widget class="QLabel" name="smartnodeCount">
+        <widget class="QLabel" name="reesistornodeCount">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>

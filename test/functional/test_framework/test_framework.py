@@ -98,11 +98,11 @@ class BitcoinTestFramework():
 
         parser = optparse.OptionParser(usage="%prog [options]")
         parser.add_option("--nocleanup", dest="nocleanup", default=False, action="store_true",
-                          help="Leave raptoreumds and test.* datadir on exit or error")
+                          help="Leave reesistds and test.* datadir on exit or error")
         parser.add_option("--noshutdown", dest="noshutdown", default=False, action="store_true",
                           help="Don't stop dashds after the test execution")
         parser.add_option("--srcdir", dest="srcdir", default=os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../../src"),
-                          help="Source directory containing raptoreumd/raptoreum-cli (default: %default)")
+                          help="Source directory containing reesistd/reesist-cli (default: %default)")
         parser.add_option("--cachedir", dest="cachedir", default=os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../cache"),
                           help="Directory for caching pregenerated datadirs (default: %default)")
         parser.add_option("--tmpdir", dest="tmpdir", help="Root directory for datadirs")
@@ -120,9 +120,9 @@ class BitcoinTestFramework():
         parser.add_option("--pdbonfailure", dest="pdbonfailure", default=False, action="store_true",
                           help="Attach a python debugger if test fails")
         parser.add_option("--usecli", dest="usecli", default=False, action="store_true",
-                          help="use raptoreum-cli instead of RPC for all commands")
-        parser.add_option("--raptoreumd-arg", dest="dashd_extra_args", default=[], type='string', action='append',
-                          help="Pass extra args to all raptoreumd instances")
+                          help="use reesist-cli instead of RPC for all commands")
+        parser.add_option("--reesistd-arg", dest="dashd_extra_args", default=[], type='string', action='append',
+                          help="Pass extra args to all reesistd instances")
         parser.add_option("--timeoutscale", dest="timeout_scale", default=1, type='int' ,
                           help="Scale the test timeouts by multiplying them with the here provided value (defaul: 1)")
         self.add_options(parser)
@@ -145,8 +145,8 @@ class BitcoinTestFramework():
 
         config = configparser.ConfigParser()
         config.read_file(open(self.options.configfile))
-        self.options.bitcoind = os.getenv("BITCOIND", default=config["environment"]["BUILDDIR"] + '/src/raptoreumd' + config["environment"]["EXEEXT"])
-        self.options.bitcoincli = os.getenv("BITCOINCLI", default=config["environment"]["BUILDDIR"] + '/src/raptoreum-cli' + config["environment"]["EXEEXT"])
+        self.options.bitcoind = os.getenv("BITCOIND", default=config["environment"]["BUILDDIR"] + '/src/reesistd' + config["environment"]["EXEEXT"])
+        self.options.bitcoincli = os.getenv("BITCOINCLI", default=config["environment"]["BUILDDIR"] + '/src/reesist-cli' + config["environment"]["EXEEXT"])
 
         self.extra_args_from_options = self.options.dashd_extra_args
 
@@ -196,7 +196,7 @@ class BitcoinTestFramework():
         else:
             for node in self.nodes:
                 node.cleanup_on_exit = False
-            self.log.info("Note: raptoreumds were not stopped and may still be running")
+            self.log.info("Note: reesistds were not stopped and may still be running")
 
         if not self.options.nocleanup and not self.options.noshutdown and success != TestStatus.FAILED:
             self.log.info("Cleaning up {} on exit".format(self.options.tmpdir))
@@ -285,7 +285,7 @@ class BitcoinTestFramework():
             self.nodes.append(TestNode(old_num_nodes + i, get_datadir_path(self.options.tmpdir, old_num_nodes + i), self.extra_args_from_options, chain=self.chain, rpchost=rpchost, timewait=timewait, bitcoind=binary[i], bitcoin_cli=self.options.bitcoincli, stderr=stderr, mocktime=self.mocktime, coverage_dir=self.options.coveragedir, extra_conf=extra_confs[i], extra_args=extra_args[i], use_cli=self.options.usecli))
 
     def start_node(self, i, *args, **kwargs):
-        """Start a raptoreumd"""
+        """Start a reesistd"""
 
         node = self.nodes[i]
 
@@ -296,7 +296,7 @@ class BitcoinTestFramework():
             coverage.write_all_rpc_commands(self.options.coveragedir, node.rpc)
 
     def start_nodes(self, extra_args=None, stderr=None, *args, **kwargs):
-        """Start multiple raptoreumds"""
+        """Start multiple reesistds"""
 
         if extra_args is None:
             extra_args = [None] * self.num_nodes
@@ -316,12 +316,12 @@ class BitcoinTestFramework():
                 coverage.write_all_rpc_commands(self.options.coveragedir, node.rpc)
 
     def stop_node(self, i, wait=0):
-        """Stop a raptoreumd test node"""
+        """Stop a reesistd test node"""
         self.nodes[i].stop_node(wait=wait)
         self.nodes[i].wait_until_stopped()
 
     def stop_nodes(self, wait=0):
-        """Stop multiple raptoreumd test nodes"""
+        """Stop multiple reesistd test nodes"""
         for node in self.nodes:
             # Issue RPC to stop nodes
             node.stop_node(wait=wait)
@@ -407,7 +407,7 @@ class BitcoinTestFramework():
         # User can provide log level as a number or string (eg DEBUG). loglevel was caught as a string, so try to convert it to an int
         ll = int(self.options.loglevel) if self.options.loglevel.isdigit() else self.options.loglevel.upper()
         ch.setLevel(ll)
-        # Format logs the same as raptoreumd's debug.log with microprecision (so log files can be concatenated and sorted)
+        # Format logs the same as reesistd's debug.log with microprecision (so log files can be concatenated and sorted)
         formatter = logging.Formatter(fmt='%(asctime)s.%(msecs)03d000Z %(name)s (%(levelname)s): %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
         formatter.converter = time.gmtime
         fh.setFormatter(formatter)
@@ -444,7 +444,7 @@ class BitcoinTestFramework():
                 if os.path.isdir(get_datadir_path(self.options.cachedir, i)):
                     shutil.rmtree(get_datadir_path(self.options.cachedir, i))
 
-            # Create cache directories, run raptoreumds:
+            # Create cache directories, run reesistds:
             self.set_genesis_mocktime()
             for i in range(MAX_NODES):
                 datadir = initialize_datadir(self.options.cachedir, i, self.chain)
@@ -509,7 +509,7 @@ class BitcoinTestFramework():
 SMARTNODE_COLLATERAL = 1000
 
 
-class SmartnodeInfo:
+class ReesistornodeInfo:
     def __init__(self, proTxHash, ownerAddr, votingAddr, pubKeyOperator, keyOperator, collateral_address, collateral_txid, collateral_vout):
         self.proTxHash = proTxHash
         self.ownerAddr = ownerAddr
@@ -521,8 +521,8 @@ class SmartnodeInfo:
         self.collateral_vout = collateral_vout
 
 
-class RaptoreumTestFramework(BitcoinTestFramework):
-    def set_raptoreum_test_params(self, num_nodes, masterodes_count, extra_args=None, fast_dip3_enforcement=False):
+class ReesistTestFramework(BitcoinTestFramework):
+    def set_reesist_test_params(self, num_nodes, masterodes_count, extra_args=None, fast_dip3_enforcement=False):
         self.mn_count = masterodes_count
         self.num_nodes = num_nodes
         self.mninfo = []
@@ -577,12 +577,12 @@ class RaptoreumTestFramework(BitcoinTestFramework):
         for i in range(0, idx):
             connect_nodes(self.nodes[i], idx)
 
-    def prepare_smartnodes(self):
-        self.log.info("Preparing %d smartnodes" % self.mn_count)
+    def prepare_reesistornodes(self):
+        self.log.info("Preparing %d reesistornodes" % self.mn_count)
         for idx in range(0, self.mn_count):
-            self.prepare_smartnode(idx)
+            self.prepare_reesistornode(idx)
 
-    def prepare_smartnode(self, idx):
+    def prepare_reesistornode(self, idx):
         bls = self.nodes[0].bls('generate')
         address = self.nodes[0].getnewaddress()
         txid = self.nodes[0].sendtoaddress(address, SMARTNODE_COLLATERAL)
@@ -629,7 +629,7 @@ class RaptoreumTestFramework(BitcoinTestFramework):
         self.mninfo.append(MasternodeInfo(proTxHash, ownerAddr, votingAddr, bls['public'], bls['secret'], address, txid, collateral_vout))
         self.sync_all()
 
-        self.log.info("Prepared smartnode %d: collateral_txid=%s, collateral_vout=%d, protxHash=%s" % (idx, txid, collateral_vout, proTxHash))
+        self.log.info("Prepared reesistornode %d: collateral_txid=%s, collateral_vout=%d, protxHash=%s" % (idx, txid, collateral_vout, proTxHash))
 
     def remove_masternode(self, idx):
         mn = self.mninfo[idx]
@@ -640,7 +640,7 @@ class RaptoreumTestFramework(BitcoinTestFramework):
         self.sync_all()
         self.mninfo.remove(mn)
 
-        self.log.info("Removed smartnode %d", idx)
+        self.log.info("Removed reesistornode %d", idx)
 
     def prepare_datadirs(self):
         # stop faucet node so that we can copy the datadir
@@ -654,8 +654,8 @@ class RaptoreumTestFramework(BitcoinTestFramework):
         self.start_node(0)
         force_finish_mnsync(self.nodes[0])
 
-    def start_smartnodes(self):
-        self.log.info("Starting %d smartnodes", self.mn_count)
+    def start_reesistornodes(self):
+        self.log.info("Starting %d reesistornodes", self.mn_count)
 
         start_idx = len(self.nodes)
 
@@ -663,7 +663,7 @@ class RaptoreumTestFramework(BitcoinTestFramework):
         executor = ThreadPoolExecutor(max_workers=20)
 
         def do_connect(idx):
-            # Connect to the control node only, smartnodes should take care of intra-quorum connections themselves
+            # Connect to the control node only, reesistornodes should take care of intra-quorum connections themselves
             connect_nodes(self.mninfo[idx].node, 0)
 
         jobs = []
@@ -690,7 +690,7 @@ class RaptoreumTestFramework(BitcoinTestFramework):
         executor.shutdown()
 
     def start_masternode(self, mninfo, extra_args=None):
-        args = ['-smartnodeblsprivkey=%s' % mninfo.keyOperator] + self.extra_args[mninfo.nodeIdx]
+        args = ['-reesistornodeblsprivkey=%s' % mninfo.keyOperator] + self.extra_args[mninfo.nodeIdx]
         if extra_args is not None:
             args += extra_args
         self.start_node(mninfo.nodeIdx, extra_args=args)
@@ -717,12 +717,12 @@ class RaptoreumTestFramework(BitcoinTestFramework):
                 self.nodes[0].generate(10)
         self.sync_all()
 
-        # create smartnodes
-        self.prepare_smartnodes()
+        # create reesistornodes
+        self.prepare_reesistornodes()
         self.prepare_datadirs()
-        self.start_smartnodes()
+        self.start_reesistornodes()
 
-        # non-smartnodes where disconnected from the control node during prepare_datadirs,
+        # non-reesistornodes where disconnected from the control node during prepare_datadirs,
         # let's reconnect them back to make sure they receive updates
         for i in range(0, num_simple_nodes):
             connect_nodes(self.nodes[i+1], 0)
@@ -738,7 +738,7 @@ class RaptoreumTestFramework(BitcoinTestFramework):
         self.wait_for_sporks_same()
         self.bump_mocktime(1)
 
-        mn_info = self.nodes[0].smartnodelist("status")
+        mn_info = self.nodes[0].reesistornodelist("status")
         assert (len(mn_info) == self.mn_count)
         for status in mn_info.values():
             assert (status == 'ENABLED')
@@ -1008,7 +1008,7 @@ class RaptoreumTestFramework(BitcoinTestFramework):
         self.wait_for_quorum_phase(q, 1, expected_members, None, 0, mninfos_online)
         self.wait_for_quorum_connections(expected_connections, nodes, wait_proc=lambda: self.bump_mocktime(1, nodes=nodes))
         if spork25_active:
-            self.wait_for_smartnode_probes(mninfos_valid, wait_proc=lambda: self.bump_mocktime(1, nodes=nodes))
+            self.wait_for_reesistornode_probes(mninfos_valid, wait_proc=lambda: self.bump_mocktime(1, nodes=nodes))
         self.bump_mocktime(1, nodes=nodes)
         self.nodes[0].generate(2)
         sync_blocks(nodes)
@@ -1077,7 +1077,7 @@ class RaptoreumTestFramework(BitcoinTestFramework):
                 time.sleep(0.1)
         assert False
 
-    def get_quorum_smartnodes(self, q):
+    def get_quorum_reesistornodes(self, q):
         qi = self.nodes[0].quorum('info', 100, q)
         result = []
         for m in qi['members']:
@@ -1148,9 +1148,9 @@ def skip_if_no_py3_zmq():
 
 
 def skip_if_no_bitcoind_zmq(test_instance):
-    """Skip the running test if raptoreumd has not been compiled with zmq support."""
+    """Skip the running test if reesistd has not been compiled with zmq support."""
     config = configparser.ConfigParser()
     config.read_file(open(test_instance.options.configfile))
 
     if not config["components"].getboolean("ENABLE_ZMQ"):
-        raise SkipTest("raptoreumd has not been built with zmq enabled.")
+        raise SkipTest("reesistd has not been built with zmq enabled.")

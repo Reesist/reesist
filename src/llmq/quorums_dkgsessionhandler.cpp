@@ -9,7 +9,7 @@
 #include <llmq/quorums_debug.h>
 #include <llmq/quorums_utils.h>
 
-#include <smartnode/activesmartnode.h>
+#include <reesistornode/activereesistornode.h>
 #include <chainparams.h>
 #include <net_processing.h>
 #include <spork.h>
@@ -166,7 +166,7 @@ bool CDKGSessionHandler::InitNewQuorum(const CBlockIndex* pindexQuorum)
 
     auto mns = CLLMQUtils::GetAllQuorumMembers(params.type, pindexQuorum);
 
-    if (!curSession->Init(pindexQuorum, mns, activeSmartnodeInfo.proTxHash)) {
+    if (!curSession->Init(pindexQuorum, mns, activeReesistornodeInfo.proTxHash)) {
         LogPrintf("CDKGSessionManager::%s -- quorum initialiation failed for %s\n", __func__, curSession->params.name);
         return false;
     }

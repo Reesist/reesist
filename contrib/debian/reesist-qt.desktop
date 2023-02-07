@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Reesist Core
+Comment=Reesist P2P Cryptocurrency
+Comment[de]=Verbinde mit dem Reesist peer-to-peer Netzwerk
+Comment[fr]=Reesist, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Reesist, eşten eşe kriptografik sanal para birimi
+Exec=reesist-qt %u
+Terminal=false
+Type=Application
+Icon=reesist128
+MimeType=x-scheme-handler/reesist;
+Categories=Office;Finance;

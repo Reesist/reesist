@@ -2996,7 +2996,7 @@ void CWallet::AvailableCoins(std::vector<COutput> &vCoins, bool fOnlySafe, const
 
     vCoins.clear();
     CoinType nCoinType = coinControl ? coinControl->nCoinType : CoinType::ALL_COINS;
-    SmartnodeCollaterals collaterals = Params().GetConsensus().nCollaterals;
+    ReesistornodeCollaterals collaterals = Params().GetConsensus().nCollaterals;
 
     CAmount nTotal = 0;
 
@@ -3466,7 +3466,7 @@ bool CWallet::SelectCoinsGroupedByAddresses(std::vector<CompactTallyItem>& vecTa
     }
 
     CAmount nSmallestDenom = CCoinJoin::GetSmallestDenomination();
-    SmartnodeCollaterals collaterals = Params().GetConsensus().nCollaterals;
+    ReesistornodeCollaterals collaterals = Params().GetConsensus().nCollaterals;
 
     // Tally
     std::map<CTxDestination, CompactTallyItem> mapTally;
@@ -3501,7 +3501,7 @@ bool CWallet::SelectCoinsGroupedByAddresses(std::vector<CompactTallyItem>& vecTa
             if(fAnonymizable) {
                 // ignore collaterals
                 if(CCoinJoin::IsCollateralAmount(wtx.tx->vout[i].nValue)) continue;
-                if(fSmartnodeMode && collaterals.isValidCollateral(wtx.tx->vout[i].nValue)) continue;
+                if(fReesistornodeMode && collaterals.isValidCollateral(wtx.tx->vout[i].nValue)) continue;
                 // ignore outputs that are 10 times smaller then the smallest denomination
                 // otherwise they will just lead to higher fee / lower priority
                 if(wtx.tx->vout[i].nValue <= nSmallestDenom/10) continue;
@@ -4212,9 +4212,9 @@ DBErrors CWallet::LoadWallet(bool& fFirstRunRet)
     return DBErrors::LOAD_OK;
 }
 
-// Goes through all wallet transactions and checks if they are smartnode collaterals, in which case these are locked
+// Goes through all wallet transactions and checks if they are reesistornode collaterals, in which case these are locked
 // This avoids accidential spending of collaterals. They can still be unlocked manually if a spend is really intended.
-void CWallet::AutoLockSmartnodeCollaterals()
+void CWallet::AutoLockReesistornodeCollaterals()
 {
     auto mnList = deterministicMNManager->GetListAtChainTip();
 

@@ -45,7 +45,7 @@ struct ValidationInterfaceConnections {
     boost::signals2::scoped_connection NotifyGovernanceObject;
     boost::signals2::scoped_connection NotifyGovernanceVote;
     boost::signals2::scoped_connection NotifyInstantSendDoubleSpendAttempt;
-    boost::signals2::scoped_connection NotifySmartnodeListChanged;
+    boost::signals2::scoped_connection NotifyReesistornodeListChanged;
     boost::signals2::scoped_connection NotifyRecoveredSig;
 };
 
@@ -68,7 +68,7 @@ struct MainSignalsInstance {
     boost::signals2::signal<void (const std::shared_ptr<const CGovernanceVote>& vote)>NotifyGovernanceVote;
     boost::signals2::signal<void (const std::shared_ptr<const CGovernanceObject>& object)>NotifyGovernanceObject;
     boost::signals2::signal<void (const CTransactionRef& currentTx, const CTransactionRef& previousTx)>NotifyInstantSendDoubleSpendAttempt;
-    boost::signals2::signal<void (bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff)>NotifySmartnodeListChanged;
+    boost::signals2::signal<void (bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff)>NotifyReesistornodeListChanged;
     boost::signals2::signal<void (const std::shared_ptr<const llmq::CRecoveredSig>& sig)>NotifyRecoveredSig;
     // We are not allowed to assume the scheduler only runs in one thread,
     // but must ensure all callbacks happen in-order, so we end up creating
@@ -140,7 +140,7 @@ void RegisterValidationInterface(CValidationInterface* pwalletIn) {
     conns.NotifyGovernanceVote = g_signals.m_internals->NotifyGovernanceVote.connect(std::bind(&CValidationInterface::NotifyGovernanceVote, pwalletIn, pl::_1));
     conns.NotifyInstantSendDoubleSpendAttempt = g_signals.m_internals->NotifyInstantSendDoubleSpendAttempt.connect(std::bind(&CValidationInterface::NotifyInstantSendDoubleSpendAttempt, pwalletIn, pl::_1, pl::_2));
     conns.NotifyRecoveredSig = g_signals.m_internals->NotifyRecoveredSig.connect(std::bind(&CValidationInterface::NotifyRecoveredSig, pwalletIn, pl::_1));
-    conns.NotifySmartnodeListChanged = g_signals.m_internals->NotifySmartnodeListChanged.connect(std::bind(&CValidationInterface::NotifySmartnodeListChanged, pwalletIn, pl::_1, pl::_2, pl::_3));
+    conns.NotifyReesistornodeListChanged = g_signals.m_internals->NotifyReesistornodeListChanged.connect(std::bind(&CValidationInterface::NotifyReesistornodeListChanged, pwalletIn, pl::_1, pl::_2, pl::_3));
 }
 
 void UnregisterValidationInterface(CValidationInterface* pwalletIn) {
@@ -274,6 +274,6 @@ void CMainSignals::NotifyRecoveredSig(const std::shared_ptr<const llmq::CRecover
     });
 }
 
-void CMainSignals::NotifySmartnodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff) {
-    m_internals->NotifySmartnodeListChanged(undo, oldMNList, diff);
+void CMainSignals::NotifyReesistornodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff) {
+    m_internals->NotifyReesistornodeListChanged(undo, oldMNList, diff);
 }

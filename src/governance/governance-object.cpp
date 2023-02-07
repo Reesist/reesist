@@ -7,8 +7,8 @@
 #include <core_io.h>
 #include <governance/governance-validators.h>
 #include <governance/governance.h>
-#include <smartnode/smartnode-meta.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-meta.h>
+#include <reesistornode/reesistornode-sync.h>
 #include <messagesigner.h>
 #include <spork.h>
 #include <validation.h>
@@ -25,7 +25,7 @@ CGovernanceObject::CGovernanceObject() :
     nDeletionTime(0),
     nCollateralHash(),
     vchData(),
-    smartnodeOutpoint(),
+    reesistornodeOutpoint(),
     vchSig(),
     fCachedLocalValidity(false),
     strLocalValidityError(),
@@ -52,7 +52,7 @@ CGovernanceObject::CGovernanceObject(const uint256& nHashParentIn, int nRevision
     nDeletionTime(0),
     nCollateralHash(nCollateralHashIn),
     vchData(ParseHex(strDataHexIn)),
-    smartnodeOutpoint(),
+    reesistornodeOutpoint(),
     vchSig(),
     fCachedLocalValidity(false),
     strLocalValidityError(),
@@ -79,7 +79,7 @@ CGovernanceObject::CGovernanceObject(const CGovernanceObject& other) :
     nDeletionTime(other.nDeletionTime),
     nCollateralHash(other.nCollateralHash),
     vchData(other.vchData),
-    smartnodeOutpoint(other.smartnodeOutpoint),
+    reesistornodeOutpoint(other.reesistornodeOutpoint),
     vchSig(other.vchSig),
     fCachedLocalValidity(other.fCachedLocalValidity),
     strLocalValidityError(other.strLocalValidityError),
@@ -113,16 +113,16 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
     }
 
     auto mnList = deterministicMNManager->GetListAtChainTip();
-    auto dmn = mnList.GetMNByCollateral(vote.GetSmartnodeOutpoint());
+    auto dmn = mnList.GetMNByCollateral(vote.GetReesistornodeOutpoint());
 
     if (!dmn) {
         std::ostringstream ostr;
-        ostr << "CGovernanceObject::ProcessVote -- Smartnode " << vote.GetSmartnodeOutpoint().ToStringShort() << " not found";
+        ostr << "CGovernanceObject::ProcessVote -- Reesistornode " << vote.GetReesistornodeOutpoint().ToStringShort() << " not found";
         exception = CGovernanceException(ostr.str(), GOVERNANCE_EXCEPTION_PERMANENT_ERROR, 20);
         return false;
     }
 
-    auto it = mapCurrentMNVotes.emplace(vote_m_t::value_type(vote.GetSmartnodeOutpoint(), vote_rec_t())).first;
+    auto it = mapCurrentMNVotes.emplace(vote_m_t::value_type(vote.GetReesistornodeOutpoint(), vote_rec_t())).first;
     vote_rec_t& voteRecordRef = it->second;
     vote_signal_enum_t eSignal = vote.GetSignal();
     if (eSignal == VOTE_SIGNAL_NONE) {
@@ -150,7 +150,7 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
         exception = CGovernanceException(ostr.str(), GOVERNANCE_EXCEPTION_NONE);
         return false;
     } else if (vote.GetTimestamp() == voteInstanceRef.nCreationTime) {
-        // Someone is doing something fishy, there can be no two votes from the same smartnode
+        // Someone is doing something fishy, there can be no two votes from the same reesistornode
         // with the same timestamp for the same object and signal and yet different hash/outcome.
         std::ostringstream ostr;
         ostr << "CGovernanceObject::ProcessVote -- Invalid vote, same timestamp for the different outcome";
@@ -172,8 +172,8 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
         int64_t nTimeDelta = nNow - voteInstanceRef.nTime;
         if (nTimeDelta < GOVERNANCE_UPDATE_MIN) {
             std::ostringstream ostr;
-            ostr << "CGovernanceObject::ProcessVote -- Smartnode voting too often"
-                 << ", MN outpoint = " << vote.GetSmartnodeOutpoint().ToStringShort()
+            ostr << "CGovernanceObject::ProcessVote -- Reesistornode voting too often"
+                 << ", MN outpoint = " << vote.GetReesistornodeOutpoint().ToStringShort()
                  << ", governance object hash = " << GetHash().ToString()
                  << ", time delta = " << nTimeDelta;
             LogPrint(BCLog::GOBJECT, "%s\n", ostr.str());
@@ -189,7 +189,7 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
     if (!vote.IsValid(onlyVotingKeyAllowed)) {
         std::ostringstream ostr;
         ostr << "CGovernanceObject::ProcessVote -- Invalid vote"
-             << ", MN outpoint = " << vote.GetSmartnodeOutpoint().ToStringShort()
+             << ", MN outpoint = " << vote.GetReesistornodeOutpoint().ToStringShort()
              << ", governance object hash = " << GetHash().ToString()
              << ", vote hash = " << vote.GetHash().ToString();
         LogPrintf("%s\n", ostr.str());
@@ -201,7 +201,7 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
     if (!mmetaman.AddGovernanceVote(dmn->proTxHash, vote.GetParentHash())) {
         std::ostringstream ostr;
         ostr << "CGovernanceObject::ProcessVote -- Unable to add governance vote"
-             << ", MN outpoint = " << vote.GetSmartnodeOutpoint().ToStringShort()
+             << ", MN outpoint = " << vote.GetReesistornodeOutpoint().ToStringShort()
              << ", governance object hash = " << GetHash().ToString();
         LogPrint(BCLog::GOBJECT, "%s\n", ostr.str());
         exception = CGovernanceException(ostr.str(), GOVERNANCE_EXCEPTION_PERMANENT_ERROR);
@@ -216,7 +216,7 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
     return true;
 }
 
-void CGovernanceObject::ClearSmartnodeVotes()
+void CGovernanceObject::ClearReesistornodeVotes()
 {
     LOCK(cs);
 
@@ -225,7 +225,7 @@ void CGovernanceObject::ClearSmartnodeVotes()
     auto it = mapCurrentMNVotes.begin();
     while (it != mapCurrentMNVotes.end()) {
         if (!mnList.HasMNByCollateral(it->first)) {
-            fileVotes.RemoveVotesFromSmartnode(it->first);
+            fileVotes.RemoveVotesFromReesistornode(it->first);
             mapCurrentMNVotes.erase(it++);
             fDirtyCache = true;
         } else {
@@ -286,7 +286,7 @@ uint256 CGovernanceObject::GetHash() const
     ss << nRevision;
     ss << nTime;
     ss << GetDataAsHexString();
-    ss << smartnodeOutpoint << uint8_t{} << 0xffffffff; // adding dummy values here to match old hashing
+    ss << reesistornodeOutpoint << uint8_t{} << 0xffffffff; // adding dummy values here to match old hashing
     ss << vchSig;
     // fee_tx is left out on purpose
 
@@ -298,9 +298,9 @@ uint256 CGovernanceObject::GetSignatureHash() const
     return SerializeHash(*this);
 }
 
-void CGovernanceObject::SetSmartnodeOutpoint(const COutPoint& outpoint)
+void CGovernanceObject::SetReesistornodeOutpoint(const COutPoint& outpoint)
 {
-    smartnodeOutpoint = outpoint;
+    reesistornodeOutpoint = outpoint;
 }
 
 bool CGovernanceObject::Sign(const CBLSSecretKey& key)
@@ -486,16 +486,16 @@ bool CGovernanceObject::IsValidLocally(std::string& strError, bool& fMissingConf
 
         auto mnList = deterministicMNManager->GetListAtChainTip();
 
-        std::string strOutpoint = smartnodeOutpoint.ToStringShort();
-        auto dmn = mnList.GetMNByCollateral(smartnodeOutpoint);
+        std::string strOutpoint = reesistornodeOutpoint.ToStringShort();
+        auto dmn = mnList.GetMNByCollateral(reesistornodeOutpoint);
         if (!dmn) {
-            strError = "Failed to find Smartnode by UTXO, missing smartnode=" + strOutpoint;
+            strError = "Failed to find Reesistornode by UTXO, missing reesistornode=" + strOutpoint;
             return false;
         }
 
         // Check that we have a valid MN signature
         if (!CheckSignature(dmn->pdmnState->pubKeyOperator.Get())) {
-            strError = "Invalid smartnode signature for: " + strOutpoint + ", pubkey = " + dmn->pdmnState->pubKeyOperator.Get().ToString();
+            strError = "Invalid reesistornode signature for: " + strOutpoint + ", pubkey = " + dmn->pdmnState->pubKeyOperator.Get().ToString();
             return false;
         }
 
@@ -666,7 +666,7 @@ bool CGovernanceObject::GetCurrentMNVotes(const COutPoint& mnCollateralOutpoint,
 void CGovernanceObject::Relay(CConnman& connman)
 {
     // Do not relay until fully synced
-    if (!smartnodeSync.IsSynced()) {
+    if (!reesistornodeSync.IsSynced()) {
         LogPrint(BCLog::GOBJECT, "CGovernanceObject::Relay -- won't relay until fully synced\n");
         return;
     }

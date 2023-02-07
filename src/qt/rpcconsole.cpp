@@ -5,7 +5,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/raptoreum-config.h>
+#include <config/reesist-config.h>
 #endif
 
 #include <qt/rpcconsole.h>
@@ -616,8 +616,8 @@ void RPCConsole::setClientModel(ClientModel *model)
         updateNetworkState();
         connect(model, SIGNAL(networkActiveChanged(bool)), this, SLOT(setNetworkActive(bool)));
 
-        connect(model, SIGNAL(smartnodeListChanged()), this, SLOT(updateSmartnodeCount()));
-        clientModel->refreshSmartnodeList();
+        connect(model, SIGNAL(reesistornodeListChanged()), this, SLOT(updateReesistornodeCount()));
+        clientModel->refreshReesistornodeList();
 
         connect(model, SIGNAL(mempoolSizeChanged(long,size_t)), this, SLOT(setMempoolSize(long,size_t)));
         connect(model, SIGNAL(islockCountChanged(size_t)), this, SLOT(setInstantSendLockCount(size_t)));
@@ -972,16 +972,16 @@ void RPCConsole::setNumBlocks(int count, const QDateTime& blockDate, const QStri
     }
 }
 
-void RPCConsole::updateSmartnodeCount()
+void RPCConsole::updateReesistornodeCount()
 {
     if (!clientModel) {
         return;
     }
-    auto mnList = clientModel->getSmartnodeList();
-    QString strSmartnodeCount = tr("Total: %1 (Enabled: %2)")
+    auto mnList = clientModel->getReesistornodeList();
+    QString strReesistornodeCount = tr("Total: %1 (Enabled: %2)")
         .arg(QString::number(mnList.GetAllMNsCount()))
         .arg(QString::number(mnList.GetValidMNsCount()));
-    ui->smartnodeCount->setText(strSmartnodeCount);
+    ui->reesistornodeCount->setText(strReesistornodeCount);
 }
 
 void RPCConsole::setMempoolSize(long numberOfTxs, size_t dynUsage)
@@ -1251,15 +1251,15 @@ void RPCConsole::updateNodeDetail(const CNodeCombinedStats *stats)
     ui->peerDirection->setText(stats->nodeStats.fInbound ? tr("Inbound") : tr("Outbound"));
     ui->peerHeight->setText(QString("%1").arg(QString::number(stats->nodeStats.nStartingHeight)));
     ui->peerWhitelisted->setText(stats->nodeStats.fWhitelisted ? tr("Yes") : tr("No"));
-    auto dmn = clientModel->getSmartnodeList().GetMNByService(stats->nodeStats.addr);
+    auto dmn = clientModel->getReesistornodeList().GetMNByService(stats->nodeStats.addr);
     if (dmn == nullptr) {
         ui->peerNodeType->setText(tr("Regular"));
         ui->peerPoSeScore->setText(tr("N/A"));
     } else {
         if (stats->nodeStats.verifiedProRegTxHash.IsNull()) {
-            ui->peerNodeType->setText(tr("Smartnode"));
+            ui->peerNodeType->setText(tr("Reesistornode"));
         } else {
-            ui->peerNodeType->setText(tr("Verified Smartnode"));
+            ui->peerNodeType->setText(tr("Verified Reesistornode"));
         }
         ui->peerPoSeScore->setText(QString::number(dmn->pdmnState->nPoSePenalty));
     }
@@ -1297,7 +1297,7 @@ void RPCConsole::setButtonIcons()
 void RPCConsole::reloadThemedWidgets()
 {
     clear();
-    ui->promptLabel->setHidden(GUIUtil::raptoreumThemeActive());
+    ui->promptLabel->setHidden(GUIUtil::reesistThemeActive());
     // Adjust button icon colors on theme changes
     setButtonIcons();
 }

@@ -34,7 +34,7 @@ namespace interfaces {
 class Handler;
 class Wallet;
 
-//! Interface for the src/evo part of a raptoreum node (raptoreumd process).
+//! Interface for the src/evo part of a reesist node (reesistd process).
 class EVO
 {
 public:
@@ -42,7 +42,7 @@ public:
     virtual CDeterministicMNList getListAtChainTip() = 0;
 };
 
-//! Interface for the src/llmq part of a raptoreum node (raptoreumd process).
+//! Interface for the src/llmq part of a reesist node (reesistd process).
 class LLMQ
 {
 public:
@@ -50,8 +50,8 @@ public:
     virtual size_t getInstantSentLockCount() = 0;
 };
 
-//! Interface for the src/masternode part of a raptoreum node (raptoreumd process).
-namespace Smartnode
+//! Interface for the src/masternode part of a reesist node (reesistd process).
+namespace Reesistornode
 {
 class Sync
 {
@@ -88,7 +88,7 @@ public:
 };
 }
 
-//! Top-level interface for a raptoreum node (raptoreumd process).
+//! Top-level interface for a reesist node (reesistd process).
 class Node
 {
 public:
@@ -255,7 +255,7 @@ public:
     virtual LLMQ& llmq() = 0;
 
     //! Return interface for accessing masternode related handler.
-    virtual Smartnode::Sync& smartnodeSync() = 0;
+    virtual Reesistornode::Sync& reesistornodeSync() = 0;
 
     //! Return interface for accessing masternode related handler.
 #ifdef ENABLE_WALLET
@@ -313,9 +313,9 @@ public:
     virtual std::unique_ptr<Handler> handleNotifyHeaderTip(NotifyHeaderTipFn fn) = 0;
 
     //! Register handler for masternode list update messages.
-    using NotifySmartnodeListChangedFn =
+    using NotifyReesistornodeListChangedFn =
         std::function<void(const CDeterministicMNList& newList)>;
-    virtual std::unique_ptr<Handler> handleNotifySmartnodeListChanged(NotifySmartnodeListChangedFn fn) = 0;
+    virtual std::unique_ptr<Handler> handleNotifyReesistornodeListChanged(NotifyReesistornodeListChangedFn fn) = 0;
 
     //! Register handler for additional data sync progress update messages.
     using NotifyAdditionalDataSyncProgressChangedFn =

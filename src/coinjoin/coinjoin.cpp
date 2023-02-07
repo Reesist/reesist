@@ -15,8 +15,8 @@
 #include <utilmoneystr.h>
 #include <validation.h>
 
-#include <smartnode/activesmartnode.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/activereesistornode.h>
+#include <reesistornode/reesistornode-sync.h>
 
 #include <llmq/quorums_instantsend.h>
 #include <llmq/quorums_chainlocks.h>
@@ -46,11 +46,11 @@ uint256 CCoinJoinQueue::GetSignatureHash() const
 
 bool CCoinJoinQueue::Sign()
 {
-    if (!fSmartnodeMode) return false;
+    if (!fReesistornodeMode) return false;
 
 
     uint256 hash = GetSignatureHash();
-    CBLSSignature sig = activeSmartnodeInfo.blsKeyOperator->Sign(hash);
+    CBLSSignature sig = activeReesistornodeInfo.blsKeyOperator->Sign(hash);
     if (!sig.IsValid()) {
         return false;
     }
@@ -92,11 +92,11 @@ uint256 CCoinJoinBroadcastTx::GetSignatureHash() const
 
 bool CCoinJoinBroadcastTx::Sign()
 {
-    if (!fSmartnodeMode) return false;
+    if (!fReesistornodeMode) return false;
 
     uint256 hash = GetSignatureHash();
 
-    CBLSSignature sig = activeSmartnodeInfo.blsKeyOperator->Sign(hash);
+    CBLSSignature sig = activeReesistornodeInfo.blsKeyOperator->Sign(hash);
     if (!sig.IsValid()) {
         return false;
     }
@@ -494,11 +494,11 @@ std::string CCoinJoin::GetMessageByID(PoolMessage nMessageID)
     case ERR_MAXIMUM:
         return _("Entry exceeds maximum size.");
     case ERR_MN_LIST:
-        return _("Not in the Smartnode list.");
+        return _("Not in the Reesistornode list.");
     case ERR_MODE:
         return _("Incompatible mode.");
     case ERR_QUEUE_FULL:
-        return _("Smartnode queue is full.");
+        return _("Reesistornode queue is full.");
     case ERR_RECENT:
         return _("Last queue was created too recently.");
     case ERR_SESSION:
@@ -551,14 +551,14 @@ void CCoinJoin::CheckDSTXes(const CBlockIndex* pindex)
 
 void CCoinJoin::UpdatedBlockTip(const CBlockIndex* pindex)
 {
-    if (pindex && smartnodeSync.IsBlockchainSynced()) {
+    if (pindex && reesistornodeSync.IsBlockchainSynced()) {
         CheckDSTXes(pindex);
     }
 }
 
 void CCoinJoin::NotifyChainLock(const CBlockIndex* pindex)
 {
-    if (pindex && smartnodeSync.IsBlockchainSynced()) {
+    if (pindex && reesistornodeSync.IsBlockchainSynced()) {
         CheckDSTXes(pindex);
     }
 }

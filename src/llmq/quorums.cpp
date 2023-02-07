@@ -11,9 +11,9 @@
 
 #include <evo/specialtx.h>
 
-#include <smartnode/activesmartnode.h>
+#include <reesistornode/activereesistornode.h>
 #include <chainparams.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-sync.h>
 #include <net.h>
 #include <net_processing.h>
 #include <netmessagemaker.h>
@@ -69,7 +69,7 @@ bool CQuorum::SetVerificationVector(const BLSVerificationVector& quorumVecIn)
 
 bool CQuorum::SetSecretKeyShare(const CBLSSecretKey& secretKeyShare)
 {
-    if (!secretKeyShare.IsValid() || (secretKeyShare.GetPublicKey() != GetPubKeyShare(GetMemberIndex(activeSmartnodeInfo.proTxHash)))) {
+    if (!secretKeyShare.IsValid() || (secretKeyShare.GetPublicKey() != GetPubKeyShare(GetMemberIndex(activeReesistornodeInfo.proTxHash)))) {
         return false;
     }
     skShare = secretKeyShare;
@@ -170,7 +170,7 @@ void CQuorumManager::Start()
     int workerCount = std::thread::hardware_concurrency() / 2;
     workerCount = std::max(std::min(1, workerCount), 4);
     workerPool.resize(workerCount);
-    RenameThreadPool(workerPool, "raptoreum-q-mngr");
+    RenameThreadPool(workerPool, "reesist-q-mngr");
 }
 
 void CQuorumManager::Stop()
@@ -182,7 +182,7 @@ void CQuorumManager::Stop()
 
 void CQuorumManager::TriggerQuorumDataRecoveryThreads(const CBlockIndex* pIndex) const
 {
-    if (!fSmartnodeMode || !CLLMQUtils::QuorumDataRecoveryEnabled() || pIndex == nullptr) {
+    if (!fReesistornodeMode || !CLLMQUtils::QuorumDataRecoveryEnabled() || pIndex == nullptr) {
         return;
     }
 
@@ -197,7 +197,7 @@ void CQuorumManager::TriggerQuorumDataRecoveryThreads(const CBlockIndex* pIndex)
         // First check if we are member of any quorum of this type
         bool fWeAreQuorumTypeMember{false};
         for (const auto& pQuorum : vecQuorums) {
-            if (pQuorum->IsValidMember(activeSmartnodeInfo.proTxHash)) {
+            if (pQuorum->IsValidMember(activeReesistornodeInfo.proTxHash)) {
                 fWeAreQuorumTypeMember = true;
                 break;
             }
@@ -210,7 +210,7 @@ void CQuorumManager::TriggerQuorumDataRecoveryThreads(const CBlockIndex* pIndex)
             }
 
             uint16_t nDataMask{0};
-            const bool fWeAreQuorumMember = pQuorum->IsValidMember(activeSmartnodeInfo.proTxHash);
+            const bool fWeAreQuorumMember = pQuorum->IsValidMember(activeReesistornodeInfo.proTxHash);
             const bool fSyncForTypeEnabled = mapQuorumVvecSync.count(pQuorum->qc.llmqType) > 0;
             const QvvecSyncMode syncMode = fSyncForTypeEnabled ? mapQuorumVvecSync.at(pQuorum->qc.llmqType) : QvvecSyncMode::Invalid;
             const bool fSyncCurrent = syncMode == QvvecSyncMode::Always || (syncMode == QvvecSyncMode::OnlyIfTypeMember && fWeAreQuorumTypeMember);
@@ -237,7 +237,7 @@ void CQuorumManager::TriggerQuorumDataRecoveryThreads(const CBlockIndex* pIndex)
 
 void CQuorumManager::UpdatedBlockTip(const CBlockIndex* pindexNew, bool fInitialDownload) const
 {
-    if (!smartnodeSync.IsBlockchainSynced()) {
+    if (!reesistornodeSync.IsBlockchainSynced()) {
         return;
     }
 
@@ -265,10 +265,10 @@ void CQuorumManager::EnsureQuorumConnections(Consensus::LLMQType llmqType, const
 {
     const auto& params = Params().GetConsensus().llmqs.at(llmqType);
 
-    auto myProTxHash = activeSmartnodeInfo.proTxHash;
+    auto myProTxHash = activeReesistornodeInfo.proTxHash;
     auto lastQuorums = ScanQuorums(llmqType, pindexNew, (size_t)params.keepOldConnections);
 
-    auto connmanQuorumsToDelete = g_connman->GetSmartnodeQuorums(llmqType);
+    auto connmanQuorumsToDelete = g_connman->GetReesistornodeQuorums(llmqType);
 
     // don't remove connections for the currently in-progress DKG round
     int curDkgHeight = pindexNew->nHeight - (pindexNew->nHeight % params.dkgInterval);
@@ -281,8 +281,8 @@ void CQuorumManager::EnsureQuorumConnections(Consensus::LLMQType llmqType, const
             continue;
         }
         if (connmanQuorumsToDelete.count(quorum->qc.quorumHash) > 0) {
-            LogPrint(BCLog::LLMQ, "CQuorumManager::%s -- removing smartnodes quorum connections for quorum %s:\n", __func__, quorum->qc.quorumHash.ToString());
-            g_connman->RemoveSmartnodeQuorumNodes(llmqType, quorum->qc.quorumHash);
+            LogPrint(BCLog::LLMQ, "CQuorumManager::%s -- removing reesistornodes quorum connections for quorum %s:\n", __func__, quorum->qc.quorumHash.ToString());
+            g_connman->RemoveReesistornodeQuorumNodes(llmqType, quorum->qc.quorumHash);
         }
     }
 }
@@ -376,7 +376,7 @@ bool CQuorumManager::RequestQuorumData(CNode* pFrom, Consensus::LLMQType llmqTyp
         return false;
     }
     if (pFrom->verifiedProRegTxHash.IsNull() && !pFrom->qwatch) {
-        LogPrint(BCLog::LLMQ, "CQuorumManager::%s -- pFrom is neither a verified smartnode nor a qwatch connection\n", __func__);
+        LogPrint(BCLog::LLMQ, "CQuorumManager::%s -- pFrom is neither a verified reesistornode nor a qwatch connection\n", __func__);
         return false;
     }
     if (Params().GetConsensus().llmqs.count(llmqType) == 0) {
@@ -518,13 +518,13 @@ size_t CQuorumManager::GetQuorumRecoveryStartOffset(const CQuorumCPtr pQuorum, c
     auto mns = deterministicMNManager->GetListForBlock(pIndex);
     std::vector<uint256> vecProTxHashes;
     vecProTxHashes.reserve(mns.GetValidMNsCount());
-    mns.ForEachMN(true, [&](const CDeterministicMNCPtr& pSmartnode) {
-        vecProTxHashes.emplace_back(pSmartnode->proTxHash);
+    mns.ForEachMN(true, [&](const CDeterministicMNCPtr& pReesistornode) {
+        vecProTxHashes.emplace_back(pReesistornode->proTxHash);
     });
     std::sort(vecProTxHashes.begin(), vecProTxHashes.end());
     size_t nIndex{0};
     for (size_t i = 0; i < vecProTxHashes.size(); ++i) {
-        if (activeSmartnodeInfo.proTxHash == vecProTxHashes[i]) {
+        if (activeReesistornodeInfo.proTxHash == vecProTxHashes[i]) {
             nIndex = i;
             break;
         }
@@ -545,8 +545,8 @@ void CQuorumManager::ProcessMessage(CNode* pFrom, const std::string& strCommand,
 
     if (strCommand == NetMsgType::QGETDATA) {
 
-        if (!fSmartnodeMode || pFrom == nullptr || (pFrom->verifiedProRegTxHash.IsNull() && !pFrom->qwatch)) {
-            errorHandler("Not a verified smartnode or a qwatch connection");
+        if (!fReesistornodeMode || pFrom == nullptr || (pFrom->verifiedProRegTxHash.IsNull() && !pFrom->qwatch)) {
+            errorHandler("Not a verified reesistornode or a qwatch connection");
             return;
         }
 
@@ -631,8 +631,8 @@ void CQuorumManager::ProcessMessage(CNode* pFrom, const std::string& strCommand,
 
     if (strCommand == NetMsgType::QDATA) {
 
-        if ((!fSmartnodeMode && !CLLMQUtils::IsWatchQuorumsEnabled()) || pFrom == nullptr || (pFrom->verifiedProRegTxHash.IsNull() && !pFrom->qwatch)) {
-            errorHandler("Not a verified smartnode or a qwatch connection");
+        if ((!fReesistornodeMode && !CLLMQUtils::IsWatchQuorumsEnabled()) || pFrom == nullptr || (pFrom->verifiedProRegTxHash.IsNull() && !pFrom->qwatch)) {
+            errorHandler("Not a verified reesistornode or a qwatch connection");
             return;
         }
 
@@ -704,9 +704,9 @@ void CQuorumManager::ProcessMessage(CNode* pFrom, const std::string& strCommand,
 
             BLSSecretKeyVector vecSecretKeys;
             vecSecretKeys.resize(vecEncrypted.size());
-            int minSmartnodeProtoVersion =  Params().IsFutureActive(chainActive.Tip()) ? MIN_SMARTNODE_PROTO_VERSION : OLD_MIN_SMARTNODE_PROTO_VERSION;
+            int minReesistornodeProtoVersion =  Params().IsFutureActive(chainActive.Tip()) ? MIN_SMARTNODE_PROTO_VERSION : OLD_MIN_SMARTNODE_PROTO_VERSION;
             for (size_t i = 0; i < vecEncrypted.size(); ++i) {
-                if (!vecEncrypted[i].Decrypt(memberIdx, *activeSmartnodeInfo.blsKeyOperator, vecSecretKeys[i], minSmartnodeProtoVersion)) {
+                if (!vecEncrypted[i].Decrypt(memberIdx, *activeReesistornodeInfo.blsKeyOperator, vecSecretKeys[i], minReesistornodeProtoVersion)) {
                     errorHandler("Failed to decrypt");
                     return;
                 }
@@ -767,7 +767,7 @@ void CQuorumManager::StartQuorumDataRecoveryThread(const CQuorumCPtr pQuorum, co
         };
         printLog("Start");
 
-        while (!smartnodeSync.IsBlockchainSynced() && !quorumThreadInterrupt) {
+        while (!reesistornodeSync.IsBlockchainSynced() && !quorumThreadInterrupt) {
             quorumThreadInterrupt.sleep_for(std::chrono::seconds(nRequestTimeout));
         }
 
@@ -778,7 +778,7 @@ void CQuorumManager::StartQuorumDataRecoveryThread(const CQuorumCPtr pQuorum, co
 
         vecMemberHashes.reserve(pQuorum->qc.validMembers.size());
         for (auto& member : pQuorum->members) {
-            if (pQuorum->IsValidMember(member->proTxHash) && member->proTxHash != activeSmartnodeInfo.proTxHash) {
+            if (pQuorum->IsValidMember(member->proTxHash) && member->proTxHash != activeReesistornodeInfo.proTxHash) {
                 vecMemberHashes.push_back(member->proTxHash);
             }
         }
@@ -818,10 +818,10 @@ void CQuorumManager::StartQuorumDataRecoveryThread(const CQuorumCPtr pQuorum, co
                         continue;
                     }
                 }
-                // Sleep a bit depending on the start offset to balance out multiple requests to same smartnode
+                // Sleep a bit depending on the start offset to balance out multiple requests to same reesistornode
                 quorumThreadInterrupt.sleep_for(std::chrono::milliseconds(nMyStartOffset * 100));
                 nTimeLastSuccess = GetAdjustedTime();
-                g_connman->AddPendingSmartnode(*pCurrentMemberHash);
+                g_connman->AddPendingReesistornode(*pCurrentMemberHash);
                 printLog("Connect");
             }
 
@@ -831,7 +831,7 @@ void CQuorumManager::StartQuorumDataRecoveryThread(const CQuorumCPtr pQuorum, co
                     return;
                 }
 
-                if (quorumManager->RequestQuorumData(pNode, pQuorum->qc.llmqType, pQuorum->pindexQuorum, nDataMask, activeSmartnodeInfo.proTxHash)) {
+                if (quorumManager->RequestQuorumData(pNode, pQuorum->qc.llmqType, pQuorum->pindexQuorum, nDataMask, activeReesistornodeInfo.proTxHash)) {
                     nTimeLastSuccess = GetAdjustedTime();
                     printLog("Requested");
                 } else {

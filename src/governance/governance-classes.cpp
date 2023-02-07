@@ -518,7 +518,7 @@ void CSuperblock::ParsePaymentSchedule(const std::string& strPaymentAddresses, c
         CTxDestination dest = DecodeDestination(vecParsed1[i]);
         if (!IsValidDestination(dest)) {
             std::ostringstream ostr;
-            ostr << "CSuperblock::ParsePaymentSchedule -- Invalid Raptoreum Address : " << vecParsed1[i];
+            ostr << "CSuperblock::ParsePaymentSchedule -- Invalid Reesist Address : " << vecParsed1[i];
             LogPrintf("%s\n", ostr.str());
             throw std::runtime_error(ostr.str());
         }
@@ -598,7 +598,7 @@ bool CSuperblock::IsValid(const CTransaction& txNew, int nBlockHeight, CAmount b
 
     int nOutputs = txNew.vout.size();
     int nPayments = CountPayments();
-    int nMinerAndSmartnodePayments = nOutputs - nPayments;
+    int nMinerAndReesistornodePayments = nOutputs - nPayments;
 
     LogPrint(BCLog::GOBJECT, "CSuperblock::IsValid -- nOutputs = %d, nPayments = %d, GetDataAsHexString = %s\n",
         nOutputs, nPayments, GetGovernanceObject()->GetDataAsHexString());
@@ -606,7 +606,7 @@ bool CSuperblock::IsValid(const CTransaction& txNew, int nBlockHeight, CAmount b
     // We require an exact match (including order) between the expected
     // superblock payments and the payments actually in the block.
 
-    if (nMinerAndSmartnodePayments < 0) {
+    if (nMinerAndReesistornodePayments < 0) {
         // This means the block cannot have all the superblock payments
         // so it is not valid.
         // TODO: could that be that we just hit coinbase size limit?
@@ -622,7 +622,7 @@ bool CSuperblock::IsValid(const CTransaction& txNew, int nBlockHeight, CAmount b
         return false;
     }
 
-    // miner and smartnodes should not get more than they would usually get
+    // miner and reesistornodes should not get more than they would usually get
     CAmount nBlockValue = txNew.GetValueOut();
     if (nBlockValue > blockReward + nPaymentsTotalAmount) {
         LogPrintf("CSuperblock::IsValid -- ERROR: Block invalid, block value limit exceeded: block %lld, limit %lld\n", nBlockValue, blockReward + nPaymentsTotalAmount);

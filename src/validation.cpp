@@ -40,8 +40,8 @@
 #include <validationinterface.h>
 #include <warnings.h>
 
-#include <smartnode/smartnode-payments.h>
-//#include <smartnode/smartnode-collaterals.h>
+#include <reesistornode/reesistornode-payments.h>
+//#include <reesistornode/reesistornode-collaterals.h>
 
 #include <evo/specialtx.h>
 #include <evo/deterministicmns.h>
@@ -58,7 +58,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Raptoreum Core cannot be compiled without assertions."
+# error "Reesist Core cannot be compiled without assertions."
 #endif
 
 #define MICRO 0.000001
@@ -718,7 +718,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         {
             const CTransaction *ptxConflicting = itConflicting->second;
 
-            // Transaction conflicts with mempool and RBF doesn't exist in Raptoreum
+            // Transaction conflicts with mempool and RBF doesn't exist in Reesist
             return state.Invalid(false, REJECT_DUPLICATE, "txn-mempool-conflict");
         }
     }
@@ -834,7 +834,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         // check special TXs after all the other checks. If we'd do this before the other checks, we might end up
         // DoS scoring a node for non-critical errors, e.g. duplicate keys because a TX is received that was already
         // mined
-        // NOTE: we use UTXO here and do NOT allow mempool txes as smartnode collaterals
+        // NOTE: we use UTXO here and do NOT allow mempool txes as reesistornode collaterals
         if (!CheckSpecialTx(tx, chainActive.Tip(), state, *pcoinsTip.get()))
             return false;
         if (pool.existsProviderTxConflict(tx)) {
@@ -1224,13 +1224,13 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     return nSubsidy * COIN;
 }
 
-CAmount GetSmartnodePayment(int nHeight, CAmount blockValue, CAmount specialTxFees)
+CAmount GetReesistornodePayment(int nHeight, CAmount blockValue, CAmount specialTxFees)
 {
     size_t mnCount = chainActive.Tip() == nullptr ? 0 : deterministicMNManager->GetListForBlock(chainActive.Tip()).GetAllMNsCount();
 
     if (mnCount >= 10 || Params().NetworkIDString().compare("test") == 0) {
         int percentage = Params().GetConsensus().nCollaterals.getRewardPercentage(nHeight);
-        CAmount specialFeeReward = specialTxFees * Params().GetConsensus().nFutureRewardShare.smartnode;
+        CAmount specialFeeReward = specialTxFees * Params().GetConsensus().nFutureRewardShare.reesistornode;
         return blockValue * percentage / 100 + specialFeeReward;
     } else {
         return 0;
@@ -1956,14 +1956,14 @@ static bool WriteTxIndexDataForBlock(const CBlock& block, CValidationState& stat
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("raptoreum-scriptch");
+    RenameThread("reesist-scriptch");
     scriptcheckqueue.Thread();
 }
 
 // Protected by cs_main
 VersionBitsCache versionbitscache;
 
-int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fCheckSmartnodesUpgraded)
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fCheckReesistornodesUpgraded)
 {
     LOCK(cs_main);
     int32_t nVersion = VERSIONBITS_TOP_BITS;
@@ -1972,7 +1972,7 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
         Consensus::DeploymentPos pos = Consensus::DeploymentPos(i);
         ThresholdState state = VersionBitsState(pindexPrev, params, pos, versionbitscache);
         const struct VBDeploymentInfo& vbinfo = VersionBitsDeploymentInfo[pos];
-        if (vbinfo.check_mn_protocol && state == ThresholdState::STARTED && fCheckSmartnodesUpgraded) {
+        if (vbinfo.check_mn_protocol && state == ThresholdState::STARTED && fCheckReesistornodesUpgraded) {
             // TODO implement new logic for MN upgrade checks (e.g. with LLMQ based feature/version voting)
         }
         if (state == ThresholdState::LOCKED_IN || state == ThresholdState::STARTED) {
@@ -2066,7 +2066,7 @@ static int64_t nTimeSubsidy = 0;
 static int64_t nTimeValueValid = 0;
 static int64_t nTimePayeeValid = 0;
 static int64_t nTimeProcessSpecial = 0;
-static int64_t nTimeRaptoreumSpecific = 0;
+static int64_t nTimeReesistSpecific = 0;
 static int64_t nTimeConnect = 0;
 static int64_t nTimeIndex = 0;
 static int64_t nTimeCallbacks = 0;
@@ -2467,15 +2467,15 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     LogPrint(BCLog::BENCHMARK, "      - IsBlockValueValid: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5_3 - nTime5_2), nTimeValueValid * MICRO, nTimeValueValid * MILLI / nBlocksTotal);
 
     if (!IsBlockPayeeValid(*block.vtx[0], pindex->nHeight, blockReward, specialTxFees)) {
-        return state.DoS(0, error("ConnectBlock(RAPTOREUM): couldn't find smartnode or superblock payments"),
+        return state.DoS(0, error("ConnectBlock(RAPTOREUM): couldn't find reesistornode or superblock payments"),
                                 REJECT_INVALID, "bad-cb-payee");
     }
 
     int64_t nTime5_4 = GetTimeMicros(); nTimePayeeValid += nTime5_4 - nTime5_3;
     LogPrint(BCLog::BENCHMARK, "      - IsBlockPayeeValid: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5_4 - nTime5_3), nTimePayeeValid * MICRO, nTimePayeeValid * MILLI / nBlocksTotal);
 
-    int64_t nTime5 = GetTimeMicros(); nTimeRaptoreumSpecific += nTime5 - nTime4;
-    LogPrint(BCLog::BENCHMARK, "    - Raptoreum specific: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5 - nTime4), nTimeRaptoreumSpecific * MICRO, nTimeRaptoreumSpecific * MILLI / nBlocksTotal);
+    int64_t nTime5 = GetTimeMicros(); nTimeReesistSpecific += nTime5 - nTime4;
+    LogPrint(BCLog::BENCHMARK, "    - Reesist specific: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5 - nTime4), nTimeReesistSpecific * MICRO, nTimeReesistSpecific * MILLI / nBlocksTotal);
 
     // END RAPTOREUM
 

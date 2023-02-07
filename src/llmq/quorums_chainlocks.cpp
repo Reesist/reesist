@@ -8,7 +8,7 @@
 #include <llmq/quorums_utils.h>
 
 #include <chain.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-sync.h>
 #include <net_processing.h>
 #include <scheduler.h>
 #include <spork.h>
@@ -251,11 +251,11 @@ void CChainLocksHandler::TrySignChainTip()
 {
     Cleanup();
 
-    if (!fSmartnodeMode) {
+    if (!fReesistornodeMode) {
         return;
     }
 
-    if (!smartnodeSync.IsBlockchainSynced()) {
+    if (!reesistornodeSync.IsBlockchainSynced()) {
         return;
     }
 
@@ -375,7 +375,7 @@ void CChainLocksHandler::TransactionAddedToMempool(const CTransactionRef& tx, in
 
 void CChainLocksHandler::BlockConnected(const std::shared_ptr<const CBlock>& pblock, const CBlockIndex* pindex, const std::vector<CTransactionRef>& vtxConflicted)
 {
-    if (!smartnodeSync.IsBlockchainSynced()) {
+    if (!reesistornodeSync.IsBlockchainSynced()) {
         return;
     }
 
@@ -660,7 +660,7 @@ bool CChainLocksHandler::InternalHasConflictingChainLock(int nHeight, const uint
 
 void CChainLocksHandler::Cleanup()
 {
-    if (!smartnodeSync.IsBlockchainSynced()) {
+    if (!reesistornodeSync.IsBlockchainSynced()) {
         return;
     }
 

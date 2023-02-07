@@ -74,10 +74,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case RTM: return QString("Raptoreum");
-            case mRTM: return QString("Milli-Raptoreum (1 / 1" THIN_SP_UTF8 "000)");
-            case uRTM: return QString("Micro-Raptoreum (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case ruffs: return QString("Ten Nano-Raptoreum (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case RTM: return QString("Reesist");
+            case mRTM: return QString("Milli-Reesist (1 / 1" THIN_SP_UTF8 "000)");
+            case uRTM: return QString("Micro-Reesist (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case ruffs: return QString("Ten Nano-Reesist (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -85,10 +85,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case RTM: return QString("TestRaptoreums");
-            case mRTM: return QString("Milli-TestRaptoreum (1 / 1" THIN_SP_UTF8 "000)");
-            case uRTM: return QString("Micro-TestRaptoreum (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case ruffs: return QString("Ten Nano-TestRaptoreum (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case RTM: return QString("TestReesists");
+            case mRTM: return QString("Milli-TestReesist (1 / 1" THIN_SP_UTF8 "000)");
+            case uRTM: return QString("Micro-TestReesist (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case ruffs: return QString("Ten Nano-TestReesist (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }

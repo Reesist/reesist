@@ -41,7 +41,7 @@ enum NumConnections {
     CONNECTIONS_ALL  = (CONNECTIONS_IN | CONNECTIONS_OUT),
 };
 
-/** Model for Raptoreum network client. */
+/** Model for Reesist network client. */
 class ClientModel : public QObject
 {
     Q_OBJECT
@@ -51,7 +51,7 @@ public:
     ~ClientModel();
 
     interfaces::Node& node() const { return m_node; }
-    interfaces::Smartnode::Sync& smartnodeSync() const { return m_node.smartnodeSync(); }
+    interfaces::Reesistornode::Sync& reesistornodeSync() const { return m_node.reesistornodeSync(); }
 #ifdef ENABLE_WALLET
     interfaces::CoinJoin::Options& coinJoinOptions() const { return m_node.coinJoinOptions(); }
 #endif
@@ -64,9 +64,9 @@ public:
     int getHeaderTipHeight() const;
     int64_t getHeaderTipTime() const;
 
-    void setSmartnodeList(const CDeterministicMNList& mnList);
-    CDeterministicMNList getSmartnodeList() const;
-    void refreshSmartnodeList();
+    void setReesistornodeList(const CDeterministicMNList& mnList);
+    CDeterministicMNList getReesistornodeList() const;
+    void refreshReesistornodeList();
 
     //! Returns enum BlockSource of the current importing/syncing state
     enum BlockSource getBlockSource() const;
@@ -92,7 +92,7 @@ private:
     std::unique_ptr<interfaces::Handler> m_handler_banned_list_changed;
     std::unique_ptr<interfaces::Handler> m_handler_notify_block_tip;
     std::unique_ptr<interfaces::Handler> m_handler_notify_header_tip;
-    std::unique_ptr<interfaces::Handler> m_handler_notify_smartnodelist_changed;
+    std::unique_ptr<interfaces::Handler> m_handler_notify_reesistornodelist_changed;
     std::unique_ptr<interfaces::Handler> m_handler_notify_additional_data_sync_progess_changed;
     OptionsModel *optionsModel;
     PeerTableModel *peerTableModel;
@@ -111,7 +111,7 @@ private:
 
 Q_SIGNALS:
     void numConnectionsChanged(int count);
-    void smartnodeListChanged() const;
+    void reesistornodeListChanged() const;
     void numBlocksChanged(int count, const QDateTime& blockDate, const QString& blockHash, double nVerificationProgress, bool header);
     void additionalDataSyncProgressChanged(double nSyncProgress);
     void mempoolSizeChanged(long count, size_t mempoolSizeInBytes);

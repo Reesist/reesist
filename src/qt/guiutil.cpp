@@ -260,7 +260,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent, bool fAllow
 
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a Raptoreum address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a Reesist address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
     widget->setValidator(new BitcoinAddressEntryValidator(parent, fAllowURI));
     widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
@@ -274,7 +274,7 @@ void setupAppearance(QWidget* parent, OptionsModel* model)
         QDialog dlg(parent);
         dlg.setObjectName("AppearanceSetup");
         dlg.setWindowTitle(QObject::tr("Appearance Setup"));
-        dlg.setWindowIcon(QIcon(":icons/raptoreum"));
+        dlg.setWindowIcon(QIcon(":icons/reesist"));
         // And the widgets we add to it
         QLabel lblHeading(QObject::tr("Please choose your preferred settings for the appearance of %1").arg(QObject::tr(PACKAGE_NAME)), &dlg);
         lblHeading.setObjectName("lblHeading");
@@ -311,8 +311,8 @@ void setupAppearance(QWidget* parent, OptionsModel* model)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no raptoreum: URI
-    if(!uri.isValid() || uri.scheme() != QString("raptoreum"))
+    // return if URI is not valid or is no reesist: URI
+    if(!uri.isValid() || uri.scheme() != QString("reesist"))
         return false;
 
     SendCoinsRecipient rv;
@@ -386,7 +386,7 @@ bool validateBitcoinURI(const QString& uri)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("raptoreum:%1").arg(info.address);
+    QString ret = QString("reesist:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
@@ -592,7 +592,7 @@ void openConfigfile()
 {
     fs::path pathConfig = GetConfigFile(gArgs.GetArg("-conf", BITCOIN_CONF_FILENAME));
 
-    /* Open raptoreum.conf with the associated application */
+    /* Open reesist.conf with the associated application */
     if (fs::exists(pathConfig))
         QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
 }
@@ -753,15 +753,15 @@ fs::path static StartupShortcutPath()
 {
     std::string chain = gArgs.GetChainName();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Raptoreum Core.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Reesist Core.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Raptoreum Core (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("Raptoreum Core (%s).lnk", chain);
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Reesist Core (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("Reesist Core (%s).lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for "Raptoreum Core*.lnk"
+    // check for "Reesist Core*.lnk"
     return fs::exists(StartupShortcutPath());
 }
 
@@ -851,8 +851,8 @@ fs::path static GetAutostartFilePath()
 {
     std::string chain = gArgs.GetChainName();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "raptoreumcore.desktop";
-    return GetAutostartDir() / strprintf("raptoreumcore-%s.lnk", chain);
+        return GetAutostartDir() / "reesistcore.desktop";
+    return GetAutostartDir() / strprintf("reesistcore-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -892,13 +892,13 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         if (!optionFile.good())
             return false;
         std::string chain = gArgs.GetChainName();
-        // Write a raptoreumcore.desktop file to the autostart directory:
+        // Write a reesistcore.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=Raptoreum Core\n";
+            optionFile << "Name=Reesist Core\n";
         else
-            optionFile << strprintf("Name=Raptoreum Core (%s)\n", chain);
+            optionFile << strprintf("Name=Reesist Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", gArgs.GetBoolArg("-testnet", false), gArgs.GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -919,7 +919,7 @@ LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef
         return nullptr;
     }
 
-    // loop through the list of startup items and try to find the Raptoreum Core app
+    // loop through the list of startup items and try to find the Reesist Core app
     for(int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
         UInt32 resolutionFlags = kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes;
@@ -976,7 +976,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
 
     if(fAutoStart && !foundItem) {
-        // add Raptoreum Core app to startup item list
+        // add Reesist Core app to startup item list
         LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, nullptr, nullptr, bitcoinAppUrl, nullptr, nullptr);
     }
     else if(!fAutoStart && foundItem) {
@@ -1118,7 +1118,7 @@ void loadStyleSheet(bool fForceUpdate)
 
         std::vector<QString> vecFiles;
         // If light/dark theme is used load general styles first
-        if (raptoreumThemeActive()) {
+        if (reesistThemeActive()) {
             vecFiles.push_back(pathToFile(generalTheme));
         }
         vecFiles.push_back(pathToFile(getActiveTheme()));
@@ -1705,7 +1705,7 @@ QString getActiveTheme()
     return theme;
 }
 
-bool raptoreumThemeActive()
+bool reesistThemeActive()
 {
     QSettings settings;
     QString theme = settings.value("theme", defaultTheme).toString();
@@ -1724,7 +1724,7 @@ void disableMacFocusRect(const QWidget* w)
 #ifdef Q_OS_MAC
     for (const auto& c : w->findChildren<QWidget*>()) {
         if (c->testAttribute(Qt::WA_MacShowFocusRect)) {
-            c->setAttribute(Qt::WA_MacShowFocusRect, !raptoreumThemeActive());
+            c->setAttribute(Qt::WA_MacShowFocusRect, !reesistThemeActive());
             setRectsDisabled.emplace(c);
         }
     }
@@ -1738,7 +1738,7 @@ void updateMacFocusRects()
     auto it = setRectsDisabled.begin();
     while (it != setRectsDisabled.end()) {
         if (allWidgets.contains(*it)) {
-            (*it)->setAttribute(Qt::WA_MacShowFocusRect, !raptoreumThemeActive());
+            (*it)->setAttribute(Qt::WA_MacShowFocusRect, !reesistThemeActive());
             ++it;
         } else {
             it = setRectsDisabled.erase(it);

@@ -308,14 +308,14 @@ UniValue stop(const JSONRPCRequest& jsonRequest)
     if (jsonRequest.fHelp || jsonRequest.params.size() > 1)
         throw std::runtime_error(
             "stop\n"
-            "\nStop Raptoreum Core server.");
+            "\nStop Reesist Core server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
     if (jsonRequest.params[0].isNum()) {
         MilliSleep(jsonRequest.params[0].get_int());
     }
-    return "Raptoreum Core server stopping";
+    return "Reesist Core server stopping";
 }
 
 UniValue uptime(const JSONRPCRequest& jsonRequest)
@@ -568,7 +568,7 @@ UniValue CRPCTable::execute(const JSONRPCRequest &request) const
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found");
 
     // Before executing the RPC Command, filter commands from platform rpc user
-    if (fSmartnodeMode && request.authUser == gArgs.GetArg("-platform-user", defaultPlatformUser)) {
+    if (fReesistornodeMode && request.authUser == gArgs.GetArg("-platform-user", defaultPlatformUser)) {
 
         auto it = mapPlatformRestrictions.equal_range(request.strMethod);
 
@@ -642,7 +642,7 @@ std::vector<std::string> CRPCTable::listCommands() const
 
 std::string HelpExampleCli(const std::string& methodname, const std::string& args)
 {
-    return "> raptoreum-cli " + methodname + " " + args + "\n";
+    return "> reesist-cli " + methodname + " " + args + "\n";
 }
 
 std::string HelpExampleRpc(const std::string& methodname, const std::string& args)

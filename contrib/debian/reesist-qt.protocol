@@ -1,0 +1,11 @@
+[Protocol]
+exec=reesist-qt '%u'
+protocol=reesist
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false
