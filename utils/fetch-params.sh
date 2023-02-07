@@ -27,15 +27,15 @@ WGETCMD="$(command -v wget || echo '')"
 IPFSCMD="$(command -v ipfs || echo '')"
 CURLCMD="$(command -v curl || echo '')"
 
-# fetch methods can be disabled with RTM_DISABLE_SOMETHING=1
-RTM_DISABLE_WGET="${RTM_DISABLE_WGET:-}"
-#RTM_DISABLE_IPFS="${RTM_DISABLE_IPFS:-}"
-RTM_DISABLE_CURL="${RTM_DISABLE_CURL:-}"
+# fetch methods can be disabled with REE_DISABLE_SOMETHING=1
+REE_DISABLE_WGET="${REE_DISABLE_WGET:-}"
+#REE_DISABLE_IPFS="${REE_DISABLE_IPFS:-}"
+REE_DISABLE_CURL="${REE_DISABLE_CURL:-}"
 
 LOCKFILE=/tmp/fetch_params.lock
 
 fetch_wget() {
-    if [ -z "$WGETCMD" ] || ! [ -z "$RTM_DISABLE_WGET" ]; then
+    if [ -z "$WGETCMD" ] || ! [ -z "$REE_DISABLE_WGET" ]; then
         return 1
     fi
 
@@ -53,7 +53,7 @@ EOF
 }
 
 #fetch_ipfs() {
-#    if [ -z "$IPFSCMD" ] || ! [ -z "$RTM_DISABLE_IPFS" ]; then
+#    if [ -z "$IPFSCMD" ] || ! [ -z "$REE_DISABLE_IPFS" ]; then
 #        return 1
 #    fi
 
@@ -66,7 +66,7 @@ EOF
 #}
 
 fetch_curl() {
-    if [ -z "$CURLCMD" ] || ! [ -z "$RTM_DISABLE_CURL" ]; then
+    if [ -z "$CURLCMD" ] || ! [ -z "$REE_DISABLE_CURL" ]; then
         return 1
     fi
 
@@ -176,7 +176,7 @@ main() {
     || exit_locked_error
 
     cat <<EOF
-RTM - fetch-params.sh
+REE - fetch-params.sh
 
 This script will fetch the Reesist SNARK parameters and verify their
 integrity with sha256sum.

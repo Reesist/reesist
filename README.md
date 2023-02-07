@@ -15,7 +15,7 @@ Reesist Core Latest (in development)
 
 We will Reesist!
 
-Reesist is a Reesist (RTM) fork (thank you to all of these projects), the history traced back is: Bitcoin > Dash (Darkcoin) > Reesist > Reesist.
+Reesist is a Reesist (REE) fork (thank you to all of these projects), the history traced back is: Bitcoin > Dash (Darkcoin) > Reesist > Reesist.
 
 **Why?**
 -----
@@ -87,7 +87,7 @@ We will Reesist!
 
 Website Launch - Februrary 15th 2023.
 
-Mainnet Launch - February 26th 2023 (a tip of the hat to RTM).
+Mainnet Launch - February 26th 2023 (a tip of the hat to REE).
 
 Fully working Quorums and chainlocks - Mid to end of March 2023.
 

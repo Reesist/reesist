@@ -470,7 +470,7 @@ void protx_register_fund_help(CWallet* const pwallet)
 {
     throw std::runtime_error(
             "protx register_fund \"collateralAddress\" \"collateralAmount\" \"ipAndPort\" \"ownerAddress\" \"operatorPubKey\" \"votingAddress\" operatorReward \"payoutAddress\" ( \"fundAddress\" submit )\n"
-            "\nCreates, funds and sends a ProTx to the network. The resulting transaction will move the specified collateralAmount of RTM\n"
+            "\nCreates, funds and sends a ProTx to the network. The resulting transaction will move the specified collateralAmount of REE\n"
             "to the address specified by collateralAddress and will then function as the collateral of your\n"
             "reesistornode.\n"
             + HelpRequiringPassphrase(pwallet) + "\n"
