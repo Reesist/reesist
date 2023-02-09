@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "checking out $GITHUB_REF trigger by $GITHUB_EVENT_NAME"
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Read build.properties key for master
         if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
         id: release-version
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Getting Version
         uses: actions/download-artifact@v1
         with:
@@ -164,7 +164,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Getting Version
         uses: actions/download-artifact@v1
         with:
@@ -257,7 +257,7 @@ jobs:
     runs-on: macos-11
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Getting Version
         uses: actions/download-artifact@v1
         with:
@@ -343,7 +343,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Getting Version
         uses: actions/download-artifact@v1
         with:
@@ -421,7 +421,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Getting Version
         uses: actions/download-artifact@v1
         with:
@@ -499,7 +499,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Getting Version
         uses: actions/download-artifact@v1
         with:
