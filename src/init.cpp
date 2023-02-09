@@ -650,7 +650,7 @@ void SetupServerArgs()
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/Raptor3um/reesist>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/Reesist/reesist>";
     const std::string URL_WEBSITE = "<https://reesist.com>";
 
     return CopyrightHolders(_("Copyright (C)"), 2014, COPYRIGHT_YEAR) + "\n" +

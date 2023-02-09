@@ -12,7 +12,7 @@ This release is mandatory for all nodes.
 
 Please report bugs using the issue tracker at github:
 
-<https://github.com/Raptor3um/reesist/issues>
+<https://github.com/Reesist/reesist/issues>
 
 
 Upgrading and downgrading
