@@ -5,7 +5,7 @@ Reesist Core Latest (in development)
 |-|-|-|
 
 
-<img src="https://i.imgur.com/m4OoW9M.png" width="350" height="350">
+<img src="https://i.imgur.com/Fs2OsFE.png" width="1000" height="350">
 
 
 **About Reesist**
