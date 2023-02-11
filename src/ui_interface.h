@@ -111,8 +111,8 @@ public:
     /** Best header has changed */
     boost::signals2::signal<void (bool, const CBlockIndex *)> NotifyHeaderTip;
 
-    /** Smartnode list has changed */
-    boost::signals2::signal<void (const CDeterministicMNList&)> NotifySmartnodeListChanged;
+    /** Reesistornode list has changed */
+    boost::signals2::signal<void (const CDeterministicMNList&)> NotifyReesistornodeListChanged;
 
     /** Additional data sync progress changed */
     boost::signals2::signal<void (double nSyncProgress)> NotifyAdditionalDataSyncProgressChanged;

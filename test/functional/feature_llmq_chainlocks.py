@@ -7,7 +7,7 @@
 import time
 
 from test_framework.mininode import *
-from test_framework.test_framework import RaptoreumTestFramework
+from test_framework.test_framework import ReesistTestFramework
 from test_framework.util import *
 
 '''
@@ -17,9 +17,9 @@ Checks LLMQs based ChainLocks
 
 '''
 
-class LLMQChainLocksTest(RaptoreumTestFramework):
+class LLMQChainLocksTest(ReesistTestFramework):
     def set_test_params(self):
-        self.set_raptoreum_test_params(6, 5, fast_dip3_enforcement=True)
+        self.set_reesist_test_params(6, 5, fast_dip3_enforcement=True)
 
     def run_test(self):
 

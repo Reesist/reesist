@@ -91,8 +91,8 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-//Raptoreum only features
-bool fSmartnodeMode = false;
+//Reesist only features
+bool fReesistornodeMode = false;
 bool fDisableGovernance = false;
 /**
     nWalletBackups:
@@ -103,8 +103,8 @@ bool fDisableGovernance = false;
 */
 int nWalletBackups = 10;
 
-const char * const BITCOIN_CONF_FILENAME = "raptoreum.conf";
-const char * const BITCOIN_PID_FILENAME = "raptoreumd.pid";
+const char * const BITCOIN_CONF_FILENAME = "reesist.conf";
+const char * const BITCOIN_PID_FILENAME = "reesistd.pid";
 
 ArgsManager gArgs;
 
@@ -295,7 +295,7 @@ public:
         std::pair<bool,std::string> found_result(false, std::string());
 
         // We pass "true" to GetArgHelper in order to return the last
-        // argument value seen from the command line (so "raptoreumd -foo=bar
+        // argument value seen from the command line (so "reesistd -foo=bar
         // -foo=baz" gives GetArg(am,"foo")=={true,"baz"}
         found_result = GetArgHelper(am.m_override_args, arg, true);
         if (found_result.first) {
@@ -579,7 +579,7 @@ std::string ArgsManager::GetHelpMessage()
             else if (last_cat == OptionsCategory::INDEXING)
                 usage += HelpMessageGroup("Indexing options:");
             else if (last_cat == OptionsCategory::SMARTNODE)
-                usage += HelpMessageGroup("Smartnode options:");
+                usage += HelpMessageGroup("Reesistornode options:");
             else if (last_cat == OptionsCategory::STATSD)
                 usage += HelpMessageGroup("Statsd options:");
             else if (last_cat == OptionsCategory::ZMQ)
@@ -666,13 +666,13 @@ void PrintExceptionContinue(const std::exception_ptr pex, const char* pszExcepti
 
 fs::path GetDefaultDataDir()
 {
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\RaptoreumCore
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\RaptoreumCore
-    // Mac: ~/Library/Application Support/RaptoreumCore
-    // Unix: ~/.raptoreumcore
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\ReesistCore
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\ReesistCore
+    // Mac: ~/Library/Application Support/ReesistCore
+    // Unix: ~/.reesistcore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "RaptoreumCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "ReesistCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -682,10 +682,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/RaptoreumCore";
+    return pathRet / "Library/Application Support/ReesistCore";
 #else
     // Unix
-    return pathRet / ".raptoreumcore";
+    return pathRet / ".reesistcore";
 #endif
 #endif
 }
@@ -806,7 +806,7 @@ void ArgsManager::ReadConfigFile(const std::string& confPath)
     if (stream.good()) {
         ReadConfigStream(stream);
     } else {
-        // Create an empty raptoreum.conf if it does not excist
+        // Create an empty reesist.conf if it does not excist
         FILE* configFile = fopen(GetConfigFile(confPath).string().c_str(), "a");
         if (configFile != nullptr)
             fclose(configFile);
@@ -1149,8 +1149,8 @@ std::string CopyrightHolders(const std::string& strPrefix, unsigned int nStartYe
     std::string strCopyrightHolders = strPrefix + strprintf(" %u ", nEndYear) + strprintf(_(COPYRIGHT_HOLDERS), _(COPYRIGHT_HOLDERS_SUBSTITUTION));
 
     // Check for untranslated substitution to make sure Dash Core copyright is not removed by accident
-    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("Raptoreum Core") == std::string::npos) {
-        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2021, nEndYear) + "The Raptoreum Core developers";
+    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("Reesist Core") == std::string::npos) {
+        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2021, nEndYear) + "The Reesist Core developers";
     }
 
     // Check for untranslated substitution to make sure Dash Core copyright is not removed by accident

@@ -8,7 +8,7 @@
 cmake_minimum_required(VERSION 3.7)
 
 set(PROJECT_NAME
-    raptoreum)
+    reesist)
 
 project(${PROJECT_NAME}
   LANGUAGES CXX C)
@@ -68,8 +68,8 @@ file(GLOB SOURCE_FILES
         src/leveldb/include/*.h
         src/llmq/*.cpp
         src/llmq/*.h
-        src/smartnode/*.cpp
-        src/smartnode/*.h
+        src/reesistornode/*.cpp
+        src/reesistornode/*.h
         src/policy/*.cpp
         src/policy/*.h
         src/primitives/*.cpp

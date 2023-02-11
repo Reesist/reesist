@@ -19,7 +19,7 @@ class UniValue;
 
 /**
  * This class handles the p2p message MNAUTH. MNAUTH is sent directly after VERACK and authenticates the sender as a
- * smartnode. It is only sent when the sender is actually a smartnode.
+ * reesistornode. It is only sent when the sender is actually a reesistornode.
  *
  * MNAUTH signs a challenge that was previously sent via VERSION. The challenge is signed differently depending on
  * the connection being an inbound or outbound connection, which avoids MITM of this form:
@@ -27,7 +27,7 @@ class UniValue;
  * while still allowing:
  *   node1 -> Eve -> node2
  *
- * This is fine as we only use this mechanism for DoS protection. It allows us to keep smartnode connections open for
+ * This is fine as we only use this mechanism for DoS protection. It allows us to keep reesistornode connections open for
  * a very long time without evicting the connections when inbound connection limits are hit (non-MNs will then be evicted).
  *
  * If we ever want to add transfer of sensitive data, THIS AUTHENTICATION MECHANISM IS NOT ENOUGH!! We'd need to implement
@@ -52,7 +52,7 @@ public:
 
     static void PushMNAUTH(CNode* pnode, CConnman& connman);
     static void ProcessMessage(CNode* pnode, const std::string& strCommand, CDataStream& vRecv, CConnman& connman);
-    static void NotifySmartnodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff);
+    static void NotifyReesistornodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff);
 };
 
 

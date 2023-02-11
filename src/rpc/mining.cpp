@@ -29,8 +29,8 @@
 #include <warnings.h>
 
 #include <governance/governance-classes.h>
-#include <smartnode/smartnode-payments.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-payments.h>
+#include <reesistornode/reesistornode-sync.h>
 
 #include <evo/deterministicmns.h>
 #include <evo/specialtx.h>
@@ -174,7 +174,7 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
             "\nMine blocks immediately to a specified address (before the RPC call returns)\n"
             "\nArguments:\n"
             "1. nblocks      (numeric, required) How many blocks are generated immediately.\n"
-            "2. address      (string, required) The address to send the newly generated Raptoreum to.\n"
+            "2. address      (string, required) The address to send the newly generated Reesist to.\n"
             "3. maxtries     (numeric, optional) How many iterations to try (default = 1000000).\n"
             "\nResult:\n"
             "[ blockhashes ]     (array) hashes of blocks generated\n"
@@ -224,7 +224,7 @@ UniValue getmininginfo(const JSONRPCRequest& request)
             "  \"pooledtx\": n              (numeric) The size of the mempool\n"
             "  \"chain\": \"xxxx\",           (string) current network name as defined in BIP70 (main, test, regtest)\n"
             "  \"warnings\": \"...\"          (string) any network and blockchain warnings\n"
-            "  \"errors\": \"...\"            (string) DEPRECATED. Same as warnings. Only shown when raptoreumd is started with -deprecatedrpc=getmininginfo\n"
+            "  \"errors\": \"...\"            (string) DEPRECATED. Same as warnings. Only shown when reesistd is started with -deprecatedrpc=getmininginfo\n"
             "}\n"
             "\nExamples:\n"
             + HelpExampleCli("getmininginfo", "")
@@ -376,15 +376,15 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "  \"bits\" : \"xxxxxxxx\",              (string) compressed target of next block\n"
             "  \"previousbits\" : \"xxxxxxxx\",      (string) compressed target of current highest block\n"
             "  \"height\" : n                      (numeric) The height of the next block\n"
-            "  \"smartnode\" : [                  (array) required smartnode payments that must be included in the next block\n"
+            "  \"reesistornode\" : [                  (array) required reesistornode payments that must be included in the next block\n"
             "      {\n"
             "         \"payee\" : \"xxxx\",          (string) payee address\n"
             "         \"script\" : \"xxxx\",         (string) payee scriptPubKey\n"
             "         \"amount\": n                (numeric) required amount to pay\n"
             "      }\n"
             "  },\n"
-            "  \"smartnode_payments_started\" :  true|false, (boolean) true, if smartnode payments started\n"
-            "  \"smartnode_payments_enforced\" : true|false, (boolean) true, if smartnode payments are enforced\n"
+            "  \"reesistornode_payments_started\" :  true|false, (boolean) true, if reesistornode payments started\n"
+            "  \"reesistornode_payments_enforced\" : true|false, (boolean) true, if reesistornode payments are enforced\n"
             "  \"superblock\" : [                  (array) required superblock payees that must be included in the next block\n"
             "      {\n"
             "         \"payee\" : \"xxxx\",          (string) payee address\n"
@@ -474,16 +474,16 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
     if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Raptoreum Core is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Reesist Core is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Raptoreum Core is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Reesist Core is downloading blocks...");
 
     // next bock is a superblock and we need governance info to correctly construct it
     if (AreSuperblocksEnabled()
-        && !smartnodeSync.IsSynced()
+        && !reesistornodeSync.IsSynced()
         && CSuperblock::IsValidBlockHeight(chainActive.Height() + 1))
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Raptoreum Core is syncing with network...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Reesist Core is syncing with network...");
 
     static unsigned int nTransactionsUpdatedLast;
 
@@ -683,8 +683,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("previousbits", strprintf("%08x", pblocktemplate->nPrevBits));
     result.pushKV("height", (int64_t)(pindexPrev->nHeight+1));
 
-    UniValue smartnodeObj(UniValue::VARR);
-    for (const auto& txout : pblocktemplate->voutSmartnodePayments) {
+    UniValue reesistornodeObj(UniValue::VARR);
+    for (const auto& txout : pblocktemplate->voutReesistornodePayments) {
         CTxDestination dest;
         ExtractDestination(txout.scriptPubKey, dest);
 
@@ -692,12 +692,12 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         obj.pushKV("payee", EncodeDestination(dest).c_str());
         obj.pushKV("script", HexStr(txout.scriptPubKey));
         obj.pushKV("amount", txout.nValue);
-        smartnodeObj.push_back(obj);
+        reesistornodeObj.push_back(obj);
     }
 
-    result.pushKV("smartnode", smartnodeObj);
-    result.pushKV("smartnode_payments_started", pindexPrev->nHeight + 1 > consensusParams.nSmartnodePaymentsStartBlock);
-    result.pushKV("smartnode_payments_enforced", true);
+    result.pushKV("reesistornode", reesistornodeObj);
+    result.pushKV("reesistornode_payments_started", pindexPrev->nHeight + 1 > consensusParams.nReesistornodePaymentsStartBlock);
+    result.pushKV("reesistornode_payments_enforced", true);
 
     UniValue superblockObjArray(UniValue::VARR);
     if(pblocktemplate->voutSuperblockPayments.size()) {
@@ -1021,7 +1021,7 @@ UniValue setgenerate(const JSONRPCRequest& request)
     gArgs.SoftSetArg("-genproclimit", itostr(nGenProcLimit));
     //mapArgs["-gen"] = (fGenerate ? "1" : "0");
     //mapArgs ["-genproclimit"] = itostr(nGenProcLimit);
-    int numCores = GenerateRaptoreums(fGenerate, nGenProcLimit, Params());
+    int numCores = GenerateReesists(fGenerate, nGenProcLimit, Params());
 
     nGenProcLimit = nGenProcLimit >= 0 ? nGenProcLimit : numCores;
     std::string msg = std::to_string(nGenProcLimit) + " of " + std::to_string(numCores);

@@ -86,8 +86,8 @@ def get_legacy_sigopcount_tx(tx, fAccurate=True):
         count += CScript(j.scriptSig).GetSigOpCount(fAccurate)
     return count
 
-# Identical to GetSmartnodePayment in C++ code
-def get_smartnode_payment(nHeight, blockValue):
+# Identical to GetReesistornodePayment in C++ code
+def get_reesistornode_payment(nHeight, blockValue):
     ret = int(blockValue / 5)
 
     nMNPIBlock = 350

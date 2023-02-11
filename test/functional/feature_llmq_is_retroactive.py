@@ -13,15 +13,15 @@ feature_llmq_is_retroactive.py
 
 Tests retroactive signing
 
-We have 6 nodes where node 0 is the control node, nodes 1-5 are smartnodes.
+We have 6 nodes where node 0 is the control node, nodes 1-5 are reesistornodes.
 Mempool inconsistencies are simulated via disconnecting/reconnecting node 3
 and by having a higher relay fee on nodes 4 and 5.
 '''
 
-class LLMQ_IS_RetroactiveSigning(RaptoreumTestFramework):
+class LLMQ_IS_RetroactiveSigning(ReesistTestFramework):
     def set_test_params(self):
         # -whitelist is needed to avoid the trickling logic on node0
-        self.set_raptoreum_test_params(6, 5, [["-whitelist=127.0.0.1"], [], [], [], ["-minrelaytxfee=0.001"], ["-minrelaytxfee=0.001"]], fast_dip3_enforcement=True)
+        self.set_reesist_test_params(6, 5, [["-whitelist=127.0.0.1"], [], [], [], ["-minrelaytxfee=0.001"], ["-minrelaytxfee=0.001"]], fast_dip3_enforcement=True)
 
     def run_test(self):
         while self.nodes[0].getblockchaininfo()["bip9_softforks"]["dip0008"]["status"] != "active":

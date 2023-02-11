@@ -35,9 +35,9 @@ class TestP2PConn(P2PInterface):
         return self.last_mnlistdiff
 
 
-class LLMQCoinbaseCommitmentsTest(RaptoreumTestFramework):
+class LLMQCoinbaseCommitmentsTest(ReesistTestFramework):
     def set_test_params(self):
-        self.set_raptoreum_test_params(4, 3, fast_dip3_enforcement=True)
+        self.set_reesist_test_params(4, 3, fast_dip3_enforcement=True)
 
     def run_test(self):
         self.test_node = self.nodes[0].add_p2p_connection(TestP2PConn())
@@ -53,9 +53,9 @@ class LLMQCoinbaseCommitmentsTest(RaptoreumTestFramework):
         mnList = self.test_getmnlistdiff(null_hash, self.nodes[0].getbestblockhash(), {}, [], expectedUpdated)
         expectedUpdated2 = expectedUpdated + []
 
-        # Register one more MN, but don't start it (that would fail as RaptoreumTestFramework doesn't support this atm)
+        # Register one more MN, but don't start it (that would fail as ReesistTestFramework doesn't support this atm)
         baseBlockHash = self.nodes[0].getbestblockhash()
-        self.prepare_smartnode(self.mn_count)
+        self.prepare_reesistornode(self.mn_count)
         new_mn = self.mninfo[self.mn_count]
 
         # Now test if that MN appears in a diff when the base block is the one just before MN registration

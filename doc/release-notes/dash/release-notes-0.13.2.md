@@ -1,15 +1,15 @@
-Raptoreum Core version 0.13.2.0
+Reesist Core version 0.13.2.0
 ==========================
 
 Release is now available from:
 
-  <https://www.raptoreum.org/downloads/#wallets>
+  <https://www.reesist.org/downloads/#wallets>
 
 This is a new minor version release, bringing various bugfixes and other improvements.
 
 Please report bugs using the issue tracker at github:
 
-  <https://github.com/raptoreum/raptoreum/issues>
+  <https://github.com/reesist/reesist/issues>
 
 
 Upgrading and downgrading
@@ -20,14 +20,14 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Raptoreum-Qt (on Mac) or
-raptoreumd/raptoreum-qt (on Linux). If you upgrade after DIP0003 activation you will
+installer (on Windows) or just copy over /Applications/Reesist-Qt (on Mac) or
+reesistd/reesist-qt (on Linux). If you upgrade after DIP0003 activation you will
 have to reindex (start with -reindex-chainstate or -reindex) to make sure
 your wallet has all the new data synced (only if you were using version < 0.13).
 
-Note that there is no protocol bump in this version and thus active smartnodes
+Note that there is no protocol bump in this version and thus active reesistornodes
 updating from v0.13.0.0 or v0.13.1.0 do not require any additional actions (no need to issue
-`smartnode start` command).
+`reesistornode start` command).
 
 Downgrade warning
 -----------------
@@ -44,14 +44,14 @@ Downgrading to 0.13.0.0 is fully supported but is not recommended unless you hav
 Notable changes
 ===============
 
-Providing "smartnodeblsprivkey" is now mandatory when the node is launched as a smartnode ("smartnode=1")
+Providing "reesistornodeblsprivkey" is now mandatory when the node is launched as a reesistornode ("reesistornode=1")
 ------------------------------------------------------------------------
-In previous versions, "smartnodeblsprivkey" was not mandatory as these versions had to function with and without DIP3
-activation. Now that DIP3 has activated on mainnet and testnet, we can make "smartnodeblsprivkey" mandatory when
-configuring and running a smartnode. Please note that your smartnode will fail to start when "smartnodeblsprivkey"
-is not specified. This also means that 0.13.2.0 will only work with smartnodes which have already registered their
-DIP3 smartnode. This enforcement was added to catch misconfigurations of smartnodes which would otherwise stay
-unnoticed until spork 15 activation and thus surprise and hurt smartnode owners.
+In previous versions, "reesistornodeblsprivkey" was not mandatory as these versions had to function with and without DIP3
+activation. Now that DIP3 has activated on mainnet and testnet, we can make "reesistornodeblsprivkey" mandatory when
+configuring and running a reesistornode. Please note that your reesistornode will fail to start when "reesistornodeblsprivkey"
+is not specified. This also means that 0.13.2.0 will only work with reesistornodes which have already registered their
+DIP3 reesistornode. This enforcement was added to catch misconfigurations of reesistornodes which would otherwise stay
+unnoticed until spork 15 activation and thus surprise and hurt reesistornode owners.
 
 Fix for consistency issues after sudden stopping of node
 --------------------------------------------------------
@@ -69,9 +69,9 @@ in the next major release.
 Fix incorrect behavior for "protx diff" and the P2P message "GETMNLISTDIFF"
 ---------------------------------------------------------------------------
 Both were responding with errors when "0" was used as base block hash. DIP4 defines "0" to be equivalent with the
-genesis block, so that it's easy for peers to request the full smartnode list.
-This is mostly important for SPV nodes (e.g. mobile wallets) which need the smartnode list. Right now, all nodes in
-the network will respond with an error when "0" is provided in  "GETMNLISTDIFF". Until enough smartnodes have upgraded
+genesis block, so that it's easy for peers to request the full reesistornode list.
+This is mostly important for SPV nodes (e.g. mobile wallets) which need the reesistornode list. Right now, all nodes in
+the network will respond with an error when "0" is provided in  "GETMNLISTDIFF". Until enough reesistornodes have upgraded
 to 0.13.2.0, SPV nodes should use the full genesis hash to circumvent the error.
 
 Exclusion of LLMQ quorum commitments from partial blocks
@@ -83,7 +83,7 @@ are not affected and are still included in partial/filtered blocks as these migh
 
 RPC changes
 -----------
-`smartnode list json` and `protx list` will now include the collateral address of smartnodes.
+`reesistornode list json` and `protx list` will now include the collateral address of reesistornodes.
 
 Bug fixes/Other improvements
 ----------------------------
@@ -96,27 +96,27 @@ There are few bug fixes in this release:
  0.13.2.0 Change log
 ===================
 
-See detailed [set of changes](https://github.com/raptoreum/raptoreum/compare/v0.13.1.0...raptoreum:v0.13.2.0).
+See detailed [set of changes](https://github.com/reesist/reesist/compare/v0.13.1.0...reesist:v0.13.2.0).
 
 ### Backports
 
-- [`548a48918`](https://github.com/raptoreum/raptoreum/commit/548a48918) Move IS block filtering into ConnectBlock (#2766)
-- [`6374dce99`](https://github.com/raptoreum/raptoreum/commit/6374dce99) Fix error message for invalid voting addresses (#2747)
-- [`25222b378`](https://github.com/raptoreum/raptoreum/commit/25222b378) Make -smartnodeblsprivkey mandatory when -smartnode is given (#2745)
-- [`0364e033a`](https://github.com/raptoreum/raptoreum/commit/0364e033a) Implement 2-stage commit for CEvoDB to avoid inconsistencies after crashes (#2744)
-- [`a11e2f9eb`](https://github.com/raptoreum/raptoreum/commit/a11e2f9eb) Add collateraladdress into smartnode/protx list rpc output (#2740)
-- [`43612a272`](https://github.com/raptoreum/raptoreum/commit/43612a272) Only include selected TX types into CMerkleBlock (#2737)
-- [`f868fbc78`](https://github.com/raptoreum/raptoreum/commit/f868fbc78) Stop g_connman first before deleting it (#2734)
-- [`9e233f391`](https://github.com/raptoreum/raptoreum/commit/9e233f391) Fix incorrect usage of begin() when genesis block is requested in "protx diff" (#2699)
-- [`e75f971b9`](https://github.com/raptoreum/raptoreum/commit/e75f971b9) Do not process blocks in CDeterministicMNManager before dip3 activation (#2698)
-- [`1cc47ebcd`](https://github.com/raptoreum/raptoreum/commit/1cc47ebcd) Backport #14701: build: Add CLIENT_VERSION_BUILD to CFBundleGetInfoString (#2687)
+- [`548a48918`](https://github.com/reesist/reesist/commit/548a48918) Move IS block filtering into ConnectBlock (#2766)
+- [`6374dce99`](https://github.com/reesist/reesist/commit/6374dce99) Fix error message for invalid voting addresses (#2747)
+- [`25222b378`](https://github.com/reesist/reesist/commit/25222b378) Make -reesistornodeblsprivkey mandatory when -reesistornode is given (#2745)
+- [`0364e033a`](https://github.com/reesist/reesist/commit/0364e033a) Implement 2-stage commit for CEvoDB to avoid inconsistencies after crashes (#2744)
+- [`a11e2f9eb`](https://github.com/reesist/reesist/commit/a11e2f9eb) Add collateraladdress into reesistornode/protx list rpc output (#2740)
+- [`43612a272`](https://github.com/reesist/reesist/commit/43612a272) Only include selected TX types into CMerkleBlock (#2737)
+- [`f868fbc78`](https://github.com/reesist/reesist/commit/f868fbc78) Stop g_connman first before deleting it (#2734)
+- [`9e233f391`](https://github.com/reesist/reesist/commit/9e233f391) Fix incorrect usage of begin() when genesis block is requested in "protx diff" (#2699)
+- [`e75f971b9`](https://github.com/reesist/reesist/commit/e75f971b9) Do not process blocks in CDeterministicMNManager before dip3 activation (#2698)
+- [`1cc47ebcd`](https://github.com/reesist/reesist/commit/1cc47ebcd) Backport #14701: build: Add CLIENT_VERSION_BUILD to CFBundleGetInfoString (#2687)
 
 ### Other
 
-- [`2516a6e19`](https://github.com/raptoreum/raptoreum/commit/2516a6e19) Bump version to 0.13.2
-- [`9dd16cdbe`](https://github.com/raptoreum/raptoreum/commit/9dd16cdbe) Bump minChainWork and AssumeValid to block #1033120 (#2750)
-- [`18f087b27`](https://github.com/raptoreum/raptoreum/commit/18f087b27) Fix some typos in doc/guide-startmany.md (#2711)
-- [`709ab6d3e`](https://github.com/raptoreum/raptoreum/commit/709ab6d3e) Minimal fix for litemode vs bad-protx-key-not-same issue (#2694)
+- [`2516a6e19`](https://github.com/reesist/reesist/commit/2516a6e19) Bump version to 0.13.2
+- [`9dd16cdbe`](https://github.com/reesist/reesist/commit/9dd16cdbe) Bump minChainWork and AssumeValid to block #1033120 (#2750)
+- [`18f087b27`](https://github.com/reesist/reesist/commit/18f087b27) Fix some typos in doc/guide-startmany.md (#2711)
+- [`709ab6d3e`](https://github.com/reesist/reesist/commit/709ab6d3e) Minimal fix for litemode vs bad-protx-key-not-same issue (#2694)
 
 Credits
 =======
@@ -133,40 +133,40 @@ As well as everyone that submitted issues and reviewed pull requests.
 Older releases
 ==============
 
-Raptoreum was previously known as Darkcoin.
+Reesist was previously known as Darkcoin.
 
 Darkcoin tree 0.8.x was a fork of Litecoin tree 0.8, original name was XCoin
 which was first released on Jan/18/2014.
 
-Darkcoin tree 0.9.x was the open source implementation of smartnodes based on
+Darkcoin tree 0.9.x was the open source implementation of reesistornodes based on
 the 0.8.x tree and was first released on Mar/13/2014.
 
 Darkcoin tree 0.10.x used to be the closed source implementation of Darksend
 which was released open source on Sep/25/2014.
 
-Raptoreum Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
-Darkcoin was rebranded to Raptoreum.
+Reesist Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
+Darkcoin was rebranded to Reesist.
 
-Raptoreum Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
+Reesist Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
 
-Raptoreum Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
+Reesist Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 
-- [v0.13.1](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.13.1.md) released Feb/9/2019
-- [v0.13.0](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.13.0.md) released Jan/14/2019
-- [v0.12.3.4](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.3.4.md) released Dec/14/2018
-- [v0.12.3.3](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.3.3.md) released Sep/19/2018
-- [v0.12.3.2](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.3.2.md) released Jul/09/2018
-- [v0.12.3.1](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.3.1.md) released Jul/03/2018
-- [v0.12.2.3](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.2.3.md) released Jan/12/2018
-- [v0.12.2.2](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.2.2.md) released Dec/17/2017
-- [v0.12.2](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.2.md) released Nov/08/2017
-- [v0.12.1](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.1.md) released Feb/06/2017
-- [v0.12.0](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.12.0.md) released Aug/15/2015
-- [v0.11.2](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.11.2.md) released Mar/04/2015
-- [v0.11.1](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.11.1.md) released Feb/10/2015
-- [v0.11.0](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.11.0.md) released Jan/15/2015
-- [v0.10.x](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.10.0.md) released Sep/25/2014
-- [v0.9.x](https://github.com/raptoreum/raptoreum/blob/master/doc/release-notes/raptoreum/release-notes-0.9.0.md) released Mar/13/2014
+- [v0.13.1](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.13.1.md) released Feb/9/2019
+- [v0.13.0](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.13.0.md) released Jan/14/2019
+- [v0.12.3.4](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.3.4.md) released Dec/14/2018
+- [v0.12.3.3](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.3.3.md) released Sep/19/2018
+- [v0.12.3.2](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.3.2.md) released Jul/09/2018
+- [v0.12.3.1](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.3.1.md) released Jul/03/2018
+- [v0.12.2.3](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.2.3.md) released Jan/12/2018
+- [v0.12.2.2](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.2.2.md) released Dec/17/2017
+- [v0.12.2](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.2.md) released Nov/08/2017
+- [v0.12.1](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.1.md) released Feb/06/2017
+- [v0.12.0](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.12.0.md) released Aug/15/2015
+- [v0.11.2](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.11.2.md) released Mar/04/2015
+- [v0.11.1](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.11.1.md) released Feb/10/2015
+- [v0.11.0](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.11.0.md) released Jan/15/2015
+- [v0.10.x](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.10.0.md) released Sep/25/2014
+- [v0.9.x](https://github.com/reesist/reesist/blob/master/doc/release-notes/reesist/release-notes-0.9.0.md) released Mar/13/2014
 

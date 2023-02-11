@@ -5,7 +5,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <netbase.h>
-#include <test/test_raptoreum.h>
+#include <test/test_reesist.h>
 #include <utilstrencodings.h>
 
 #include <string>

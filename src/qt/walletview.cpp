@@ -85,9 +85,9 @@ WalletView::WalletView(QWidget* parent) :
     addWidget(coinJoinCoinsPage);
 
     QSettings settings;
-    if (settings.value("fShowSmartnodesTab").toBool()) {
-        smartnodeListPage = new SmartnodeList();
-        addWidget(smartnodeListPage);
+    if (settings.value("fShowReesistornodesTab").toBool()) {
+        reesistornodeListPage = new ReesistornodeList();
+        addWidget(reesistornodeListPage);
     }
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
@@ -154,8 +154,8 @@ void WalletView::setClientModel(ClientModel *_clientModel)
     sendCoinsPage->setClientModel(_clientModel);
     coinJoinCoinsPage->setClientModel(_clientModel);
     QSettings settings;
-    if (settings.value("fShowSmartnodesTab").toBool()) {
-        smartnodeListPage->setClientModel(_clientModel);
+    if (settings.value("fShowReesistornodesTab").toBool()) {
+        reesistornodeListPage->setClientModel(_clientModel);
     }
 }
 
@@ -167,8 +167,8 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     transactionView->setModel(_walletModel);
     overviewPage->setWalletModel(_walletModel);
     QSettings settings;
-    if (settings.value("fShowSmartnodesTab").toBool()) {
-        smartnodeListPage->setWalletModel(_walletModel);
+    if (settings.value("fShowReesistornodesTab").toBool()) {
+        reesistornodeListPage->setWalletModel(_walletModel);
     }
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
@@ -239,11 +239,11 @@ void WalletView::gotoHistoryPage()
     setCurrentWidget(transactionsPage);
 }
 
-void WalletView::gotoSmartnodePage()
+void WalletView::gotoReesistornodePage()
 {
     QSettings settings;
-    if (settings.value("fShowSmartnodesTab").toBool()) {
-        setCurrentWidget(smartnodeListPage);
+    if (settings.value("fShowReesistornodesTab").toBool()) {
+        setCurrentWidget(reesistornodeListPage);
     }
 }
 

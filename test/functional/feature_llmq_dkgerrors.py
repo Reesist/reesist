@@ -13,9 +13,9 @@ Simulate and check DKG errors
 
 '''
 
-class LLMQDKGErrors(RaptoreumTestFramework):
+class LLMQDKGErrors(ReesistTestFramework):
     def set_test_params(self):
-        self.set_raptoreum_test_params(6, 5, [["-whitelist=127.0.0.1"]] * 6, fast_dip3_enforcement=True)
+        self.set_reesist_test_params(6, 5, [["-whitelist=127.0.0.1"]] * 6, fast_dip3_enforcement=True)
 
     def run_test(self):
 
@@ -47,7 +47,7 @@ class LLMQDKGErrors(RaptoreumTestFramework):
         self.assert_member_valid(qh, self.mninfo[0].proTxHash, False)
 
         # Heal some damage (don't get PoSe banned)
-        self.heal_smartnodes(33)
+        self.heal_reesistornodes(33)
 
         self.log.info("Lets lie in the contribution and then also lie in the justification")
         self.mninfo[0].node.quorum('dkgsimerror', 'justify-omit', '0')
@@ -85,7 +85,7 @@ class LLMQDKGErrors(RaptoreumTestFramework):
             else:
                 assert(m['valid'])
 
-    def heal_smartnodes(self, blockCount):
+    def heal_reesistornodes(self, blockCount):
         # We're not testing PoSe here, so lets heal the MNs :)
         self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 4070908800)
         self.wait_for_sporks_same()

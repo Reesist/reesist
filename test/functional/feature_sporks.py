@@ -54,7 +54,7 @@ class SporkTest(BitcoinTestFramework):
         assert(self.get_test_spork_state(self.nodes[0]) == spork_new_state)
         assert(self.get_test_spork_state(self.nodes[1]) == spork_new_state)
 
-        # Generate one block to kick off smartnode sync, which also starts sporks syncing for node2
+        # Generate one block to kick off reesistornode sync, which also starts sporks syncing for node2
         self.nodes[1].generate(1)
 
         # connect new node and check spork propagation after restoring from cache

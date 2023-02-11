@@ -160,7 +160,7 @@ bool CheckProRegTx(const CTransaction& tx, const CBlockIndex* pindexPrev, CValid
     const CKeyID *keyForPayloadSig = nullptr;
     COutPoint collateralOutpoint;
     Coin coin;
-	SmartnodeCollaterals collaterals = Params().GetConsensus().nCollaterals;
+	ReesistornodeCollaterals collaterals = Params().GetConsensus().nCollaterals;
     if (!ptx.collateralOutpoint.hash.IsNull()) {
         if (!view.GetCoin(ptx.collateralOutpoint, coin) || coin.IsSpent() || !collaterals.isValidCollateral(coin.out.nValue)) {
             return state.DoS(10, false, REJECT_INVALID, "bad-protx-collateral");

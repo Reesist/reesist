@@ -7,7 +7,7 @@
 #include <llmq/quorums_utils.h>
 #include <llmq/quorums_signing_shares.h>
 
-#include <smartnode/activesmartnode.h>
+#include <reesistornode/activereesistornode.h>
 #include <bls/bls_batchverifier.h>
 #include <cxxtimer.hpp>
 #include <net_processing.h>
@@ -703,7 +703,7 @@ void CSigningManager::ProcessRecoveredSig(const std::shared_ptr<const CRecovered
             if (db.GetRecoveredSigById(llmqType, recoveredSig->id, otherRecoveredSig)) {
                 auto otherSignHash = CLLMQUtils::BuildSignHash(otherRecoveredSig);
                 if (signHash != otherSignHash) {
-                    // this should really not happen, as each smartnode is participating in only one vote,
+                    // this should really not happen, as each reesistornode is participating in only one vote,
                     // even if it's a member of multiple quorums. so a majority is only possible on one quorum and one msgHash per id
                     LogPrintf("CSigningManager::%s -- conflicting recoveredSig for signHash=%s, id=%s, msgHash=%s, otherSignHash=%s\n", __func__,
                               signHash.ToString(), recoveredSig->id.ToString(), recoveredSig->msgHash.ToString(), otherSignHash.ToString());
@@ -725,7 +725,7 @@ void CSigningManager::ProcessRecoveredSig(const std::shared_ptr<const CRecovered
         pendingReconstructedRecoveredSigs.erase(recoveredSig->GetHash());
     }
 
-    if (fSmartnodeMode) {
+    if (fReesistornodeMode) {
         CInv inv(MSG_QUORUM_RECOVERED_SIG, recoveredSig->GetHash());
         g_connman->ForEachNode([&](CNode* pnode) {
             if (pnode->nVersion >= LLMQS_PROTO_VERSION && pnode->fSendRecSigs) {
@@ -782,7 +782,7 @@ void CSigningManager::UnregisterRecoveredSigsListener(CRecoveredSigsListener* l)
 
 bool CSigningManager::AsyncSignIfMember(Consensus::LLMQType llmqType, const uint256& id, const uint256& msgHash, const uint256& quorumHash, bool allowReSign)
 {
-    if (!fSmartnodeMode || activeSmartnodeInfo.proTxHash.IsNull()) {
+    if (!fReesistornodeMode || activeReesistornodeInfo.proTxHash.IsNull()) {
         return false;
     }
 
@@ -803,7 +803,7 @@ bool CSigningManager::AsyncSignIfMember(Consensus::LLMQType llmqType, const uint
         return false;
     }
 
-    if (!quorum->IsValidMember(activeSmartnodeInfo.proTxHash)) {
+    if (!quorum->IsValidMember(activeReesistornodeInfo.proTxHash)) {
         return false;
     }
 

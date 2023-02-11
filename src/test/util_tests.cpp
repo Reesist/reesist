@@ -9,7 +9,7 @@
 #include <sync.h>
 #include <utilstrencodings.h>
 #include <utilmoneystr.h>
-#include <test/test_raptoreum.h>
+#include <test/test_reesist.h>
 
 #include <stdint.h>
 #include <vector>

@@ -10,8 +10,8 @@
 #endif // ENABLE_WALLET
 #include <dsnotificationinterface.h>
 #include <governance/governance.h>
-#include <smartnode/smartnode-payments.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-payments.h>
+#include <reesistornode/reesistornode-sync.h>
 #include <validation.h>
 
 #include <evo/deterministicmns.h>
@@ -32,12 +32,12 @@ void CDSNotificationInterface::InitializeCurrentBlockTip()
 void CDSNotificationInterface::AcceptedBlockHeader(const CBlockIndex *pindexNew)
 {
     llmq::chainLocksHandler->AcceptedBlockHeader(pindexNew);
-    smartnodeSync.AcceptedBlockHeader(pindexNew);
+    reesistornodeSync.AcceptedBlockHeader(pindexNew);
 }
 
 void CDSNotificationInterface::NotifyHeaderTip(const CBlockIndex *pindexNew, bool fInitialDownload)
 {
-    smartnodeSync.NotifyHeaderTip(pindexNew, fInitialDownload, connman);
+    reesistornodeSync.NotifyHeaderTip(pindexNew, fInitialDownload, connman);
 }
 
 void CDSNotificationInterface::SynchronousUpdatedBlockTip(const CBlockIndex *pindexNew, const CBlockIndex *pindexFork, bool fInitialDownload)
@@ -53,7 +53,7 @@ void CDSNotificationInterface::UpdatedBlockTip(const CBlockIndex *pindexNew, con
     if (pindexNew == pindexFork) // blocks were disconnected without any new ones
         return;
 
-    smartnodeSync.UpdatedBlockTip(pindexNew, fInitialDownload, connman);
+    reesistornodeSync.UpdatedBlockTip(pindexNew, fInitialDownload, connman);
 
     // Update global DIP0001 activation status
     fDIP0001ActiveAtTip = Params().GetConsensus().DIP0001Enabled;
@@ -111,9 +111,9 @@ void CDSNotificationInterface::BlockDisconnected(const std::shared_ptr<const CBl
     CCoinJoin::BlockDisconnected(pblock, pindexDisconnected);
 }
 
-void CDSNotificationInterface::NotifySmartnodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff)
+void CDSNotificationInterface::NotifyReesistornodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff)
 {
-    CMNAuth::NotifySmartnodeListChanged(undo, oldMNList, diff);
+    CMNAuth::NotifyReesistornodeListChanged(undo, oldMNList, diff);
     governance.UpdateCachesAndClean();
 }
 

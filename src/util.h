@@ -13,7 +13,7 @@
 #define BITCOIN_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/raptoreum-config.h>
+#include <config/reesist-config.h>
 #endif
 
 #include <attributes.h>
@@ -50,9 +50,9 @@
 #define DBG( x )
 #endif
 
-//Raptoreum only features
+//Reesist only features
 
-extern bool fSmartnodeMode;
+extern bool fReesistornodeMode;
 extern bool fDisableGovernance;
 extern int nWalletBackups;
 
@@ -338,7 +338,7 @@ void RenameThreadPool(ctpl::thread_pool& tp, const char* baseName);
  */
 template <typename Callable> void TraceThread(const std::string name,  Callable func)
 {
-    std::string s = "raptoreum-" + name;
+    std::string s = "reesist-" + name;
     RenameThread(s.c_str());
     try
     {

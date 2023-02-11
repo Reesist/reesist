@@ -81,12 +81,12 @@ UniValue getpeerinfo(const JSONRPCRequest& request)
             "    \"addrbind\":\"ip:port\",    (string) Bind address of the connection to the peer\n"
             "    \"addrlocal\":\"ip:port\",   (string) Local address as reported by the peer\n"
             "    \"services\":\"xxxxxxxxxxxxxxxx\",   (string) The services offered\n"
-            "    \"verified_proregtx_hash\": h, (hex) Only present when the peer is a smartnode and succesfully\n"
+            "    \"verified_proregtx_hash\": h, (hex) Only present when the peer is a reesistornode and succesfully\n"
             "                               authenticated via MNAUTH. In this case, this field contains the\n"
-            "                               protx hash of the smartnode\n"
-            "    \"verified_pubkey_hash\":   h, (hex) Only present when the peer is a smartnode and succesfully\n"
+            "                               protx hash of the reesistornode\n"
+            "    \"verified_pubkey_hash\":   h, (hex) Only present when the peer is a reesistornode and succesfully\n"
             "                               authenticated via MNAUTH. In this case, this field contains the\n"
-            "                               hash of the smartnode's operator public key\n"
+            "                               hash of the reesistornode's operator public key\n"
             "    \"relaytxes\":true|false,    (boolean) Whether peer has asked us to relay transactions to it\n"
             "    \"lastsend\": ttt,           (numeric) The time in seconds since epoch (Jan 1 1970 GMT) of the last send\n"
             "    \"lastrecv\": ttt,           (numeric) The time in seconds since epoch (Jan 1 1970 GMT) of the last receive\n"
@@ -98,10 +98,10 @@ UniValue getpeerinfo(const JSONRPCRequest& request)
             "    \"minping\": n,              (numeric) minimum observed ping time (if any at all)\n"
             "    \"pingwait\": n,             (numeric) ping wait (if non-zero)\n"
             "    \"version\": v,              (numeric) The peer version, such as 70001\n"
-            "    \"subver\": \"/Raptoreum Core:x.x.x/\",  (string) The string version\n"
+            "    \"subver\": \"/Reesist Core:x.x.x/\",  (string) The string version\n"
             "    \"inbound\": true|false,     (boolean) Inbound (true) or Outbound (false)\n"
             "    \"addnode\": true|false,     (boolean) Whether connection was due to addnode/-connect or if it was an automatic/inbound connection\n"
-            "    \"smartnode\": true|false,   (boolean) Whether connection was due to smartnode connection attempt\n"
+            "    \"reesistornode\": true|false,   (boolean) Whether connection was due to reesistornode connection attempt\n"
             "    \"startingheight\": n,       (numeric) The starting height (block) of the peer\n"
             "    \"banscore\": n,             (numeric) The ban score\n"
             "    \"synced_headers\": n,       (numeric) The last header we have in common with this peer\n"
@@ -172,7 +172,7 @@ UniValue getpeerinfo(const JSONRPCRequest& request)
         obj.pushKV("subver", stats.cleanSubVer);
         obj.pushKV("inbound", stats.fInbound);
         obj.pushKV("addnode", stats.m_manual_connection);
-        obj.pushKV("smartnode", stats.m_smartnode_connection);
+        obj.pushKV("reesistornode", stats.m_reesistornode_connection);
         obj.pushKV("startingheight", stats.nStartingHeight);
         if (fStateStats) {
             obj.pushKV("banscore", statestats.nMisbehavior);
@@ -312,7 +312,7 @@ UniValue getaddednodeinfo(const JSONRPCRequest& request)
             "    \"connected\" : true|false,          (boolean) If connected\n"
             "    \"addresses\" : [                    (list of objects) Only when connected = true\n"
             "       {\n"
-            "         \"address\" : \"192.168.0.201:9999\",  (string) The raptoreum server IP and port we're connected to\n"
+            "         \"address\" : \"192.168.0.201:9999\",  (string) The reesist server IP and port we're connected to\n"
             "         \"connected\" : \"outbound\"           (string) connection, inbound or outbound\n"
             "       }\n"
             "     ]\n"
@@ -440,7 +440,7 @@ UniValue getnetworkinfo(const JSONRPCRequest& request)
             "{\n"
             "  \"version\": xxxxx,                      (numeric) the server version\n"
             "  \"buildversion\": \"x.x.x.x-xxx\",         (string) the server build version including RC info or commit as relevant\n"
-            "  \"subversion\": \"/Raptoreum Core:x.x.x.x/\",   (string) the server subversion string\n"
+            "  \"subversion\": \"/Reesist Core:x.x.x.x/\",   (string) the server subversion string\n"
             "  \"protocolversion\": xxxxx,              (numeric) the protocol version\n"
             "  \"localservices\": \"xxxxxxxxxxxxxxxx\", (string) the services we offer to the network\n"
             "  \"localrelay\": true|false,              (bool) true if transaction relay is requested from peers\n"

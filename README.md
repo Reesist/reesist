@@ -15,12 +15,12 @@ Reesist Core Latest (in development)
 
 We will Reesist!
 
-Reesist is a Raptoreum (RTM) fork (thank you to all of these projects), the history traced back is: Bitcoin > Dash (Darkcoin) > Raptoreum > Reesist.
+Reesist is a Reesist (REE) fork (thank you to all of these projects), the history traced back is: Bitcoin > Dash (Darkcoin) > Reesist > Reesist.
 
 **Why?**
 -----
 
-Raptoreums combination of Proof of Work (POW) and Smartnodes which offer an option for passive income and offering the network increased protection and decentralization is optimal to being able to Reesist. Reesist will continue to inherit Raptoreums advanced features such as NFTs and Smart Contracts and hopefully further expand adding more features such as additional privacy options.
+Reesists combination of Proof of Work (POW) and Reesistornodes which offer an option for passive income and offering the network increased protection and decentralization is optimal to being able to Reesist. Reesist will continue to inherit Reesists advanced features such as NFTs and Smart Contracts and hopefully further expand adding more features such as additional privacy options.
 
 We will Reesist!
 
@@ -38,10 +38,10 @@ Improved profitability for GPU miners by putting mined coins into Resistor nodes
 
 We will Reesist!
 
-**Smartnodes > Reesistorodes**
+**Reesistornodes > Reesistorodes**
 ------------------------
 
-Due to the importance and services provided by Smartnodes their naming will be changed to "Reesistornodes".
+Due to the importance and services provided by Reesistornodes their naming will be changed to "Reesistornodes".
 
 We will Reesist!
 
@@ -87,7 +87,11 @@ We will Reesist!
 
 Website Launch - Februrary 15th 2023.
 
+<<<<<<< HEAD
+Mainnet Launch - February 26th 2023 (a tip of the hat to REE).
+=======
 Mainnet Launch - February 26th 2023 (a tip of the hat to RTM).
+>>>>>>> 74b019759... Update README.md
 
 Fully working Quorums and chainlocks - Mid to end of March 2023.
 

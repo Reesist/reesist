@@ -13,7 +13,7 @@
 #include <interfaces/handler.h>
 #include <interfaces/wallet.h>
 #include <llmq/quorums_instantsend.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-sync.h>
 #include <net.h>
 #include <net_processing.h>
 #include <netaddress.h>
@@ -32,7 +32,7 @@
 #include <warnings.h>
 
 #if defined(HAVE_CONFIG_H)
-#include <config/raptoreum-config.h>
+#include <config/reesist-config.h>
 #endif
 #ifdef ENABLE_WALLET
 #include <coinjoin/coinjoin-client-options.h>
@@ -71,20 +71,20 @@ public:
     }
 };
 
-class SmartnodeSyncImpl : public Smartnode::Sync
+class ReesistornodeSyncImpl : public Reesistornode::Sync
 {
 public:
     bool isSynced()
     {
-        return smartnodeSync.IsSynced();
+        return reesistornodeSync.IsSynced();
     }
     bool isBlockchainSynced()
     {
-        return smartnodeSync.IsBlockchainSynced();
+        return reesistornodeSync.IsBlockchainSynced();
     }
     std::string getSyncStatus()
     {
-        return smartnodeSync.GetSyncStatus();
+        return reesistornodeSync.GetSyncStatus();
     }
 };
 
@@ -155,7 +155,7 @@ class NodeImpl : public Node
 {
     EVOImpl m_evo;
     LLMQImpl m_llmq;
-    SmartnodeSyncImpl m_smartnodeSync;
+    ReesistornodeSyncImpl m_reesistornodeSync;
 #ifdef ENABLE_WALLET
     CoinJoinOptionsImpl m_coinjoin;
 #endif
@@ -366,7 +366,7 @@ class NodeImpl : public Node
     }
     EVO& evo() override { return m_evo; }
     LLMQ& llmq() override { return m_llmq; }
-    Smartnode::Sync& smartnodeSync() override { return m_smartnodeSync; }
+    Reesistornode::Sync& reesistornodeSync() override { return m_reesistornodeSync; }
 #ifdef ENABLE_WALLET
     CoinJoin::Options& coinJoinOptions() override { return m_coinjoin; }
 #endif
@@ -423,10 +423,10 @@ class NodeImpl : public Node
                     GuessVerificationProgress(Params().TxData(), block));
             }));
     }
-    std::unique_ptr<Handler> handleNotifySmartnodeListChanged(NotifySmartnodeListChangedFn fn) override
+    std::unique_ptr<Handler> handleNotifyReesistornodeListChanged(NotifyReesistornodeListChangedFn fn) override
     {
         return MakeHandler(
-            ::uiInterface.NotifySmartnodeListChanged.connect([fn](const CDeterministicMNList& newList) {
+            ::uiInterface.NotifyReesistornodeListChanged.connect([fn](const CDeterministicMNList& newList) {
                 fn(newList);
             }));
     }

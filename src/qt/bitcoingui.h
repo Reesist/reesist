@@ -7,7 +7,7 @@
 #define BITCOIN_QT_BITCOINGUI_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/raptoreum-config.h>
+#include <config/reesist-config.h>
 #endif
 
 #include <amount.h>
@@ -113,7 +113,7 @@ private:
     QToolButton *coinJoinCoinsButton;
     QToolButton *receiveCoinsButton;
     QToolButton *historyButton;
-    QToolButton *smartnodeButton;
+    QToolButton *reesistornodeButton;
     QAction* appToolBarLogoAction;
     QAction *quitAction;
     QAction *sendCoinsMenuAction;
@@ -275,8 +275,8 @@ private Q_SLOTS:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to smartnode page */
-    void gotoSmartnodePage();
+    /** Switch to reesistornode page */
+    void gotoReesistornodePage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -309,7 +309,7 @@ private Q_SLOTS:
     void showPeers();
     void showRepair();
 
-    /** Open external (default) editor with raptoreum.conf */
+    /** Open external (default) editor with reesist.conf */
     void showConfEditor();
     /** Show folder with wallet backups in default file browser */
     void showBackups();

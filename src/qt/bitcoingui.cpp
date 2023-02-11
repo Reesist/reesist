@@ -35,7 +35,7 @@
 #include <interfaces/node.h>
 #include <ui_interface.h>
 #include <util.h>
-#include <qt/smartnodelist.h>
+#include <qt/reesistornodelist.h>
 
 #include <iostream>
 
@@ -91,7 +91,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const NetworkStyle* networkStyle,
     appToolBarLogoAction(0),
     overviewButton(0),
     historyButton(0),
-    smartnodeButton(0),
+    reesistornodeButton(0),
     quitAction(0),
     sendCoinsButton(0),
     coinJoinCoinsButton(0),
@@ -387,15 +387,15 @@ void BitcoinGUI::stopConnectingAnimation()
 void BitcoinGUI::createActions()
 {
     sendCoinsMenuAction = new QAction(tr("&Send"), this);
-    sendCoinsMenuAction->setStatusTip(tr("Send coins to a Raptoreum address"));
+    sendCoinsMenuAction->setStatusTip(tr("Send coins to a Reesist address"));
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
     coinJoinCoinsMenuAction = new QAction("&CoinJoin", this);
-    coinJoinCoinsMenuAction->setStatusTip(tr("Send %1 funds to a Raptoreum address").arg("CoinJoin"));
+    coinJoinCoinsMenuAction->setStatusTip(tr("Send %1 funds to a Reesist address").arg("CoinJoin"));
     coinJoinCoinsMenuAction->setToolTip(coinJoinCoinsMenuAction->statusTip());
 
     receiveCoinsMenuAction = new QAction(tr("&Receive"), this);
-    receiveCoinsMenuAction->setStatusTip(tr("Request payments (generates QR codes and raptoreum: URIs)"));
+    receiveCoinsMenuAction->setStatusTip(tr("Request payments (generates QR codes and reesist: URIs)"));
     receiveCoinsMenuAction->setToolTip(receiveCoinsMenuAction->statusTip());
 
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
@@ -412,7 +412,7 @@ void BitcoinGUI::createActions()
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
     aboutAction = new QAction(QIcon(":/icons/about"), tr("&About %1").arg(tr(PACKAGE_NAME)), this);
-    aboutAction->setStatusTip(tr("Show information about Raptoreum Core"));
+    aboutAction->setStatusTip(tr("Show information about Reesist Core"));
     aboutAction->setMenuRole(QAction::AboutRole);
     aboutAction->setEnabled(false);
     aboutQtAction = new QAction(QIcon(":/icons/about_qt"), tr("About &Qt"), this);
@@ -436,9 +436,9 @@ void BitcoinGUI::createActions()
     lockWalletAction = new QAction(tr("&Lock Wallet"), this);
   
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &message..."), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your Raptoreum addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your Reesist addresses to prove you own them"));
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify message..."), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Raptoreum addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Reesist addresses"));
 
     openInfoAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation),tr("&Information"), this);
     openInfoAction->setStatusTip(tr("Show diagnostic information"));
@@ -470,11 +470,11 @@ void BitcoinGUI::createActions()
     usedReceivingAddressesAction->setStatusTip(tr("Show the list of used receiving addresses and labels"));
 
     openAction = new QAction(QIcon(":/icons/browse"), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a raptoreum: URI or payment request"));
+    openAction->setStatusTip(tr("Open a reesist: URI or payment request"));
 
     showHelpMessageAction = new QAction(QIcon(":/icons/configure"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Raptoreum command-line options").arg(tr(PACKAGE_NAME)));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Reesist command-line options").arg(tr(PACKAGE_NAME)));
 
     showCoinJoinHelpAction = new QAction(QIcon(":/icons/configure"), tr("%1 &information").arg("CoinJoin"), this);
     showCoinJoinHelpAction->setMenuRole(QAction::NoRole);
@@ -627,12 +627,12 @@ void BitcoinGUI::createToolBars()
         tabGroup->addButton(coinJoinCoinsButton);
 
         QSettings settings;
-        if (settings.value("fShowSmartnodesTab").toBool()) {
-            smartnodeButton = new QToolButton(this);
-            smartnodeButton->setText(tr("&Smartnodes"));
-            smartnodeButton->setStatusTip(tr("Browse smartnodes"));
-            tabGroup->addButton(smartnodeButton);
-            connect(smartnodeButton, SIGNAL(clicked()), this, SLOT(gotoSmartnodePage()));
+        if (settings.value("fShowReesistornodesTab").toBool()) {
+            reesistornodeButton = new QToolButton(this);
+            reesistornodeButton->setText(tr("&Reesistornodes"));
+            reesistornodeButton->setStatusTip(tr("Browse reesistornodes"));
+            tabGroup->addButton(reesistornodeButton);
+            connect(reesistornodeButton, SIGNAL(clicked()), this, SLOT(gotoReesistornodePage()));
         }
 
         connect(overviewButton, SIGNAL(clicked()), this, SLOT(gotoOverviewPage()));
@@ -854,9 +854,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
         coinJoinCoinsButton->setEnabled(enabled && clientModel->coinJoinOptions().isEnabled());
         receiveCoinsButton->setEnabled(enabled);
         historyButton->setEnabled(enabled);
-        if (smartnodeButton != nullptr) {
+        if (reesistornodeButton != nullptr) {
             QSettings settings;
-            smartnodeButton->setEnabled(enabled && settings.value("fShowSmartnodesTab").toBool());
+            reesistornodeButton->setEnabled(enabled && settings.value("fShowReesistornodesTab").toBool());
         }
     }
 #endif // ENABLE_WALLET
@@ -1044,12 +1044,12 @@ void BitcoinGUI::gotoHistoryPage()
     if (walletFrame) walletFrame->gotoHistoryPage();
 }
 
-void BitcoinGUI::gotoSmartnodePage()
+void BitcoinGUI::gotoReesistornodePage()
 {
     QSettings settings;
-    if (settings.value("fShowSmartnodesTab").toBool() && smartnodeButton) {
-        smartnodeButton->setChecked(true);
-        if (walletFrame) walletFrame->gotoSmartnodePage();
+    if (settings.value("fShowReesistornodesTab").toBool() && reesistornodeButton) {
+        reesistornodeButton->setChecked(true);
+        if (walletFrame) walletFrame->gotoReesistornodePage();
     }
 }
 
@@ -1111,9 +1111,9 @@ void BitcoinGUI::updateNetworkState()
 
     if (fNetworkBecameActive) {
         // If the sync process still signals synced after five seconds represent it in the UI.
-        if (m_node.smartnodeSync().isSynced()) {
+        if (m_node.reesistornodeSync().isSynced()) {
             QTimer::singleShot(5000, this, [&]() {
-                if (clientModel->getNumConnections() > 0 && m_node.smartnodeSync().isSynced()) {
+                if (clientModel->getNumConnections() > 0 && m_node.reesistornodeSync().isSynced()) {
                     setAdditionalDataSyncProgress(1);
                 }
             });
@@ -1132,7 +1132,7 @@ void BitcoinGUI::updateNetworkState()
     fNetworkActivePrev = fNetworkActive;
 
     if (fNetworkActive) {
-        labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Raptoreum network", "", count));
+        labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Reesist network", "", count));
     } else {
         labelConnectionsIcon->setToolTip(tr("Network activity disabled"));
         icon = "connect_4";
@@ -1173,11 +1173,11 @@ void BitcoinGUI::updateProgressBarVisibility()
         return;
     }
     // Show the progress bar label if the network is active + we are out of sync or we have no connections.
-    bool fShowProgressBarLabel = m_node.getNetworkActive() && (!m_node.smartnodeSync().isSynced() || clientModel->getNumConnections() == 0);
+    bool fShowProgressBarLabel = m_node.getNetworkActive() && (!m_node.reesistornodeSync().isSynced() || clientModel->getNumConnections() == 0);
     // Show the progress bar only if the the network active + we are not synced + we have any connection. Unlike with the label
     // which gives an info text about the connecting phase there is no reason to show the progress bar if we don't have connections
     // since it will not get any updates in this case.
-    bool fShowProgressBar = m_node.getNetworkActive() && !m_node.smartnodeSync().isSynced() && clientModel->getNumConnections() > 0;
+    bool fShowProgressBar = m_node.getNetworkActive() && !m_node.reesistornodeSync().isSynced() && clientModel->getNumConnections() > 0;
     progressBarLabel->setVisible(fShowProgressBarLabel);
     progressBar->setVisible(fShowProgressBar);
 }
@@ -1221,7 +1221,7 @@ void BitcoinGUI::updateWidth()
         ++nButtonsVisible;
     }
     // Add 30 per button as padding and use minimum 980 which is the minimum required to show all tab's contents
-    // Use nButtonsVisible + 1 <- for the raptoreum logo
+    // Use nButtonsVisible + 1 <- for the reesist logo
     int nWidth = std::max<int>(980, (nWidthWidestButton + 30) * (nButtonsVisible + 1));
     setMinimumWidth(nWidth);
     resize(nWidth, height());
@@ -1231,7 +1231,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, const QStri
 {
 #ifdef Q_OS_MAC
     // Disabling macOS App Nap on initial sync, disk, reindex operations and mixing.
-    bool disableAppNap = !m_node.smartnodeSync().isSynced();
+    bool disableAppNap = !m_node.reesistornodeSync().isSynced();
 #ifdef ENABLE_WALLET
     for (const auto& wallet : m_node.getWallets()) {
         disableAppNap |= wallet->coinJoin().isMixing();
@@ -1312,7 +1312,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, const QStri
     }
 #endif // ENABLE_WALLET
 
-    if(!m_node.smartnodeSync().isBlockchainSynced())
+    if(!m_node.reesistornodeSync().isBlockchainSynced())
     {
         QString timeBehindText = GUIUtil::formatNiceTimeOffset(secs);
 
@@ -1350,7 +1350,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
     if(!clientModel)
         return;
 
-    // If smartnodeSync.Reset() has been called make sure status bar shows the correct information.
+    // If reesistornodeSync.Reset() has been called make sure status bar shows the correct information.
     if (nSyncProgress == -1) {
         setNumBlocks(m_node.getNumBlocks(), QDateTime::fromTime_t(m_node.getLastBlockTime()), QString::fromStdString(m_node.getLastBlockHash()), m_node.getVerificationProgress(), false);
         if (clientModel->getNumConnections()) {
@@ -1361,7 +1361,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
     }
 
     // No additional data sync should be happening while blockchain is not synced, nothing to update
-    if(!m_node.smartnodeSync().isBlockchainSynced())
+    if(!m_node.reesistornodeSync().isBlockchainSynced())
         return;
 
     // Prevent orphan statusbar messages (e.g. hover Quit in main menu, wait until chain-sync starts -> garbelled text)
@@ -1380,7 +1380,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
 
     updateProgressBarVisibility();
 
-    if(m_node.smartnodeSync().isSynced()) {
+    if(m_node.reesistornodeSync().isSynced()) {
         stopSpinner();
         labelBlocksIcon->setPixmap(GUIUtil::getIcon("synced", GUIUtil::ThemedColor::GREEN).pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
     } else {
@@ -1389,7 +1389,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
         progressBar->setValue(nSyncProgress * 1000000000.0 + 0.5);
     }
 
-    strSyncStatus = QString(m_node.smartnodeSync().getSyncStatus().c_str());
+    strSyncStatus = QString(m_node.reesistornodeSync().getSyncStatus().c_str());
     progressBarLabel->setText(strSyncStatus);
     tooltip = strSyncStatus + QString("<br>") + tooltip;
 
@@ -1403,7 +1403,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
 
 void BitcoinGUI::message(const QString &title, const QString &message, unsigned int style, bool *ret)
 {
-    QString strTitle = tr("Raptoreum Core"); // default title
+    QString strTitle = tr("Reesist Core"); // default title
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;
@@ -1429,7 +1429,7 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
             break;
         }
     }
-    // Append title to "Raptoreum Core - "
+    // Append title to "Reesist Core - "
     if (!msgType.isEmpty())
         strTitle += " - " + msgType;
 
@@ -1488,7 +1488,7 @@ void BitcoinGUI::changeEvent(QEvent *e)
 #ifdef ENABLE_WALLET
         updateWalletStatus();
 #endif
-        if (m_node.smartnodeSync().isSynced()) {
+        if (m_node.reesistornodeSync().isSynced()) {
             labelBlocksIcon->setPixmap(GUIUtil::getIcon("synced", GUIUtil::ThemedColor::GREEN).pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
         }
     }

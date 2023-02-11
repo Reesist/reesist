@@ -325,7 +325,7 @@ def initialize_datadir(dirname, n, chain):
         chain_name_conf_arg = chain
         chain_name_conf_section = chain
         chain_name_conf_arg_value = '1'
-    with open(os.path.join(datadir, "raptoreum.conf"), 'w', encoding='utf8') as f:
+    with open(os.path.join(datadir, "reesist.conf"), 'w', encoding='utf8') as f:
         f.write("{}={}]\n".format(chain_name_conf_arg, chain_name_conf_arg_value))
         f.write("[{}]\n".format(chain_name_conf_section))
         f.write("port=" + str(p2p_port(n)) + "\n")
@@ -347,8 +347,8 @@ def append_config(datadir, options):
 def get_auth_cookie(datadir, chain):
     user = None
     password = None
-    if os.path.isfile(os.path.join(datadir, "raptoreum.conf")):
-        with open(os.path.join(datadir, "raptoreum.conf"), 'r', encoding='utf8') as f:
+    if os.path.isfile(os.path.join(datadir, "reesist.conf")):
+        with open(os.path.join(datadir, "reesist.conf"), 'r', encoding='utf8') as f:
             for line in f:
                 if line.startswith("rpcuser="):
                     assert user is None  # Ensure that there is only one rpcuser line
@@ -488,7 +488,7 @@ def sync_mempools(rpc_connections, *, wait=1, timeout=60, flush_scheduler=True, 
 
 def force_finish_mnsync(node):
     """
-    Smartnodes won't accept incoming connections while IsSynced is false.
+    Reesistornodes won't accept incoming connections while IsSynced is false.
     Force them to switch to this state to speed things up.
     """
     while True:

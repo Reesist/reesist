@@ -5,7 +5,7 @@
 #include <serialize.h>
 #include <streams.h>
 #include <hash.h>
-#include <test/test_raptoreum.h>
+#include <test/test_reesist.h>
 
 #include <stdint.h>
 

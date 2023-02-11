@@ -7,7 +7,7 @@
 #include <llmq/quorums_signing_shares.h>
 #include <llmq/quorums_utils.h>
 
-#include <smartnode/activesmartnode.h>
+#include <reesistornode/activereesistornode.h>
 #include <bls/bls_batchverifier.h>
 #include <init.h>
 #include <net_processing.h>
@@ -231,8 +231,8 @@ void CSigSharesManager::InterruptWorkerThread()
 
 void CSigSharesManager::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv)
 {
-    // non-smartnodes are not interested in sigshares
-    if (!fSmartnodeMode || activeSmartnodeInfo.proTxHash.IsNull()) {
+    // non-reesistornodes are not interested in sigshares
+    if (!fReesistornodeMode || activeReesistornodeInfo.proTxHash.IsNull()) {
         return;
     }
 
@@ -490,7 +490,7 @@ void CSigSharesManager::ProcessMessageSigShare(NodeId fromId, const CSigShare& s
         // quorum is too old
         return;
     }
-    if (!quorum->IsMember(activeSmartnodeInfo.proTxHash)) {
+    if (!quorum->IsMember(activeReesistornodeInfo.proTxHash)) {
         // we're not a member so we can't verify it (we actually shouldn't have received it)
         return;
     }
@@ -539,7 +539,7 @@ bool CSigSharesManager::PreVerifyBatchedSigShares(const CSigSharesNodeState::Ses
         // quorum is too old
         return false;
     }
-    if (!session.quorum->IsMember(activeSmartnodeInfo.proTxHash)) {
+    if (!session.quorum->IsMember(activeReesistornodeInfo.proTxHash)) {
         // we're not a member so we can't verify it (we actually shouldn't have received it)
         return false;
     }
@@ -735,8 +735,8 @@ void CSigSharesManager::ProcessSigShare(const CSigShare& sigShare, const CConnma
     // prepare node set for direct-push in case this is our sig share
     std::set<NodeId> quorumNodes;
     if (!CLLMQUtils::IsAllMembersConnectedEnabled(llmqType)) {
-        if (sigShare.quorumMember == quorum->GetMemberIndex(activeSmartnodeInfo.proTxHash)) {
-            quorumNodes = connman.GetSmartnodeQuorumNodes((Consensus::LLMQType) sigShare.llmqType, sigShare.quorumHash);
+        if (sigShare.quorumMember == quorum->GetMemberIndex(activeReesistornodeInfo.proTxHash)) {
+            quorumNodes = connman.GetReesistornodeQuorumNodes((Consensus::LLMQType) sigShare.llmqType, sigShare.quorumHash);
         }
     }
 
@@ -1081,7 +1081,7 @@ void CSigSharesManager::CollectSigSharesToAnnounce(std::unordered_map<NodeId, st
         auto quorumKey = std::make_pair((Consensus::LLMQType)sigShare->llmqType, sigShare->quorumHash);
         auto it = quorumNodesMap.find(quorumKey);
         if (it == quorumNodesMap.end()) {
-            auto nodeIds = g_connman->GetSmartnodeQuorumNodes(quorumKey.first, quorumKey.second);
+            auto nodeIds = g_connman->GetReesistornodeQuorumNodes(quorumKey.first, quorumKey.second);
             it = quorumNodesMap.emplace(std::piecewise_construct, std::forward_as_tuple(quorumKey), std::forward_as_tuple(nodeIds.begin(), nodeIds.end())).first;
         }
 
@@ -1571,7 +1571,7 @@ CSigShare CSigSharesManager::CreateSigShare(const CQuorumCPtr& quorum, const uin
 {
     cxxtimer::Timer t(true);
 
-    if (!quorum->IsValidMember(activeSmartnodeInfo.proTxHash)) {
+    if (!quorum->IsValidMember(activeReesistornodeInfo.proTxHash)) {
         return {};
     }
 
@@ -1581,7 +1581,7 @@ CSigShare CSigSharesManager::CreateSigShare(const CQuorumCPtr& quorum, const uin
         return {};
     }
 
-    int memberIdx = quorum->GetMemberIndex(activeSmartnodeInfo.proTxHash);
+    int memberIdx = quorum->GetMemberIndex(activeReesistornodeInfo.proTxHash);
     if (memberIdx == -1) {
         // this should really not happen (IsValidMember gave true)
         return {};

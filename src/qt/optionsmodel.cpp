@@ -5,7 +5,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/raptoreum-config.h>
+#include <config/reesist-config.h>
 #endif
 
 #include <qt/optionsmodel.h>
@@ -73,7 +73,7 @@ void OptionsModel::Init(bool resetSettings)
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", BitcoinUnits::RTM);
+        settings.setValue("nDisplayUnit", BitcoinUnits::REE);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))
@@ -202,10 +202,10 @@ void OptionsModel::Init(bool resetSettings)
 
     if (!settings.contains("nCoinJoinAmount")) {
         // for migration from old settings
-        if (!settings.contains("nAnonymizeRaptoreumAmount"))
+        if (!settings.contains("nAnonymizeReesistAmount"))
             settings.setValue("nCoinJoinAmount", DEFAULT_COINJOIN_AMOUNT);
         else
-            settings.setValue("nCoinJoinAmount", settings.value("nAnonymizeRaptoreumAmount").toInt());
+            settings.setValue("nCoinJoinAmount", settings.value("nAnonymizeReesistAmount").toInt());
     }
     if (!m_node.softSetArg("-coinjoinamount", settings.value("nCoinJoinAmount").toString().toStdString()))
         addOverriddenOption("-coinjoinamount");
@@ -371,8 +371,8 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
 #ifdef ENABLE_WALLET
         case SpendZeroConfChange:
             return settings.value("bSpendZeroConfChange");
-        case ShowSmartnodesTab:
-            return settings.value("fShowSmartnodesTab");
+        case ShowReesistornodesTab:
+            return settings.value("fShowReesistornodesTab");
         case CoinJoinEnabled:
             return settings.value("fCoinJoinEnabled");
         case ShowAdvancedCJUI:
@@ -524,9 +524,9 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
-        case ShowSmartnodesTab:
-            if (settings.value("fShowSmartnodesTab") != value) {
-                settings.setValue("fShowSmartnodesTab", value);
+        case ShowReesistornodesTab:
+            if (settings.value("fShowReesistornodesTab") != value) {
+                settings.setValue("fShowReesistornodesTab", value);
                 setRestartRequired(true);
             }
             break;

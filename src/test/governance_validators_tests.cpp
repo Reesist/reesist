@@ -7,7 +7,7 @@
 #include <test/data/proposals_valid.json.h>
 #include <test/data/proposals_invalid.json.h>
 
-#include <test/test_raptoreum.h>
+#include <test/test_reesist.h>
 
 #include <iostream>
 #include <fstream>

@@ -49,7 +49,7 @@ public:
 };
 
 //
-// CGovernanceVote - Allow a smartnode to vote and broadcast throughout the network
+// CGovernanceVote - Allow a reesistornode to vote and broadcast throughout the network
 //
 
 class CGovernanceVote
@@ -62,7 +62,7 @@ private:
     bool fValid;     //if the vote is currently valid / counted
     bool fSynced;    //if we've sent this to our peers
     int nVoteSignal; // see VOTE_ACTIONS above
-    COutPoint smartnodeOutpoint;
+    COutPoint reesistornodeOutpoint;
     uint256 nParentHash;
     int nVoteOutcome; // see VOTE_OUTCOMES above
     int64_t nTime;
@@ -74,7 +74,7 @@ private:
 
 public:
     CGovernanceVote();
-    CGovernanceVote(const COutPoint& outpointSmartnodeIn, const uint256& nParentHashIn, vote_signal_enum_t eVoteSignalIn, vote_outcome_enum_t eVoteOutcomeIn);
+    CGovernanceVote(const COutPoint& outpointReesistornodeIn, const uint256& nParentHashIn, vote_signal_enum_t eVoteSignalIn, vote_outcome_enum_t eVoteOutcomeIn);
 
     bool IsValid() const { return fValid; }
 
@@ -103,7 +103,7 @@ public:
     bool IsValid(bool useVotingKey) const;
     void Relay(CConnman& connman) const;
 
-    const COutPoint& GetSmartnodeOutpoint() const { return smartnodeOutpoint; }
+    const COutPoint& GetReesistornodeOutpoint() const { return reesistornodeOutpoint; }
 
     /**
     *   GetHash()
@@ -121,7 +121,7 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action)
     {
-        READWRITE(smartnodeOutpoint);
+        READWRITE(reesistornodeOutpoint);
         READWRITE(nParentHash);
         READWRITE(nVoteOutcome);
         READWRITE(nVoteSignal);

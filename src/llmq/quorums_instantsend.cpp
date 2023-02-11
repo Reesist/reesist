@@ -10,7 +10,7 @@
 #include <bls/bls_batchverifier.h>
 #include <chainparams.h>
 #include <txmempool.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-sync.h>
 #include <net_processing.h>
 #include <spork.h>
 #include <validation.h>
@@ -449,7 +449,7 @@ void CInstantSendManager::InterruptWorkerThread()
 
 void CInstantSendManager::ProcessTx(const CTransaction& tx, bool fRetroactive, const Consensus::Params& params)
 {
-    if (!fSmartnodeMode || !IsInstantSendEnabled() || !smartnodeSync.IsBlockchainSynced()) {
+    if (!fReesistornodeMode || !IsInstantSendEnabled() || !reesistornodeSync.IsBlockchainSynced()) {
         return;
     }
 
@@ -588,7 +588,7 @@ bool CInstantSendManager::CheckCanLock(const COutPoint& outpoint, bool printDebu
 
     CTransactionRef tx;
     uint256 hashBlock;
-    // this relies on enabled txindex and won't work if we ever try to remove the requirement for txindex for smartnodes
+    // this relies on enabled txindex and won't work if we ever try to remove the requirement for txindex for reesistornodes
     if (!GetTransaction(outpoint.hash, tx, params, hashBlock, false)) {
         if (printDebug) {
             LogPrint(BCLog::INSTANTSEND, "CInstantSendManager::%s -- txid=%s: failed to find parent TX %s\n", __func__,
@@ -1039,7 +1039,7 @@ void CInstantSendManager::ProcessInstantSendLock(NodeId from, const uint256& has
 
 void CInstantSendManager::TransactionAddedToMempool(const CTransactionRef& tx)
 {
-    if (!IsInstantSendEnabled() || !smartnodeSync.IsBlockchainSynced() || tx->vin.empty()) {
+    if (!IsInstantSendEnabled() || !reesistornodeSync.IsBlockchainSynced() || tx->vin.empty()) {
         return;
     }
 
@@ -1097,7 +1097,7 @@ void CInstantSendManager::BlockConnected(const std::shared_ptr<const CBlock>& pb
         }
     }
 
-    if (smartnodeSync.IsBlockchainSynced()) {
+    if (reesistornodeSync.IsBlockchainSynced()) {
         for (const auto& tx : pblock->vtx) {
             if (tx->IsCoinBase() || tx->vin.empty()) {
                 // coinbase and TXs with no inputs can't be locked
@@ -1357,7 +1357,7 @@ void CInstantSendManager::ResolveBlockConflicts(const uint256& islockHash, const
 
     // If a conflict was mined into a ChainLocked block, then we have no other choice and must prune the ISLOCK and all
     // chained ISLOCKs that build on top of this one. The probability of this is practically zero and can only happen
-    // when large parts of the smartnode network are controlled by an attacker. In this case we must still find consensus
+    // when large parts of the reesistornode network are controlled by an attacker. In this case we must still find consensus
     // and its better to sacrifice individual ISLOCKs then to sacrifice whole ChainLocks.
     if (hasChainLockedConflict) {
         LogPrintf("CInstantSendManager::%s -- txid=%s, islock=%s: at least one conflicted TX already got a ChainLock\n", __func__,

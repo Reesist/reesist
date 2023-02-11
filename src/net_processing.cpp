@@ -34,9 +34,9 @@
 
 #include <spork.h>
 #include <governance/governance.h>
-#include <smartnode/smartnode-payments.h>
-#include <smartnode/smartnode-sync.h>
-#include <smartnode/smartnode-meta.h>
+#include <reesistornode/reesistornode-payments.h>
+#include <reesistornode/reesistornode-sync.h>
+#include <reesistornode/reesistornode-meta.h>
 #ifdef ENABLE_WALLET
 #include <coinjoin/coinjoin-client.h>
 #endif // ENABLE_WALLET
@@ -56,7 +56,7 @@
 #include <statsd_client.h>
 
 #if defined(NDEBUG)
-# error "Raptoreum Core cannot be compiled without assertions."
+# error "Reesist Core cannot be compiled without assertions."
 #endif
 
 /** Maximum number of in-flight objects from a peer */
@@ -125,11 +125,11 @@ static constexpr unsigned int AVG_LOCAL_ADDRESS_BROADCAST_INTERVAL = 24 * 60 * 6
 static const unsigned int AVG_ADDRESS_BROADCAST_INTERVAL = 30;
 /** Average delay between trickled inventory transmissions in seconds.
  *  Blocks and whitelisted receivers bypass this, regular outbound peers get half this delay,
- *  Smartnode outbound peers get quarter this delay. */
+ *  Reesistornode outbound peers get quarter this delay. */
 static const unsigned int INVENTORY_BROADCAST_INTERVAL = 5;
 /** Maximum number of inventory items to send per transmission.
  *  Limits the impact of low-fee transaction floods.
- *  We have 4 times smaller block times in Raptoreum, so we need to push 4 times more invs per 1MB. */
+ *  We have 4 times smaller block times in Reesist, so we need to push 4 times more invs per 1MB. */
 static constexpr unsigned int INVENTORY_BROADCAST_MAX_PER_1MB_BLOCK = 4 * 7 * INVENTORY_BROADCAST_INTERVAL;
 
 // Internal stuff
@@ -442,7 +442,7 @@ void PushNodeVersion(CNode *pnode, CConnman* connman, int64_t nTime)
     }
 
     connman->PushMessage(pnode, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::VERSION, nProtocolVersion, (uint64_t)nLocalNodeServices, nTime, addrYou, addrMe,
-            nonce, strSubVersion, nNodeStartingHeight, ::fRelayTxes, mnauthChallenge, pnode->m_smartnode_connection));
+            nonce, strSubVersion, nNodeStartingHeight, ::fRelayTxes, mnauthChallenge, pnode->m_reesistornode_connection));
 
     if (fLogIPs) {
         LogPrint(BCLog::NET, "send version message: version %d, blocks=%d, us=%s, them=%s, peer=%d\n", nProtocolVersion, nNodeStartingHeight, addrMe.ToString(), addrYou.ToString(), nodeid);
@@ -785,7 +785,7 @@ std::chrono::microseconds CalculateObjectGetDataTime(const CInv& inv, std::chron
     }
 
     // We delay processing announcements from inbound peers
-    if (inv.type == MSG_TX && !fSmartnodeMode && use_inbound_delay) process_time += INBOUND_PEER_TX_DELAY;
+    if (inv.type == MSG_TX && !fReesistornodeMode && use_inbound_delay) process_time += INBOUND_PEER_TX_DELAY;
 
     return process_time;
 }
@@ -1340,7 +1340,7 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
             // relay a valid DSTX as a regular TX first which would skip all the specific checks
             // but would cause such tx to be rejected by ATMP due to 0 fee. Ignoring it here
             // should let DSTX to be propagated by honest peer later. Note, that a malicious
-            // smartnode would not be able to exploit this to spam the network with specially
+            // reesistornode would not be able to exploit this to spam the network with specially
             // crafted invalid DSTX-es and potentially cause high load cheaply, because
             // corresponding checks in ProcessMessage won't let it to send DSTX-es too often.
             bool fIgnoreRecentRejects = llmq::quorumInstantSendManager->IsLocked(inv.hash) || inv.type == MSG_DSTX;
@@ -1357,7 +1357,7 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
         return LookupBlockIndex(inv.hash) != nullptr;
 
     /*
-        Raptoreum Related Inventory Messages
+        Reesist Related Inventory Messages
 
         --
 
@@ -2205,14 +2205,14 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             vRecv >> pfrom->receivedMNAuthChallenge;
         }
         if (!vRecv.empty()) {
-            bool fOtherSmartnode = false;
-            vRecv >> fOtherSmartnode;
+            bool fOtherReesistornode = false;
+            vRecv >> fOtherReesistornode;
             if (pfrom->fInbound) {
-                pfrom->m_smartnode_connection = fOtherSmartnode;
-                if (fOtherSmartnode) {
-                    LogPrint(BCLog::NET_NETCONN, "peer=%d is an inbound smartnode connection, not relaying anything to it\n", pfrom->GetId());
-                    if (!fSmartnodeMode) {
-                        LogPrint(BCLog::NET_NETCONN, "but we're not a smartnode, disconnecting\n");
+                pfrom->m_reesistornode_connection = fOtherReesistornode;
+                if (fOtherReesistornode) {
+                    LogPrint(BCLog::NET_NETCONN, "peer=%d is an inbound reesistornode connection, not relaying anything to it\n", pfrom->GetId());
+                    if (!fReesistornodeMode) {
+                        LogPrint(BCLog::NET_NETCONN, "but we're not a reesistornode, disconnecting\n");
                         pfrom->fDisconnect = true;
                         return true;
                     }
@@ -2352,7 +2352,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                       (fLogIPs ? strprintf(", peeraddr=%s", pfrom->addr.ToString()) : ""));
         }
 
-        if (pfrom->nVersion >= LLMQS_PROTO_VERSION && !pfrom->m_smartnode_probe_connection) {
+        if (pfrom->nVersion >= LLMQS_PROTO_VERSION && !pfrom->m_reesistornode_probe_connection) {
             CMNAuth::PushMNAUTH(pfrom, *connman);
         }
 
@@ -2382,7 +2382,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             pfrom->fSendDSQueue = true;
         }
 
-        if (llmq::CLLMQUtils::IsWatchQuorumsEnabled() && pfrom->m_smartnode_connection) {
+        if (llmq::CLLMQUtils::IsWatchQuorumsEnabled() && pfrom->m_reesistornode_connection) {
             connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::QWATCH));
         }
 
@@ -2403,8 +2403,8 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         pfrom->fFirstMessageIsMNAUTH = strCommand == NetMsgType::MNAUTH;
         // Note: do not break the flow here
 
-        if (pfrom->m_smartnode_probe_connection && !pfrom->fFirstMessageIsMNAUTH) {
-            LogPrint(BCLog::NET, "connection is a smartnode probe but first received message is not MNAUTH, peer=%d\n", pfrom->GetId());
+        if (pfrom->m_reesistornode_probe_connection && !pfrom->fFirstMessageIsMNAUTH) {
+            LogPrint(BCLog::NET, "connection is a reesistornode probe but first received message is not MNAUTH, peer=%d\n", pfrom->GetId());
             pfrom->fDisconnect = true;
             return false;
         }
@@ -2843,17 +2843,17 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             // Try to find a MN up to 24 blocks deep to make sure such dstx-es are relayed and processed correctly.
             for (int i = 0; i < 24 && pindex; ++i) {
 
-                dmn = deterministicMNManager->GetListForBlock(pindex).GetMNByCollateral(dstx.smartnodeOutpoint);
+                dmn = deterministicMNManager->GetListForBlock(pindex).GetMNByCollateral(dstx.reesistornodeOutpoint);
                 if (dmn) break;
                 pindex = pindex->pprev;
             }
             if(!dmn) {
-                LogPrint(BCLog::COINJOIN, "DSTX -- Can't find smartnode %s to verify %s\n", dstx.smartnodeOutpoint.ToStringShort(), hashTx.ToString());
+                LogPrint(BCLog::COINJOIN, "DSTX -- Can't find reesistornode %s to verify %s\n", dstx.reesistornodeOutpoint.ToStringShort(), hashTx.ToString());
                 return false;
             }
 
             if (!mmetaman.GetMetaInfo(dmn->proTxHash)->IsValidForMixingTxes()) {
-                LogPrint(BCLog::COINJOIN, "DSTX -- Smartnode %s is sending too many transactions %s\n", dstx.smartnodeOutpoint.ToStringShort(), hashTx.ToString());
+                LogPrint(BCLog::COINJOIN, "DSTX -- Reesistornode %s is sending too many transactions %s\n", dstx.reesistornodeOutpoint.ToStringShort(), hashTx.ToString());
                 return true;
                 // TODO: Not an error? Could it be that someone is relaying old DSTXes
                 // we have no idea about (e.g we were offline)? How to handle them?
@@ -2864,7 +2864,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 return false;
             }
 
-            LogPrint(BCLog::COINJOIN, "DSTX -- Got Smartnode transaction %s\n", hashTx.ToString());
+            LogPrint(BCLog::COINJOIN, "DSTX -- Got Reesistornode transaction %s\n", hashTx.ToString());
             mempool.PrioritiseTransaction(hashTx, 0.1*COIN);
             mmetaman.DisallowMixing(dmn->proTxHash);
         }
@@ -2878,7 +2878,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 false /* bypass_limits */, 0 /* nAbsurdFee */)) {
             // Process custom txes, this changes AlreadyHave to "true"
             if (nInvType == MSG_DSTX) {
-                LogPrint(BCLog::COINJOIN, "DSTX -- Smartnode transaction accepted, txid=%s, peer=%d\n",
+                LogPrint(BCLog::COINJOIN, "DSTX -- Reesistornode transaction accepted, txid=%s, peer=%d\n",
                          tx.GetHash().ToString(), pfrom->GetId());
                 CCoinJoin::AddDSTX(dstx);
             }
@@ -3577,7 +3577,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
 #endif // ENABLE_WALLET
         coinJoinServer.ProcessMessage(pfrom, strCommand, vRecv, *connman, enable_bip61);
         sporkManager.ProcessSpork(pfrom, strCommand, vRecv, *connman);
-        smartnodeSync.ProcessMessage(pfrom, strCommand, vRecv);
+        reesistornodeSync.ProcessMessage(pfrom, strCommand, vRecv);
         governance.ProcessMessage(pfrom, strCommand, vRecv, *connman, enable_bip61);
         CMNAuth::ProcessMessage(pfrom, strCommand, vRecv, *connman);
         llmq::quorumBlockProcessor->ProcessMessage(pfrom, strCommand, vRecv);
@@ -3821,8 +3821,8 @@ void PeerLogicValidation::EvictExtraOutboundPeers(int64_t time_in_seconds)
         connman->ForEachNode([&](CNode* pnode) {
             AssertLockHeld(cs_main);
 
-            // Don't disconnect smartnodes just because they were slow in block announcement
-            if (pnode->m_smartnode_connection) return;
+            // Don't disconnect reesistornodes just because they were slow in block announcement
+            if (pnode->m_reesistornode_connection) return;
             // Ignore non-outbound peers, or nodes marked for disconnect already
             if (!IsOutboundDisconnectionCandidate(pnode) || pnode->fDisconnect) return;
             CNodeState *state = State(pnode->GetId());
@@ -4194,16 +4194,16 @@ bool PeerLogicValidation::SendMessages(CNode* pto)
             pto->vInventoryBlockToSend.clear();
 
             // Check whether periodic sends should happen
-            // Note: If this node is running in a Smartnode mode, it makes no sense to delay outgoing txes
+            // Note: If this node is running in a Reesistornode mode, it makes no sense to delay outgoing txes
             // because we never produce any txes ourselves i.e. no privacy is lost in this case.
-            bool fSendTrickle = pto->fWhitelisted || fSmartnodeMode;
+            bool fSendTrickle = pto->fWhitelisted || fReesistornodeMode;
             if (pto->nNextInvSend < current_time) {
                 fSendTrickle = true;
                 if (pto->fInbound) {
                     pto->nNextInvSend = std::chrono::microseconds{connman->PoissonNextSendInbound(current_time.count(), INVENTORY_BROADCAST_INTERVAL)};
                 } else {
                     // Use half the delay for regular outbound peers, as there is less privacy concern for them.
-                    // and quarter the delay for Smartnode outbound peers, as there is even less privacy concern in this case.
+                    // and quarter the delay for Reesistornode outbound peers, as there is even less privacy concern in this case.
                     pto->nNextInvSend = PoissonNextSend(current_time, std::chrono::seconds{INVENTORY_BROADCAST_INTERVAL >> 1 >> !pto->verifiedProRegTxHash.IsNull()});
                 }
             }

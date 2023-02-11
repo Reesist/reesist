@@ -3,7 +3,7 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <smartnode/activesmartnode.h>
+#include <reesistornode/activereesistornode.h>
 #include <consensus/validation.h>
 #include <core_io.h>
 #include <governance/governance.h>
@@ -13,7 +13,7 @@
 #include <init.h>
 #include <txmempool.h>
 #include <validation.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-sync.h>
 #include <messagesigner.h>
 #include <rpc/server.h>
 #include <util.h>
@@ -169,7 +169,7 @@ UniValue gobject_prepare(const JSONRPCRequest& request)
 
     // This command is dangerous because it consumes 5 RAPTOREUM irreversibly.
     // If params are lost, it's very hard to bruteforce them and yet
-    // users ignore all instructions on raptoreumcentral etc. and do not save them...
+    // users ignore all instructions on reesistcentral etc. and do not save them...
     // Let's log them here and hope users do not mess with debug.log
     LogPrintf("gobject_prepare -- params: %s %s %s %s, data: %s, hash: %s\n",
                 request.params[1].getValStr(), request.params[2].getValStr(),
@@ -184,7 +184,7 @@ UniValue gobject_prepare(const JSONRPCRequest& request)
     }
 
     if (govobj.GetObjectType() == GOVERNANCE_OBJECT_TRIGGER) {
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Trigger objects need not be prepared (however only smartnodes can create them)");
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Trigger objects need not be prepared (however only reesistornodes can create them)");
     }
 
     LOCK2(cs_main, mempool.cs);
@@ -301,16 +301,16 @@ UniValue gobject_submit(const JSONRPCRequest& request)
     if (request.fHelp || ((request.params.size() < 5) || (request.params.size() > 6)))
         gobject_submit_help();
 
-    if(!smartnodeSync.IsBlockchainSynced()) {
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Must wait for client to sync with smartnode network. Try again in a minute or so.");
+    if(!reesistornodeSync.IsBlockchainSynced()) {
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Must wait for client to sync with reesistornode network. Try again in a minute or so.");
     }
 
     auto mnList = deterministicMNManager->GetListAtChainTip();
-    bool fMnFound = mnList.HasValidMNByCollateral(activeSmartnodeInfo.outpoint);
+    bool fMnFound = mnList.HasValidMNByCollateral(activeReesistornodeInfo.outpoint);
 
     LogPrint(BCLog::GOBJECT, "gobject_submit -- pubKeyOperator = %s, outpoint = %s, params.size() = %lld, fMnFound = %d\n",
-            (activeSmartnodeInfo.blsPubKeyOperator ? activeSmartnodeInfo.blsPubKeyOperator->ToString() : "N/A"),
-            activeSmartnodeInfo.outpoint.ToStringShort(), request.params.size(), fMnFound);
+            (activeReesistornodeInfo.blsPubKeyOperator ? activeReesistornodeInfo.blsPubKeyOperator->ToString() : "N/A"),
+            activeReesistornodeInfo.outpoint.ToStringShort(), request.params.size(), fMnFound);
 
     // ASSEMBLE NEW GOVERNANCE OBJECT FROM USER PARAMETERS
 
@@ -347,11 +347,11 @@ UniValue gobject_submit(const JSONRPCRequest& request)
     // Attempt to sign triggers if we are a MN
     if (govobj.GetObjectType() == GOVERNANCE_OBJECT_TRIGGER) {
         if (fMnFound) {
-            govobj.SetSmartnodeOutpoint(activeSmartnodeInfo.outpoint);
-            govobj.Sign(*activeSmartnodeInfo.blsKeyOperator);
+            govobj.SetReesistornodeOutpoint(activeReesistornodeInfo.outpoint);
+            govobj.Sign(*activeReesistornodeInfo.blsKeyOperator);
         } else {
-            LogPrintf("gobject(submit) -- Object submission rejected because node is not a smartnode\n");
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Only valid smartnodes can submit this type of object");
+            LogPrintf("gobject(submit) -- Object submission rejected because node is not a reesistornode\n");
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Only valid reesistornodes can submit this type of object");
         }
     } else if (request.params.size() != 6) {
         LogPrintf("gobject(submit) -- Object submission rejected because fee tx not provided\n");
@@ -372,7 +372,7 @@ UniValue gobject_submit(const JSONRPCRequest& request)
 
     // RELAY THIS OBJECT
     // Reject if rate check fails but don't update buffer
-    if (!governance.SmartnodeRateCheck(govobj)) {
+    if (!governance.ReesistornodeRateCheck(govobj)) {
         LogPrintf("gobject(submit) -- Object submission rejected because of rate check failure - hash = %s\n", strHash);
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Object creation rate limit exceeded");
     }
@@ -393,7 +393,7 @@ void gobject_vote_conf_help()
 {
     throw std::runtime_error(
                 "gobject vote-conf <governance-hash> <vote> <vote-outcome>\n"
-                "Vote on a governance object by smartnode configured in raptoreum.conf\n"
+                "Vote on a governance object by reesistornode configured in reesist.conf\n"
                 "\nArguments:\n"
                 "1. governance-hash   (string, required) hash of the governance object\n"
                 "2. vote              (string, required) vote, possible values: [funding|valid|delete|endorsed]\n"
@@ -442,13 +442,13 @@ UniValue gobject_vote_conf(const JSONRPCRequest& request)
     UniValue statusObj(UniValue::VOBJ);
     UniValue returnObj(UniValue::VOBJ);
 
-    auto dmn = deterministicMNManager->GetListAtChainTip().GetValidMNByCollateral(activeSmartnodeInfo.outpoint);
+    auto dmn = deterministicMNManager->GetListAtChainTip().GetValidMNByCollateral(activeReesistornodeInfo.outpoint);
 
     if (!dmn) {
         nFailed++;
         statusObj.pushKV("result", "failed");
-        statusObj.pushKV("errorMessage", "Can't find smartnode by collateral output");
-        resultsObj.pushKV("raptoreum.conf", statusObj);
+        statusObj.pushKV("errorMessage", "Can't find reesistornode by collateral output");
+        resultsObj.pushKV("reesist.conf", statusObj);
         returnObj.pushKV("overall", strprintf("Voted successfully %d time(s) and failed %d time(s).", nSuccessful, nFailed));
         returnObj.pushKV("detail", resultsObj);
         return returnObj;
@@ -460,15 +460,15 @@ UniValue gobject_vote_conf(const JSONRPCRequest& request)
     if (govObjType == GOVERNANCE_OBJECT_PROPOSAL && eVoteSignal == VOTE_SIGNAL_FUNDING) {
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Can't use vote-conf for proposals");
     }
-    if (activeSmartnodeInfo.blsKeyOperator) {
-        signSuccess = vote.Sign(*activeSmartnodeInfo.blsKeyOperator);
+    if (activeReesistornodeInfo.blsKeyOperator) {
+        signSuccess = vote.Sign(*activeReesistornodeInfo.blsKeyOperator);
     }
 
     if (!signSuccess) {
         nFailed++;
         statusObj.pushKV("result", "failed");
         statusObj.pushKV("errorMessage", "Failure to sign.");
-        resultsObj.pushKV("raptoreum.conf", statusObj);
+        resultsObj.pushKV("reesist.conf", statusObj);
         returnObj.pushKV("overall", strprintf("Voted successfully %d time(s) and failed %d time(s).", nSuccessful, nFailed));
         returnObj.pushKV("detail", resultsObj);
         return returnObj;
@@ -484,7 +484,7 @@ UniValue gobject_vote_conf(const JSONRPCRequest& request)
         statusObj.pushKV("errorMessage", exception.GetMessage());
     }
 
-    resultsObj.pushKV("raptoreum.conf", statusObj);
+    resultsObj.pushKV("reesist.conf", statusObj);
 
     returnObj.pushKV("overall", strprintf("Voted successfully %d time(s) and failed %d time(s).", nSuccessful, nFailed));
     returnObj.pushKV("detail", resultsObj);
@@ -492,7 +492,7 @@ UniValue gobject_vote_conf(const JSONRPCRequest& request)
     return returnObj;
 }
 
-UniValue VoteWithSmartnodes(const std::map<uint256, CKey>& keys,
+UniValue VoteWithReesistornodes(const std::map<uint256, CKey>& keys,
                              const uint256& hash, vote_signal_enum_t eVoteSignal,
                              vote_outcome_enum_t eVoteOutcome)
 {
@@ -521,7 +521,7 @@ UniValue VoteWithSmartnodes(const std::map<uint256, CKey>& keys,
         if (!dmn) {
             nFailed++;
             statusObj.pushKV("result", "failed");
-            statusObj.pushKV("errorMessage", "Can't find smartnode by proTxHash");
+            statusObj.pushKV("errorMessage", "Can't find reesistornode by proTxHash");
             resultsObj.pushKV(proTxHash.ToString(), statusObj);
             continue;
         }
@@ -560,7 +560,7 @@ void gobject_vote_many_help(CWallet* const pwallet)
 {
     throw std::runtime_error(
                 "gobject vote-many <governance-hash> <vote> <vote-outcome>\n"
-                "Vote on a governance object by all smartnodes for which the voting key is present in the local wallet\n"
+                "Vote on a governance object by all reesistornodes for which the voting key is present in the local wallet\n"
                 + HelpRequiringPassphrase(pwallet) + "\n"
                 "\nArguments:\n"
                 "1. governance-hash   (string, required) hash of the governance object\n"
@@ -607,20 +607,20 @@ UniValue gobject_vote_many(const JSONRPCRequest& request)
         }
     });
 
-    return VoteWithSmartnodes(votingKeys, hash, eVoteSignal, eVoteOutcome);
+    return VoteWithReesistornodes(votingKeys, hash, eVoteSignal, eVoteOutcome);
 }
 
 void gobject_vote_alias_help(CWallet* const pwallet)
 {
     throw std::runtime_error(
                 "gobject vote-alias <governance-hash> <vote> <vote-outcome> <protx-hash>\n"
-                "Vote on a governance object by smartnode's voting key (if present in local wallet)\n"
+                "Vote on a governance object by reesistornode's voting key (if present in local wallet)\n"
                 + HelpRequiringPassphrase(pwallet) + "\n"
                 "\nArguments:\n"
                 "1. governance-hash   (string, required) hash of the governance object\n"
                 "2. vote              (string, required) vote, possible values: [funding|valid|delete|endorsed]\n"
                 "3. vote-outcome      (string, required) vote outcome, possible values: [yes|no|abstain]\n"
-                "4. protx-hash        (string, required) smartnode's proTxHash"
+                "4. protx-hash        (string, required) reesistornode's proTxHash"
                 );
 }
 
@@ -666,7 +666,7 @@ UniValue gobject_vote_alias(const JSONRPCRequest& request)
     std::map<uint256, CKey> votingKeys;
     votingKeys.emplace(proTxHash, votingKey);
 
-    return VoteWithSmartnodes(votingKeys, hash, eVoteSignal, eVoteOutcome);
+    return VoteWithReesistornodes(votingKeys, hash, eVoteSignal, eVoteOutcome);
 }
 #endif
 
@@ -699,9 +699,9 @@ UniValue ListObjects(const std::string& strCachedSignal, const std::string& strT
         bObj.pushKV("CollateralHash",  pGovObj->GetCollateralHash().ToString());
         bObj.pushKV("ObjectType", pGovObj->GetObjectType());
         bObj.pushKV("CreationTime", pGovObj->GetCreationTime());
-        const COutPoint& smartnodeOutpoint = pGovObj->GetSmartnodeOutpoint();
-        if (smartnodeOutpoint != COutPoint()) {
-            bObj.pushKV("SigningSmartnode", smartnodeOutpoint.ToStringShort());
+        const COutPoint& reesistornodeOutpoint = pGovObj->GetReesistornodeOutpoint();
+        if (reesistornodeOutpoint != COutPoint()) {
+            bObj.pushKV("SigningReesistornode", reesistornodeOutpoint.ToStringShort());
         }
 
         // REPORT STATUS FOR FUNDING VOTES SPECIFICALLY
@@ -827,9 +827,9 @@ UniValue gobject_get(const JSONRPCRequest& request)
     objResult.pushKV("CollateralHash",  pGovObj->GetCollateralHash().ToString());
     objResult.pushKV("ObjectType", pGovObj->GetObjectType());
     objResult.pushKV("CreationTime", pGovObj->GetCreationTime());
-    const COutPoint& smartnodeOutpoint = pGovObj->GetSmartnodeOutpoint();
-    if (smartnodeOutpoint != COutPoint()) {
-        objResult.pushKV("SigningSmartnode", smartnodeOutpoint.ToStringShort());
+    const COutPoint& reesistornodeOutpoint = pGovObj->GetReesistornodeOutpoint();
+    if (reesistornodeOutpoint != COutPoint()) {
+        objResult.pushKV("SigningReesistornode", reesistornodeOutpoint.ToStringShort());
     }
 
     // SHOW (MUCH MORE) INFORMATION ABOUT VOTES FOR GOVERNANCE OBJECT (THAN LIST/DIFF ABOVE)
@@ -884,8 +884,8 @@ void gobject_getcurrentvotes_help()
                 "Get only current (tallying) votes for a governance object hash (does not include old votes)\n"
                 "\nArguments:\n"
                 "1. governance-hash   (string, required) object id\n"
-                "2. txid              (string, optional) smartnode collateral txid\n"
-                "3. vout              (string, optional) smartnode collateral output index, required if <txid> presents\n"
+                "2. txid              (string, optional) reesistornode collateral txid\n"
+                "3. vout              (string, optional) reesistornode collateral output index, required if <txid> presents\n"
                 );
 }
 
@@ -900,7 +900,7 @@ UniValue gobject_getcurrentvotes(const JSONRPCRequest& request)
 
     COutPoint mnCollateralOutpoint;
     if (!request.params[2].isNull() && !request.params[3].isNull()) {
-        uint256 txid = ParseHashV(request.params[2], "Smartnode Collateral hash");
+        uint256 txid = ParseHashV(request.params[2], "Reesistornode Collateral hash");
         std::string strVout = request.params[3].get_str();
         mnCollateralOutpoint = COutPoint(txid, (uint32_t)atoi(strVout));
     }
@@ -948,11 +948,11 @@ UniValue gobject_getcurrentvotes(const JSONRPCRequest& request)
             "  list               - List governance objects (can be filtered by signal and/or object type)\n"
             "  diff               - List differences since last diff\n"
 #ifdef ENABLE_WALLET
-            "  vote-alias         - Vote on a governance object by smartnode proTxHash\n"
+            "  vote-alias         - Vote on a governance object by reesistornode proTxHash\n"
 #endif // ENABLE_WALLET
-            "  vote-conf          - Vote on a governance object by smartnode configured in raptoreum.conf\n"
+            "  vote-conf          - Vote on a governance object by reesistornode configured in reesist.conf\n"
 #ifdef ENABLE_WALLET
-            "  vote-many          - Vote on a governance object by all smartnodes for which the voting key is in the wallet\n"
+            "  vote-many          - Vote on a governance object by all reesistornodes for which the voting key is in the wallet\n"
 #endif // ENABLE_WALLET
             );
 }
@@ -1064,7 +1064,7 @@ UniValue voteraw(const JSONRPCRequest& request)
     auto dmn = deterministicMNManager->GetListAtChainTip().GetValidMNByCollateral(outpoint);
 
     if (!dmn) {
-        throw JSONRPCError(RPC_INTERNAL_ERROR, "Failure to find smartnode in list : " + outpoint.ToStringShort());
+        throw JSONRPCError(RPC_INTERNAL_ERROR, "Failure to find reesistornode in list : " + outpoint.ToStringShort());
     }
 
     CGovernanceVote vote(outpoint, hashGovObj, eVoteSignal, eVoteOutcome);
@@ -1149,11 +1149,11 @@ UniValue getsuperblockbudget(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
-    /* Raptoreum features */
-    { "raptoreum",               "getgovernanceinfo",      &getgovernanceinfo,      {} },
-    { "raptoreum",               "getsuperblockbudget",    &getsuperblockbudget,    {"index"} },
-    { "raptoreum",               "gobject",                &gobject,                {} },
-    { "raptoreum",               "voteraw",                &voteraw,                {"tx_hash","tx_index","gov_hash","signal","outcome","time","sig"} },
+    /* Reesist features */
+    { "reesist",               "getgovernanceinfo",      &getgovernanceinfo,      {} },
+    { "reesist",               "getsuperblockbudget",    &getsuperblockbudget,    {"index"} },
+    { "reesist",               "gobject",                &gobject,                {} },
+    { "reesist",               "voteraw",                &voteraw,                {"tx_hash","tx_index","gov_hash","signal","outcome","time","sig"} },
 
 };
 

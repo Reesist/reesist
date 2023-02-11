@@ -9,7 +9,7 @@
 #include <key_io.h>
 #include <util.h>
 #include <utilstrencodings.h>
-#include <test/test_raptoreum.h>
+#include <test/test_reesist.h>
 #include <bip39.h>
 
 #include <boost/test/unit_test.hpp>

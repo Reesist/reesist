@@ -199,7 +199,7 @@ private:
 
     vote_cmm_t cmmapOrphanVotes;
 
-    txout_m_t mapLastSmartnodeObject;
+    txout_m_t mapLastReesistornodeObject;
 
     hash_s_t setRequestedObjects;
 
@@ -274,7 +274,7 @@ public:
         cmapVoteToObject.Clear();
         cmapInvalidVotes.Clear();
         cmmapOrphanVotes.Clear();
-        mapLastSmartnodeObject.clear();
+        mapLastReesistornodeObject.clear();
     }
 
     std::string ToString() const;
@@ -302,7 +302,7 @@ public:
         READWRITE(cmapInvalidVotes);
         READWRITE(cmmapOrphanVotes);
         READWRITE(mapObjects);
-        READWRITE(mapLastSmartnodeObject);
+        READWRITE(mapLastReesistornodeObject);
         READWRITE(lastMNListForVotingKeys);
     }
 
@@ -329,11 +329,11 @@ public:
         mapPostponedObjects.insert(std::make_pair(govobj.GetHash(), govobj));
     }
 
-    void SmartnodeRateUpdate(const CGovernanceObject& govobj);
+    void ReesistornodeRateUpdate(const CGovernanceObject& govobj);
 
-    bool SmartnodeRateCheck(const CGovernanceObject& govobj, bool fUpdateFailStatus = false);
+    bool ReesistornodeRateCheck(const CGovernanceObject& govobj, bool fUpdateFailStatus = false);
 
-    bool SmartnodeRateCheck(const CGovernanceObject& govobj, bool fUpdateFailStatus, bool fForce, bool& fRateCheckBypassed);
+    bool ReesistornodeRateCheck(const CGovernanceObject& govobj, bool fUpdateFailStatus, bool fForce, bool& fRateCheckBypassed);
 
     bool ProcessVoteAndRelay(const CGovernanceVote& vote, CGovernanceException& exception, CConnman& connman)
     {

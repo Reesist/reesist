@@ -56,11 +56,11 @@ std::vector<CGovernanceVote> CGovernanceObjectVoteFile::GetVotes() const
     return vecResult;
 }
 
-void CGovernanceObjectVoteFile::RemoveVotesFromSmartnode(const COutPoint& outpointSmartnode)
+void CGovernanceObjectVoteFile::RemoveVotesFromReesistornode(const COutPoint& outpointReesistornode)
 {
     auto it = listVotes.begin();
     while (it != listVotes.end()) {
-        if (it->GetSmartnodeOutpoint() == outpointSmartnode) {
+        if (it->GetReesistornodeOutpoint() == outpointReesistornode) {
             --nMemoryVotes;
             mapVoteIndex.erase(it->GetHash());
             listVotes.erase(it++);
@@ -70,13 +70,13 @@ void CGovernanceObjectVoteFile::RemoveVotesFromSmartnode(const COutPoint& outpoi
     }
 }
 
-std::set<uint256> CGovernanceObjectVoteFile::RemoveInvalidVotes(const COutPoint& outpointSmartnode, bool fProposal)
+std::set<uint256> CGovernanceObjectVoteFile::RemoveInvalidVotes(const COutPoint& outpointReesistornode, bool fProposal)
 {
     std::set<uint256> removedVotes;
 
     auto it = listVotes.begin();
     while (it != listVotes.end()) {
-        if (it->GetSmartnodeOutpoint() == outpointSmartnode) {
+        if (it->GetReesistornodeOutpoint() == outpointReesistornode) {
             bool useVotingKey = fProposal && (it->GetSignal() == VOTE_SIGNAL_FUNDING);
             if (!it->IsValid(useVotingKey)) {
                 removedVotes.emplace(it->GetHash());
@@ -96,7 +96,7 @@ void CGovernanceObjectVoteFile::RemoveOldVotes(const CGovernanceVote& vote)
 {
     auto it = listVotes.begin();
     while (it != listVotes.end()) {
-        if (it->GetSmartnodeOutpoint() == vote.GetSmartnodeOutpoint() // same smartnode
+        if (it->GetReesistornodeOutpoint() == vote.GetReesistornodeOutpoint() // same reesistornode
             && it->GetParentHash() == vote.GetParentHash() // same governance object (e.g. same proposal)
             && it->GetSignal() == vote.GetSignal() // same signal (e.g. "funding", "delete", etc.)
             && it->GetTimestamp() < vote.GetTimestamp()) // older than new vote

@@ -1,0 +1,22 @@
+[Unit]
+Description=Reesist's distributed currency daemon
+After=network.target
+
+[Service]
+User=reesistcore
+Group=reesistcore
+
+Type=forking
+PIDFile=/var/lib/reesistd/reesistd.pid
+ExecStart=/usr/bin/reesistd -daemon -pid=/var/lib/reesistd/reesistd.pid \
+-conf=/etc/reesistcore/reesist.conf -datadir=/var/lib/reesistd -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

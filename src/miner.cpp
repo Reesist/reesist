@@ -26,8 +26,8 @@
 #include <timedata.h>
 #include <util.h>
 #include <utilmoneystr.h>
-#include <smartnode/smartnode-payments.h>
-#include <smartnode/smartnode-sync.h>
+#include <reesistornode/reesistornode-payments.h>
+#include <reesistornode/reesistornode-sync.h>
 #include <validationinterface.h>
 #include <wallet/wallet.h>
 
@@ -47,7 +47,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// RaptoreumMiner
+// ReesistMiner
 //
 
 //
@@ -150,7 +150,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     bool fDIP0003Active_context = chainparams.GetConsensus().DIP0003Enabled;
     bool fDIP0008Active_context = chainparams.GetConsensus().DIP0008Enabled;
 
-    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(), chainparams.BIP9CheckSmartnodesUpgraded());
+    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(), chainparams.BIP9CheckReesistornodesUpgraded());
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
@@ -226,9 +226,9 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         SetTxPayload(coinbaseTx, cbTx);
     }
 
-    // Update coinbase transaction with additional info about smartnode and governance payments,
+    // Update coinbase transaction with additional info about reesistornode and governance payments,
     // get some info back to pass to getblocktemplate
-    FillBlockPayments(coinbaseTx, nHeight, normalBlockReward, pblocktemplate->voutSmartnodePayments, pblocktemplate->voutSuperblockPayments, nSpecialTxFees);
+    FillBlockPayments(coinbaseTx, nHeight, normalBlockReward, pblocktemplate->voutReesistornodePayments, pblocktemplate->voutSuperblockPayments, nSpecialTxFees);
     FounderPayment founderPayment = chainparams.GetConsensus().nFounderPayment;
     founderPayment.FillFounderPayment(coinbaseTx, nHeight, normalBlockReward, pblock->txoutFounder);
  	  pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
@@ -530,11 +530,11 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
     return true;
 }
 
-void static RaptoreumMiner(const CChainParams& chainparams)
+void static ReesistMiner(const CChainParams& chainparams)
 {
-    LogPrintf("RaptoreumMiner -- started\n");
+    LogPrintf("ReesistMiner -- started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    RenameThread("raptoreum-miner");
+    RenameThread("reesist-miner");
 
     unsigned int nExtraNonce = 0;
 
@@ -545,7 +545,7 @@ void static RaptoreumMiner(const CChainParams& chainparams)
         pWallet = GetFirstWallet();
     #endif
     if (!EnsureWalletIsAvailable(pWallet, false)) {
-        LogPrintf("RaptoreumMiner -- Wallet not available\n");
+        LogPrintf("ReesistMiner -- Wallet not available\n");
     }
 
     if (pWallet == NULL)
@@ -601,7 +601,7 @@ void static RaptoreumMiner(const CChainParams& chainparams)
 
             if (!pblocktemplate.get())
             {
-                LogPrintf("RaptoreumMiner -- Keypool ran out, please call keypoolrefill before restarting the mining thread\n");
+                LogPrintf("ReesistMiner -- Keypool ran out, please call keypoolrefill before restarting the mining thread\n");
                 return;
             }
             CBlock *pblock = &pblocktemplate->block;
@@ -611,7 +611,7 @@ void static RaptoreumMiner(const CChainParams& chainparams)
             LogPrintf("Algos: %s\n",hashSelection.getHashSelectionString());
             IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
-            LogPrintf("RaptoreumMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
+            LogPrintf("ReesistMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
                 ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
             //
@@ -629,7 +629,7 @@ void static RaptoreumMiner(const CChainParams& chainparams)
                     {
                         // Found a solution
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                        LogPrintf("RaptoreumMiner:\n  proof-of-work found\n  hash: %s\n  target: %s\n", hash.GetHex(), hashTarget.GetHex());
+                        LogPrintf("ReesistMiner:\n  proof-of-work found\n  hash: %s\n  target: %s\n", hash.GetHex(), hashTarget.GetHex());
                         ProcessBlockFound(pblock, chainparams, hash);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
                         coinbaseScript->KeepScript();
@@ -645,7 +645,7 @@ void static RaptoreumMiner(const CChainParams& chainparams)
                     if (nHashesDone % 1000 == 0) {   //Calculate hashing speed
                         nHashesPerSec = nHashesDone / (((GetTimeMicros() - nMiningTimeStart) / 1000000.00) + 1);
                         LogPrintf("nNonce: %d, hashRate %f\n",pblock->nNonce, nHashesPerSec);
-                        //LogPrintf("RaptoreumMiner:\n  proof-of-work in progress \n  hash: %s\n  target: %s\n, different=%s\n", hash.GetHex(), hashTarget.GetHex(), (UintToArith256(hash) - hashTarget));
+                        //LogPrintf("ReesistMiner:\n  proof-of-work in progress \n  hash: %s\n  target: %s\n, different=%s\n", hash.GetHex(), hashTarget.GetHex(), (UintToArith256(hash) - hashTarget));
                     }
                     if ((pblock->nNonce & 0xFF) == 0)
                         break;
@@ -677,17 +677,17 @@ void static RaptoreumMiner(const CChainParams& chainparams)
     }
     catch (const boost::thread_interrupted&)
     {
-        LogPrintf("RaptoreumMiner -- terminated\n");
+        LogPrintf("ReesistMiner -- terminated\n");
         throw;
     }
     catch (const std::runtime_error &e)
     {
-        LogPrintf("RaptoreumMiner -- runtime error: %s\n", e.what());
+        LogPrintf("ReesistMiner -- runtime error: %s\n", e.what());
         return;
     }
 }
 
-int GenerateRaptoreums(bool fGenerate, int nThreads, const CChainParams& chainparams)
+int GenerateReesists(bool fGenerate, int nThreads, const CChainParams& chainparams)
 {
 
     static boost::thread_group* minerThreads = NULL;
@@ -715,7 +715,7 @@ int GenerateRaptoreums(bool fGenerate, int nThreads, const CChainParams& chainpa
     nHashesPerSec = 0;
 
     for (int i = 0; i < nThreads; i++){
-        minerThreads->create_thread(boost::bind(&RaptoreumMiner, boost::cref(chainparams)));
+        minerThreads->create_thread(boost::bind(&ReesistMiner, boost::cref(chainparams)));
     }
     return(numCores);
 }

@@ -14,7 +14,7 @@
 #include <util.h>
 #include <validation.h>
 
-#include <test/test_raptoreum.h>
+#include <test/test_reesist.h>
 
 #include <stdint.h>
 

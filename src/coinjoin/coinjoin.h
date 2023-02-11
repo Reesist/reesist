@@ -217,7 +217,7 @@ class CCoinJoinQueue
 {
 public:
     int nDenom;
-    COutPoint smartnodeOutpoint;
+    COutPoint reesistornodeOutpoint;
     int64_t nTime;
     bool fReady; //ready for submit
     std::vector<unsigned char> vchSig;
@@ -226,7 +226,7 @@ public:
 
     CCoinJoinQueue() :
         nDenom(0),
-        smartnodeOutpoint(COutPoint()),
+        reesistornodeOutpoint(COutPoint()),
         nTime(0),
         fReady(false),
         vchSig(std::vector<unsigned char>()),
@@ -236,7 +236,7 @@ public:
 
     CCoinJoinQueue(int nDenom, COutPoint outpoint, int64_t nTime, bool fReady) :
         nDenom(nDenom),
-        smartnodeOutpoint(outpoint),
+        reesistornodeOutpoint(outpoint),
         nTime(nTime),
         fReady(fReady),
         vchSig(std::vector<unsigned char>()),
@@ -250,7 +250,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action)
     {
         READWRITE(nDenom);
-        READWRITE(smartnodeOutpoint);
+        READWRITE(reesistornodeOutpoint);
         READWRITE(nTime);
         READWRITE(fReady);
         if (!(s.GetType() & SER_GETHASH)) {
@@ -261,13 +261,13 @@ public:
     uint256 GetSignatureHash() const;
     /** Sign this mixing transaction
      *  \return true if all conditions are met:
-     *     1) we have an active Smartnode,
-     *     2) we have a valid Smartnode private key,
+     *     1) we have an active Reesistornode,
+     *     2) we have a valid Reesistornode private key,
      *     3) we signed the message successfully, and
      *     4) we verified the message successfully
      */
     bool Sign();
-    /// Check if we have a valid Smartnode address
+    /// Check if we have a valid Reesistornode address
     bool CheckSignature(const CBLSPublicKey& blsPubKey) const;
 
     bool Relay(CConnman& connman);
@@ -277,13 +277,13 @@ public:
 
     std::string ToString() const
     {
-        return strprintf("nDenom=%d, nTime=%lld, fReady=%s, fTried=%s, smartnode=%s",
-            nDenom, nTime, fReady ? "true" : "false", fTried ? "true" : "false", smartnodeOutpoint.ToStringShort());
+        return strprintf("nDenom=%d, nTime=%lld, fReady=%s, fTried=%s, reesistornode=%s",
+            nDenom, nTime, fReady ? "true" : "false", fTried ? "true" : "false", reesistornodeOutpoint.ToStringShort());
     }
 
     friend bool operator==(const CCoinJoinQueue& a, const CCoinJoinQueue& b)
     {
-        return a.nDenom == b.nDenom && a.smartnodeOutpoint == b.smartnodeOutpoint && a.nTime == b.nTime && a.fReady == b.fReady;
+        return a.nDenom == b.nDenom && a.reesistornodeOutpoint == b.reesistornodeOutpoint && a.nTime == b.nTime && a.fReady == b.fReady;
     }
 };
 
@@ -298,14 +298,14 @@ private:
 
 public:
     CTransactionRef tx;
-    COutPoint smartnodeOutpoint;
+    COutPoint reesistornodeOutpoint;
     std::vector<unsigned char> vchSig;
     int64_t sigTime;
 
     CCoinJoinBroadcastTx() :
         nConfirmedHeight(-1),
         tx(MakeTransactionRef()),
-        smartnodeOutpoint(),
+        reesistornodeOutpoint(),
         vchSig(),
         sigTime(0)
     {
@@ -314,7 +314,7 @@ public:
     CCoinJoinBroadcastTx(const CTransactionRef& _tx, COutPoint _outpoint, int64_t _sigTime) :
         nConfirmedHeight(-1),
         tx(_tx),
-        smartnodeOutpoint(_outpoint),
+        reesistornodeOutpoint(_outpoint),
         vchSig(),
         sigTime(_sigTime)
     {
@@ -326,7 +326,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action)
     {
         READWRITE(tx);
-        READWRITE(smartnodeOutpoint);
+        READWRITE(reesistornodeOutpoint);
         if (!(s.GetType() & SER_GETHASH)) {
             READWRITE(vchSig);
         }

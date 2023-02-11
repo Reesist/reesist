@@ -23,7 +23,7 @@ Darkcoin Core:
 - Adapted BIP44 coin type `5` for Darkcoin (0x80000005) as defined in SLIP-0044
 - Added new units: `duffs` (1 / 100.000.000 DRK)
 - Added units for testnet: tDRK, mtDRK, utDRK, tduffs
-- Added new DNS seed from smartnode.io
+- Added new DNS seed from reesistornode.io
 - Fixed wallet locking after sending coins
 - Add `-regtest` mode, similar to testnet but private with instant block
   generation with `setgenerate` RPC.
@@ -32,15 +32,15 @@ Darkcoin Core:
   `keepass`, `keepassport`, `keepasskey`, `keepassid`, `keepassname`
 
 
-Smartnodes:
+Reesistornodes:
 
-- Improve support for start-many with multi smartnode config
-- New smartnode rpc commands: stop-many, start-alias, stop-alias, list-conf
-- Fixed possible smartnode payments exploit
-- Better support for non-specific smartnode payments
-- Added smartnode support for regtest
-- Randomly sort smartnodes before picking next winner
-- Show number of smartnodes in debug window
+- Improve support for start-many with multi reesistornode config
+- New reesistornode rpc commands: stop-many, start-alias, stop-alias, list-conf
+- Fixed possible reesistornode payments exploit
+- Better support for non-specific reesistornode payments
+- Added reesistornode support for regtest
+- Randomly sort reesistornodes before picking next winner
+- Show number of reesistornodes in debug window
 
 
 Darksend:
@@ -100,13 +100,13 @@ Command-line options:
 - New option: -nospendzeroconfchange to never spend unconfirmed change outputs
 - New option: -zapwallettxes to rebuild the wallet's transaction information
 - Rename option '-tor' to '-onion' to better reflect what it does
-- Add '-disablewallet' mode to let raptoreumd run entirely without wallet (when
+- Add '-disablewallet' mode to let reesistd run entirely without wallet (when
   built with wallet)
 - Update default '-rpcsslciphers' to include TLSv1.2
 - make '-logtimestamps' default on and rework help-message
 - RPC client option: '-rpcwait', to wait for server start
 - Remove '-logtodebugger'
-- Allow `-noserver` with raptoreumd
+- Allow `-noserver` with reesistd
 - Make -proxy set all network types, avoiding a connect leak.
 
 
